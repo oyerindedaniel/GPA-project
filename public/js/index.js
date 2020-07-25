@@ -18,3 +18,8 @@
 //homeBoxes.forEach(homeBox => {
 //    homeBox.addEventListener("click", selectItem)
 //});
+
+const flashAlert = $(".alert-css");
+setTimeout(function () {
+    flashAlert.fadeOut('fast');
+}, 2000);

@@ -5,9 +5,8 @@ const ejs = require("ejs");
 const session = require('express-session');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
-//const flash = require('connect-flash');
-//const session = require('express-session');
-//const cookie = require('cookie-parser');
+const flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
 const app = express();
 const _ = require('lodash');
 const mongoose = require('mongoose');
@@ -17,17 +16,24 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// app.configure(function() {
-//   app.use(express.cookieParser('keyboard cat'));
-//   app.use(express.session({ cookie: { maxAge: 60000 }}));
-//   app.use(flash());
-// });
-
 app.use(session({
-    secret: "Our little secret.",
+    secret: "Danielgpa",
+    cookie: {
+        maxAge: 60000
+    },
     resave: false,
     saveUninitialized: false
 }));
+app.use(flash())
+app.use(cookieParser())
+////app.use(cookieParser());
+////app.configure(function () {
+//    app.use(express.cookieParser({"gpaapp": config.cookieSecret}));   
+// //   app.use(express.cookieParser('gpaapp'));
+//    app.use(flash());
+////});
+
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,8 +59,6 @@ const gradeSchema = new mongoose.Schema({
         required: [true, '#']
     }
 
-}, {
-    _id: false
 });
 
 const Gradesystemvalue = mongoose.model("Gradesystemvalue", gradeSchema);
@@ -108,7 +112,8 @@ app.route("/grade-system")
             Overallstrt.findById(req.user.id, function (err, gradeperperson) {
                 if (gradeperperson) {
                     res.render("gradesystem", {
-                        allgradeitems: gradeperperson.gradesystemoverall
+                        allgradeitems: gradeperperson.gradesystemoverall,
+                        message: req.flash("message")
                     });
                 } else {
                     console.log("Nothing found");
@@ -163,7 +168,6 @@ app.route("/grade-system")
         Overallstrt.updateOne({
                 _id: req.user.id
             }, {
-
                 $addToSet: {
                     gradesystemoverall: gradesystem
                 }
@@ -172,6 +176,7 @@ app.route("/grade-system")
                 if (err) {
                     res.send(err);
                 } else {
+                    req.flash("message", "Saved Successfully!")
                     res.redirect("/grade-system");
                 }
             }
@@ -242,10 +247,10 @@ app.route("/grade-system")
 app.route("/calculate")
     .get(function (req, res) {
         if (req.isAuthenticated()) {
-            Calculategpavalue.find(function (err, allcalculategpaitems) {
-                if (allcalculategpaitems) {
+            Overallstrt.findById(req.user.id, function (err, calculategpaperson) {
+                if (calculategpaperson) {
                     res.render("calculate", {
-                        allcalculateitems: allcalculategpaitems
+                        allcalculateitems: calculategpaperson.calculategpaoverall
                     });
                 } else {
                     console.log("Nothing found");
@@ -256,35 +261,71 @@ app.route("/calculate")
         }
     })
     .post(function (req, res) {
-        const coursecodebeta = req.body.coursecode;
-        const gradebeta = req.body.grade2;
+        _.upperCase(req.body.coursecode);
+        const coursecodebeta = _.upperCase(req.body.coursecode);
+        const gradebeta = _.upperCase(req.body.grade2);
         const unitpercoursebeta = req.body.unitpercourse;
-        Gradesystemvalue.findOne({
-            grade1: gradebeta
-        }, function (err, founds) {
-            if (!founds) {
-                console.log("Bitch go to grade system.")
-                res.redirect("/grade-system");
+        Overallstrt.findById(req.user.id, function (err, foundUser) {
+            if (!foundUser) {
+                console.log(err);
             } else {
-                if (founds.grade1 === gradebeta) {
-                    const multipyunits = founds.points * unitpercoursebeta;
-                    const calculategpa = new Calculategpavalue({
-                        coursecode: coursecodebeta,
-                        grade2: gradebeta,
-                        unitpercourse: unitpercoursebeta,
-                        multiplyunit: multipyunits
-                    });
-                    calculategpa.save(function (err) {
-                        if (!err) {
-                            res.redirect("/calculate");
-                        }
-                    });
-                } else {
-                    console.log("No");
-                    res.redirect("/calculate");
-                }
+                const foundUsergrades = foundUser.gradesystemoverall;
+                foundUsergrades.forEach(function (foundUsergrade) {
+                    //Come back and put length that check how many and redirect them to another page.
+                    if (foundUsergrade.grade1 === gradebeta) {
+                        const multipyunits = foundUsergrade.points * unitpercoursebeta;
+                        const calculategpa = new Calculategpavalue({
+                            coursecode: coursecodebeta,
+                            grade2: gradebeta,
+                            unitpercourse: unitpercoursebeta,
+                            multiplyunit: multipyunits
+                        });
+                        calculategpa.save(function (err) {
+                            if (!err) {
+                                foundUser.calculategpaoverall.push(calculategpa);
+                                foundUser.save(function () {
+                                    res.redirect("/calculate");
+                                });
+                            }
+                        });
+                    } else {
+                        console.log("No it");
+                    }
+                })
             }
+
         });
+
+        //             
+        //        const coursecodebeta = req.body.coursecode;
+        //        const gradebeta = req.body.grade2;
+        //        const unitpercoursebeta = req.body.unitpercourse;
+        //        Gradesystemvalue.findOne({
+        //            grade1: gradebeta
+        //        }, function (err, founds) {
+        //            if (!founds) {
+        //                console.log("Bitch go to grade system.")
+        //                res.redirect("/grade-system");
+        //            } else {
+        //                if (founds.grade1 === gradebeta) {
+        //                    const multipyunits = founds.points * unitpercoursebeta;
+        //                    const calculategpa = new Calculategpavalue({
+        //                        coursecode: coursecodebeta,
+        //                        grade2: gradebeta,
+        //                        unitpercourse: unitpercoursebeta,
+        //                        multiplyunit: multipyunits
+        //                    });
+        //                    calculategpa.save(function (err) {
+        //                        if (!err) {
+        //                            res.redirect("/calculate");
+        //                        }
+        //                    });
+        //                } else {
+        //                    console.log("No");
+        //                    res.redirect("/calculate");
+        //                }
+        //            }
+        //        });
     });
 
 app.get("/history", function (req, res) {
@@ -309,6 +350,60 @@ app.get("/history", function (req, res) {
     } else {
         res.redirect("/signin");
     }
+});
+
+app.post("/deleteitem1", function (req, res) {
+    const gradedeleteitem = req.body.deleteitemgrade;
+    const UserID = req.user.id;
+    Overallstrt.findOneAndUpdate({
+        _id: UserID
+    }, {
+        $pull: {
+            gradesystemoverall: {
+                _id: gradedeleteitem
+            }
+        }
+    }, function (err, results) {
+        if (!err) {
+            res.redirect("/grade-system");
+            console.log("Successfully deleted");
+        } else {
+            console.log("Couldn't delete");
+        }
+    });
+
+});
+
+app.post("/deleteitem2", function (req, res) {
+    const calculatedeleteitem = req.body.deleteitemcalculate;
+    const UserID = req.user.id;
+    Overallstrt.findOneAndUpdate({
+        _id: UserID
+    }, {
+        $pull: {
+            calculategpaoverall: {
+                _id: calculatedeleteitem
+            }
+        }
+    }, function (err, results) {
+        if (!err) {
+            res.redirect("/calculate");
+            console.log("Successfully deleted");
+        } else {
+            console.log("Couldn't delete");
+        }
+    });
+
+    //    Overallstrt.findById(req.user.id, function (err, foundUser) {
+    //        if (!foundUser) {
+    //            console.log("Something went wrong could not delete.");
+    //        } else {
+    //   const calcitems =  foundUser.calculategpaoverall;
+    //    calcitems.
+    //        }
+    //
+    //    });
+
 });
 
 app.get("/signup", function (req, res) {

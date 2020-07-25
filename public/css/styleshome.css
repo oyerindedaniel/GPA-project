@@ -46,7 +46,8 @@ img {
     cursor: context-menu;
 }
 
-button {
+
+form button {
     padding: 0.4rem 5rem !important;
     border-radius: 2.5rem !important;
     font-family: 'Montserrat', sans-serif;
@@ -54,7 +55,24 @@ button {
     font-weight: 100 !important;
 }
 
+table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
 
+.button-ions {
+    cursor: pointer !important;
+    background-color: rgba(0, 0, 0, 1) !important;
+    border: 0 !important;
+    border-radius: 2px !important;
+    color: #909090 !important;
+    font-size: 0.8rem !important;
+    padding: 5px 10px !important;
+    opacity: 0 !important;
+}
+
+table tbody tr:hover .button-ions {
+    opacity: 1 !important;
+}
 
 .grid-box img:hover {
     opacity: 100;
@@ -112,6 +130,16 @@ div.grid-box {
     text-align: center;
     width: 50rem;
     margin: 3rem auto;
+}
+
+/* Alert */
+.alert-css {
+    border-radius: 0;
+    font-size: 1.5rem;
+    padding: 1rem 3rem;
+    width: 50%;
+    margin: auto;
+    text-align: center
 }
 
 /* 

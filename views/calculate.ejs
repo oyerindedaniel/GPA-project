@@ -6,6 +6,7 @@
                 <th scope="col">COURSE CODE</th>
                 <th scope="col">GRADE</th>
                 <th scope="col">UNIT FOR EACH COURSE</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -14,6 +15,9 @@
                 <td><%= allcalculateitem.coursecode %></td>
                 <td><%= allcalculateitem.grade2 %></td>
                 <td><%= allcalculateitem.unitpercourse %></td>
+                <form action="/deleteitem2" method="post">
+                    <td><button type="submit" name="deleteitemcalculate" value="<%= allcalculateitem._id %>" onchange="this.form.submit()" class="button-ions"><i class=" icon-css fas fa-1x fa-trash"></i></button></td>
+                </form>
             </tr>
             <% }); %>
         </tbody>

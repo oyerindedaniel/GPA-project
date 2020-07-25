@@ -40,6 +40,7 @@ img.calculator-img {
 }
 
 
+/*
 .btn-navbar {
     padding: 0.75rem 2rem;
     border-radius: 2.5rem;
@@ -47,10 +48,31 @@ img.calculator-img {
     font-size: 1rem;
     font-weight: 100;
 }
+*/
 
 
 .nav-item {
     margin: 2rem;
+    border: 0.1rem solid rgba(0, 0, 0, 1);
+    padding: 0.2rem 1.4rem 0.2rem 1.4rem;
+    border-radius: 1.5rem;
+    background-color: white;
+    font-weight: 100;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+}
+
+.nav-link {
+    color: rgba(0, 0, 0, 1) !important;
+}
+
+.nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.nav-link:hover {
+    color: white !important;
 }
 
 /* Carounsel */
