@@ -17,23 +17,21 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(session({
-    secret: "Danielgpa",
+    secret: "Our little secret.",
     cookie: {
-        maxAge: 60000
+        maxAge: null
     },
     resave: false,
     saveUninitialized: false
 }));
 app.use(flash())
-app.use(cookieParser())
+app.use(cookieParser());
 ////app.use(cookieParser());
 ////app.configure(function () {
 //    app.use(express.cookieParser({"gpaapp": config.cookieSecret}));   
 // //   app.use(express.cookieParser('gpaapp'));
 //    app.use(flash());
 ////});
-
-
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -52,11 +50,11 @@ mongoose.set("useCreateIndex", true);
 const gradeSchema = new mongoose.Schema({
     grade1: {
         type: String,
-        required: [true, '#']
+        required: [true, 'Grade required']
     },
     points: {
         type: Number,
-        required: [true, '#']
+        required: [true, 'Point required ']
     }
 
 });
@@ -66,17 +64,17 @@ const Gradesystemvalue = mongoose.model("Gradesystemvalue", gradeSchema);
 const calculateSchema = new mongoose.Schema({
     coursecode: {
         type: String,
-        required: [true, '#']
+        required: [true, 'Coursecode required']
     },
     grade2: {
         type: String,
-        required: [true, '#']
+        required: [true, 'Grade required']
     },
     unitpercourse: {
         type: Number,
-        required: [true, '#']
+        required: [true, 'Unit required']
     },
-    multiplyunit: String
+    multiplyunit: Number
 });
 
 // Collection calculate Schema.
@@ -88,7 +86,9 @@ const overallstrtSchema = new mongoose.Schema({
     username: String,
     password: String,
     gradesystemoverall: [gradeSchema],
-    calculategpaoverall: [calculateSchema]
+    calculategpaoverall: [calculateSchema],
+    totalcalcunits: [],
+    totalunit: []
 });
 
 overallstrtSchema.plugin(passportLocalMongoose);
@@ -261,7 +261,6 @@ app.route("/calculate")
         }
     })
     .post(function (req, res) {
-        _.upperCase(req.body.coursecode);
         const coursecodebeta = _.upperCase(req.body.coursecode);
         const gradebeta = _.upperCase(req.body.grade2);
         const unitpercoursebeta = req.body.unitpercourse;
@@ -283,8 +282,116 @@ app.route("/calculate")
                         calculategpa.save(function (err) {
                             if (!err) {
                                 foundUser.calculategpaoverall.push(calculategpa);
-                                foundUser.save(function () {
-                                    res.redirect("/calculate");
+                                foundUser.save(function (err) {
+                                    if (!err) {
+                                        //The total Calculated units
+                                        const userId = mongoose.Types.ObjectId(req.user.id);
+                                        Overallstrt.aggregate([{
+                                                $match: {
+                                                    _id: userId
+                                                }
+                                            },
+                                            {
+                                                $group: {
+                                                    _id: null,
+                                                    "totalcalculateunits": {
+                                                        $sum: {
+                                                            $sum: "$calculategpaoverall.multiplyunit"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                ]).exec(function (err, sumcalcData) {
+                                            if (!err) {
+                                                sumcalcData.forEach(function (sumcalcDate) {
+                                                    const sum1 = sumcalcDate.totalcalculateunits;
+                                                    foundUser.totalcalcunits.pop();
+                                                    foundUser.totalcalcunits.push(sum1);
+                                                    foundUser.save(function (err) {
+                                                        if (!err) {
+                                                            //The total Calculated units
+                                                            const userId = mongoose.Types.ObjectId(req.user.id);
+                                                            Overallstrt.aggregate([{
+                                                                    $match: {
+                                                                        _id: userId
+                                                                    }
+                                            },
+                                                                {
+                                                                    $group: {
+                                                                        _id: null,
+                                                                        "totaleachunits": {
+                                                                            $sum: {
+                                                                                $sum: "$calculategpaoverall.unitpercourse"
+                                                                            }
+                                                                        }
+                                                                    }
+                                            }
+                ]).exec(function (err, sumData) {
+                                                                if (!err) {
+                                                                    //                                                                    console.log("Yeah");
+                                                                    //                                                                    res.redirect("/calculate");
+                                                                    sumData.forEach(function (sumDate) {
+                                                                        const sum2 = sumDate.totaleachunits;
+                                                                        foundUser.totalunit.pop();
+                                                                        foundUser.totalunit.push(sum2);
+                                                                        foundUser.save(function (err) {
+                                                                            if (!err) {
+                                                                                res.redirect("/calculate");
+                                                                            }
+                                                                        });
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                    })
+                                                });
+
+
+                                                //                                                const overallall = new Overallstrt({
+                                                //                                                    totalunit: sumcalcData
+                                                //                                                });
+                                                //                                                overallall.save(function (err) {
+                                                //                                                    if (!err) {
+                                                //                                                        res.redirect("/calculate");
+                                                //                                                    }
+                                                //                                                })
+                                                //The total units
+                                                //                                                const userId = mongoose.Types.ObjectId(req.user.id);
+                                                //                                                Overallstrt.aggregate([{
+                                                //                                                            $match: {
+                                                //                                                                _id: userId
+                                                //                                                            }
+                                                //                                            },
+                                                //                                                        {
+                                                //                                                            $group: {
+                                                //                                                                _id: null,
+                                                //                                                                "totalunits": {
+                                                //                                                                    $sum: {
+                                                //                                                                        $sum: "$calculategpaoverall.unitpercourse"
+                                                //                                                                    }
+                                                //                                                                }
+                                                //                                                            }
+                                                //                                            }
+                                                //                ]),
+                                                //                                                    function (err, sumData) {
+                                                //                                                        if (!err) {
+                                                //                                                            const overallall = new Overallstrt({
+                                                //                                                                totalcalcunits: sumData,
+                                                //                                                                totalunit: sumcalcData
+                                                //                                                            });
+                                                //                                                            overallall.save(function (err) {
+                                                //                                                                if (!err) {
+                                                //                                                                    console.log(sumData);
+                                                //                                                                    res.redirect("/calculate");
+                                                //                                                                }
+                                                //                                                            })
+                                                //                                                        }
+                                                //                                                    }
+                                            } else {
+                                                res.redirect("/grade-system");
+                                            }
+                                        });
+                                    }
                                 });
                             }
                         });
@@ -293,7 +400,6 @@ app.route("/calculate")
                     }
                 })
             }
-
         });
 
         //             
@@ -330,6 +436,33 @@ app.route("/calculate")
 
 app.get("/history", function (req, res) {
     if (req.isAuthenticated()) {
+        const userId = mongoose.Types.ObjectId(req.user.id);
+        Overallstrt.aggregate([{
+                $match: {
+                    _id: userId
+                }
+                },
+            {
+                $group: {
+                    _id: null,
+                    "totalunits": {
+
+                        $sum: {
+                            $sum: "$calculategpaoverall.multiplyunit"
+                        }
+                    }
+
+                }
+                        }
+                ]).exec(function (err, sumData) {
+            if (!err) {
+                console.log(sumData);
+                res.redirect("/grade-system");
+            } else {
+                res.redirect("/grade-system");
+            }
+        });
+        ////////////////////////////////////////////////////////////////////////////////////
         //  Calculategpavalue.find(function (err, foundunits) {
         //      if (foundunits) {
         //          foundunits.forEach(function (foundunit) {
@@ -346,12 +479,13 @@ app.get("/history", function (req, res) {
         //
         //      }
         // // });
-        res.render("history");
+        //  
     } else {
         res.redirect("/signin");
     }
 });
 
+// Delete request from grade system.
 app.post("/deleteitem1", function (req, res) {
     const gradedeleteitem = req.body.deleteitemgrade;
     const UserID = req.user.id;
@@ -374,34 +508,50 @@ app.post("/deleteitem1", function (req, res) {
 
 });
 
+// Delete request from calculate gpa.
 app.post("/deleteitem2", function (req, res) {
-    const calculatedeleteitem = req.body.deleteitemcalculate;
     const UserID = req.user.id;
-    Overallstrt.findOneAndUpdate({
-        _id: UserID
-    }, {
-        $pull: {
-            calculategpaoverall: {
-                _id: calculatedeleteitem
-            }
-        }
-    }, function (err, results) {
-        if (!err) {
-            res.redirect("/calculate");
-            console.log("Successfully deleted");
+    const calculatedeleteitem = req.body.deleteitemcalculate;
+    Overallstrt.findById(UserID, function (err, foundUser) {
+        const foundcalcresult = foundUser.totalcalcunits;
+        //  const foundresult = foundUser.totalunit;
+        const arrayLength = (foundcalcresult.length - 1);
+        // const arrayLengths= (foundresult.length - 1);
+        const gottencalcValue = foundcalcresult[arrayLength];
+        // console.log(foundresult[arrayLengths]);
+        if (foundUser) {
+            const usercalcs = foundUser.calculategpaoverall;
+            usercalcs.forEach(function (usercalc) {
+                if (usercalc.id === calculatedeleteitem) {
+                    const gottenValue = usercalc.multiplyunit;
+                    const gottenresult = (gottencalcValue - gottenValue);
+                    foundcalcresult.pop();
+                    foundcalcresult.push(gottenresult);
+                    foundUser.save();
+                    res.redirect("/calculate");
+                }
+            });
         } else {
-            console.log("Couldn't delete");
+            res.redirect("/logout");
         }
-    });
+    })
 
-    //    Overallstrt.findById(req.user.id, function (err, foundUser) {
-    //        if (!foundUser) {
-    //            console.log("Something went wrong could not delete.");
-    //        } else {
-    //   const calcitems =  foundUser.calculategpaoverall;
-    //    calcitems.
+
+    //    Overallstrt.findOneAndUpdate({
+    //        _id: UserID
+    //    }, {
+    //        $pull: {
+    //            calculategpaoverall: {
+    //                _id: calculatedeleteitem
+    //            }
     //        }
-    //
+    //    }, function (err, results) {
+    //        if (!err) {
+    //            res.redirect("/calculate");
+    //            console.log("Successfully deleted");
+    //        } else {
+    //            console.log("Couldn't delete");
+    //        }
     //    });
 
 });
