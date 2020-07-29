@@ -12,7 +12,7 @@ html {
 body {
     background-color: rgba(1, 1, 1, 0.9);
     color: #000000;
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-family: sans-serif, "Trebuchet MS", Helvetica;
 }
 
 h1 {
@@ -55,7 +55,17 @@ form button {
     font-weight: 100 !important;
 }
 
-table tbody tr:hover {
+/*
+.main:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+*/
+table tbody tr {
+    border: none;
+}
+
+
+table tbody tr.main:hover {
     background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -132,6 +142,57 @@ div.grid-box {
     margin: 3rem auto;
 }
 
+/* History styling */
+.table-history {
+    font-size: 1.25rem;
+    text-align: center;
+    width: 50rem;
+    margin: 3rem auto;
+    background-color: white;
+    margin-bottom: 7rem;
+}
+
+
+/*
+table thead tr.all th:first-of-type {
+    border-left: 8px solid rgba(0, 0, 0, 0.7);
+}
+*/
+
+table tbody tr.A td:first-of-type {
+    border-left: 0.5rem solid #206a5d;
+}
+
+.othercolors {
+    border-left: 0.5rem solid #521262;
+}
+
+
+table tbody tr.B td:first-of-type {
+    border-left: 0.5rem solid #394989;
+}
+
+table tbody tr.C td:first-of-type {
+    border-left: 0.5rem solid #ba7967;
+}
+
+table tbody tr.D td:first-of-type {
+    border-left: 0.5rem solid #32e0c4;
+}
+
+table tbody tr.F td:first-of-type {
+    border-left: 0.5rem solid #ffa5b0;
+}
+
+
+.gpa-css,
+.all {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    color: rgb(255, 255, 255, 1);
+    font-weight: 100 !important;
+    font-family: 'Montserrat', sans-serif !important;
+}
+
 /* Alert */
 .alert-css {
     border-radius: 0;
@@ -141,10 +202,3 @@ div.grid-box {
     margin: auto;
     text-align: center
 }
-
-/* 
-
-.border-styles {
-    border-bottom: 0.325rem solid #000000;
-}
- */

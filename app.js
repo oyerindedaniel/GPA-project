@@ -87,8 +87,9 @@ const overallstrtSchema = new mongoose.Schema({
     password: String,
     gradesystemoverall: [gradeSchema],
     calculategpaoverall: [calculateSchema],
-    totalcalcunits: [],
-    totalunit: []
+    totalcalcunits: [Number],
+    totalunit: [Number],
+    finalresult: [Number]
 });
 
 overallstrtSchema.plugin(passportLocalMongoose);
@@ -436,50 +437,29 @@ app.route("/calculate")
 
 app.get("/history", function (req, res) {
     if (req.isAuthenticated()) {
-        const userId = mongoose.Types.ObjectId(req.user.id);
-        Overallstrt.aggregate([{
-                $match: {
-                    _id: userId
-                }
-                },
-            {
-                $group: {
-                    _id: null,
-                    "totalunits": {
-
-                        $sum: {
-                            $sum: "$calculategpaoverall.multiplyunit"
-                        }
+        Overallstrt.findById(req.user.id, function (err, foundUser) {
+            if (foundUser) {
+                const calc1 = foundUser.totalcalcunits[0];
+                const calc = foundUser.totalunit[0];
+                const divCal1 = Math.round((calc1 / calc) * 100);
+                const divCal = (divCal1 / 100);
+                const lastarrayResult = foundUser.finalresult;
+                lastarrayResult.pop();
+                lastarrayResult.push(divCal);
+                foundUser.save(function (err) {
+                    if (!err) {
+                        res.render("history", {
+                            allitems: foundUser.calculategpaoverall,
+                            allfinalresults: foundUser
+                        });
                     }
-
-                }
-                        }
-                ]).exec(function (err, sumData) {
-            if (!err) {
-                console.log(sumData);
-                res.redirect("/grade-system");
-            } else {
-                res.redirect("/grade-system");
+                })
             }
+
         });
-        ////////////////////////////////////////////////////////////////////////////////////
-        //  Calculategpavalue.find(function (err, foundunits) {
-        //      if (foundunits) {
-        //          foundunits.forEach(function (foundunit) {
-        //              var a = foundunit.multiplyunit;
-        //
-        //              var b = a + foundunit.multiplyunit;
-        //              console.log(b);
-        //              //var pusharrays = [];
-        //              // pusharrays.push(foundunit.multiplyunit)
-        //              //   const letsum = _.sum();
-        //              //console.log(pusharrays);
-        //          })
-        //
-        //
-        //      }
-        // // });
-        //  
+
+
+
     } else {
         res.redirect("/signin");
     }
@@ -514,11 +494,11 @@ app.post("/deleteitem2", function (req, res) {
     const calculatedeleteitem = req.body.deleteitemcalculate;
     Overallstrt.findById(UserID, function (err, foundUser) {
         const foundcalcresult = foundUser.totalcalcunits;
-        //  const foundresult = foundUser.totalunit;
+        const foundresult = foundUser.totalunit;
         const arrayLength = (foundcalcresult.length - 1);
-        // const arrayLengths= (foundresult.length - 1);
+        const arrayLengths = (foundresult.length - 1);
         const gottencalcValue = foundcalcresult[arrayLength];
-        // console.log(foundresult[arrayLengths]);
+        const lottencalcValue = foundresult[arrayLengths];
         if (foundUser) {
             const usercalcs = foundUser.calculategpaoverall;
             usercalcs.forEach(function (usercalc) {
@@ -527,33 +507,44 @@ app.post("/deleteitem2", function (req, res) {
                     const gottenresult = (gottencalcValue - gottenValue);
                     foundcalcresult.pop();
                     foundcalcresult.push(gottenresult);
-                    foundUser.save();
-                    res.redirect("/calculate");
+                    foundUser.save(function (err) {
+                        if (!err) {
+                            const lottenValue = usercalc.unitpercourse;
+                            const lottenresult = (lottencalcValue - lottenValue);
+                            foundresult.pop();
+                            foundresult.push(lottenresult);
+                            foundUser.save(function (err) {
+                                if (!err) {
+                                    Overallstrt.findOneAndUpdate({
+                                        _id: UserID
+                                    }, {
+                                        $pull: {
+                                            calculategpaoverall: {
+                                                _id: calculatedeleteitem
+                                            }
+                                        }
+                                    }, function (err, results) {
+                                        if (!err) {
+                                            res.redirect("/calculate");
+                                            console.log("Successfully deleted");
+                                        } else {
+                                            console.log("Couldn't delete");
+                                        }
+                                    });
+                                }
+                            });
+
+                        }
+
+
+                    });
+
                 }
             });
         } else {
             res.redirect("/logout");
         }
-    })
-
-
-    //    Overallstrt.findOneAndUpdate({
-    //        _id: UserID
-    //    }, {
-    //        $pull: {
-    //            calculategpaoverall: {
-    //                _id: calculatedeleteitem
-    //            }
-    //        }
-    //    }, function (err, results) {
-    //        if (!err) {
-    //            res.redirect("/calculate");
-    //            console.log("Successfully deleted");
-    //        } else {
-    //            console.log("Couldn't delete");
-    //        }
-    //    });
-
+    });
 });
 
 app.get("/signup", function (req, res) {

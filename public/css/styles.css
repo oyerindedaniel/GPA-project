@@ -7,6 +7,7 @@
 html {
     box-sizing: border-box;
     font-size: 10px !important;
+    position: relative;
 }
 
 body {
@@ -50,28 +51,19 @@ img.calculator-img {
 }
 */
 
-
-.nav-item {
-    margin: 2rem;
-    border: 0.1rem solid rgba(0, 0, 0, 1);
-    padding: 0.2rem 1.4rem 0.2rem 1.4rem;
-    border-radius: 1.5rem;
-    background-color: white;
-    font-weight: 100;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-}
-
 .nav-link {
-    color: rgba(0, 0, 0, 1) !important;
-}
-
-.nav-item:hover {
-    background-color: rgba(0, 0, 0, 0.9) !important;
-    color: white !important;
+    margin: 2rem 1.5rem 2rem 1.5rem !important;
+    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+    padding: 0.6rem 2rem 0.6rem 2rem !important;
+    border-radius: 1.5rem !important;
+    background-color: white !important;
+    font-weight: 100 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 1rem !important;
 }
 
 .nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
     color: white !important;
 }
 
@@ -107,7 +99,7 @@ img.calculator-img {
 }
 
 .all-socials {
-    margin: 0 3rem 2rem 0;
+    margin: 0 3rem 5rem 0;
 }
 
 .insta-social {
@@ -123,6 +115,8 @@ img.calculator-img {
 }
 
 .p-copyright {
+    position: absolute;
     width: 50%;
     margin-left: 1rem;
+    bottom: 0;
 }
