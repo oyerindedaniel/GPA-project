@@ -11,7 +11,9 @@
             <tr>
                 <th scope="col">GRADE</th>
                 <th scope="col">POINTS</th>
-                <th></th>
+                <form action="/delete/deleteallgradesystem" method="post">
+                    <th><button type="submit" class="ion-but" onchange="this.form.submit()"><i class="icon-css fas fa-1x fa-trash-alt"></i></button></th>
+                </form>
             </tr>
         </thead>
         <tbody>
@@ -20,7 +22,7 @@
                 <td><%= allgradeitem.grade1 %></td>
                 <td><%= allgradeitem.points %></td>
                 <form action="/deleteitem1" method="post">
-                    <td><button type="submit" name="deleteitemgrade" value="<%= allgradeitem._id %>" onchange="this.form.submit()" class="button-ions"><i class=" icon-css fas fa-1x fa-trash"></i></button></td>
+                    <td><button type="submit" name="deleteitemgrade" value="<%= allgradeitem._id %>" onchange="this.form.submit()" class="button-ions"><i class="icon-css fas fa-1x fa-trash-alt"></i></button></td>
                 </form>
             </tr>
             <% }); %>

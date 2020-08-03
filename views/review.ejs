@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>GPA review</title>
+    <meta name="description" content="For easily calculation of GPA check out this site.">
+    <meta name="author" content="Oyerinde Daniel Diekololuwa">
+
+    <!-- Bootstrap Javascript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Styles.css -->
+    <link rel="stylesheet" href="css/review.css">
+    <!-- Fontawesome Icons -->
+    <script src="https://kit.fontawesome.com/734dcc4b6d.js" crossorigin="anonymous"></script>
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;1,300&family=Ranchers&display=swap" rel="stylesheest">
+
+    <!--
+    <script>
+        const replyForm = document.querySelector("#form-reply");
+        window.onload = function() {
+            replyForm.className = "form-hide";
+        };
+
+    </script>
+-->
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="nav-button navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!--
+        <div class="form-group comment-search">
+            <input type="text" name="commentsearch" autocomplete="off" class=" form-control" placeholder="Search for Comment">
+            <small class="form-text text-muted"></small>
+        </div>
+        <button type="submit" class="comment-button btn btn-dark">Search</button>
+-->
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">HOME</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="main-container">
+        <img class="pics1" src="pics/reviewpics/1.png">
+        <img class="pics2" src="pics/reviewpics/2.png">
+        <img class="pics3" src="pics/reviewpics/3.png">
+        <img class="pics4" src="pics/reviewpics/4.png">
+        <img class="pics5" src="pics/reviewpics/5.png">
+
+        <h2><span class="totalcomment"><%=totalcomment%></span> <span class="totalcomment1">Comments</span></h2>
+        <form action="/comment" method="POST">
+            <div class="form-structure">
+                <textarea class="form-control text-css" name="commentpost" rows="2" placeholder="Add a comment"></textarea>
+                <button type="submit" class="button-css" onchange="this.form.submit()">Comment</button>
+            </div>
+        </form>
+
+        <% allcomments.slice().reverse().forEach(function(allcomment){ %>
+        <div class="reply-css">
+            <h5><%= allcomment.comment %> </h5>
+            <h6 id="<%=allcomment._id  %>" class="reply">Reply</h6>
+            <h6 id="<%=allcomment._id  %>" class="cancel">Cancel</h6>
+        </div>
+        <form action="/reply" method="POST">
+            <div id="<%=allcomment._id + 123%>" class="form-hide">
+                <textarea class="form-control text-css" name="replycomment" rows="2" placeholder="Reply"></textarea>
+                <input type="hidden" name="commentId" value="<%=allcomment._id  %>">
+                <button type="submit" id="<%=allcomment._id  %>" class="button-js button-css">Reply</button>
+            </div>
+        </form>
+        <div class="div-viewreply">
+            <i id="<%=allcomment._id + 159%>" class=" fas fa-1x fa-caret-down arrow-style"></i>
+            <h5 id="<%=allcomment._id  %>" class="view-reply"><span class="<%=allcomment._id + 987%> view-hide"> View </span> <%=allcomment.replylength %> reply</h5>
+        </div>
+        <% allcomment.reply.forEach(function(allcommentreply){ %>
+        <%  if(allcommentreply.commentid == allcomment._id){ %>
+        <div class="reply-css2red form-hide <%=allcomment._id  + 234%>">
+            <h5> <%=allcommentreply.replyOne %></h5>
+            <h6 class="reply">Reply</h6>
+            <h6 class="cancel">Cancel</h6>
+        </div>
+        <% } else{ %>
+        <%= console.log("Comment reply did not work.")%>
+        <%  } %>
+        <% }); %>
+        <% }); %>
+
+        <!--
+
+        <div class="button-div">
+            <button type="submit" class="showmore-button">SHOW MORE</button>
+        </div>
+-->
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/index.js">
+    </script>
+</body>
+
+</html>

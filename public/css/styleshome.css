@@ -80,6 +80,16 @@ table tbody tr.main:hover {
     opacity: 0 !important;
 }
 
+.ion-but {
+    cursor: pointer !important;
+    background-color: rgba(0, 0, 0, 1) !important;
+    border: 0 !important;
+    border-radius: 2px !important;
+    color: #909090 !important;
+    font-size: 0.8rem !important;
+    padding: 5px 10px !important;
+}
+
 table tbody tr:hover .button-ions {
     opacity: 1 !important;
 }
@@ -181,7 +191,7 @@ table tbody tr.D td:first-of-type {
 }
 
 table tbody tr.F td:first-of-type {
-    border-left: 0.5rem solid #ffa5b0;
+    border-left: 0.5rem solid #d92027;
 }
 
 

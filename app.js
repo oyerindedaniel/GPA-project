@@ -46,6 +46,31 @@ mongoose.connect("mongodb://localhost:27017/gpaDB", {
 mongoose.set('useFindAndModify', false);
 mongoose.set("useCreateIndex", true);
 
+// Collection reply Schema. Comment route
+const replySchema = new mongoose.Schema({
+    commentid: String,
+    replyOne: {
+        type: String,
+        required: [true, 'Comment required']
+    }
+});
+
+const Replyinput = mongoose.model("Replyinput", replySchema);
+
+// Collection comment Schema.
+const commentSchema = new mongoose.Schema({
+    comment: {
+        type: String,
+        required: [true, 'Comment required']
+    },
+    reply: [replySchema],
+    replylength: [],
+    totallength: []
+});
+
+const Commentinput = mongoose.model("Commentinput", commentSchema);
+
+
 // Collection grade Schema.
 const gradeSchema = new mongoose.Schema({
     grade1: {
@@ -105,6 +130,7 @@ app.route("/")
     .get(function (req, res) {
         res.render("gpalandingpage");
     });
+
 
 app.route("/grade-system")
     // Work on this.
@@ -488,6 +514,77 @@ app.post("/deleteitem1", function (req, res) {
 
 });
 
+// Delete all.
+app.post("/delete/:deleteall", function (req, res) {
+    const deletereq = _.lowerCase(req.params.deleteall);
+    if (deletereq === "deleteallcalculate") {
+        Overallstrt.updateOne({
+            _id: req.user.id
+        }, {
+            $set: {
+                calculategpaoverall: []
+            }
+        }, function (err, result) {
+            console.log("Successfully deleted all!");
+            res.redirect("/calculate");
+        });
+    } else {
+        Overallstrt.updateOne({
+            _id: req.user.id
+        }, {
+            $set: {
+                gradesystemoverall: []
+            }
+        }, function (err, result) {
+            console.log("Successfully deleted all!");
+            res.redirect("/grade-system");
+        });
+    }
+});
+
+
+
+
+
+
+//    if (deletereq === "deleteallgradesystem") {
+//        Overallstrt.findById(req.user.id, function (err, foundUser) {
+//                if (foundUser) {
+//                    foundUser.gradesystemoverall.deleteOne({
+//                        grade1: "A"
+//                    }, function (err, result) {
+//                        if (!err) {
+//                            console.log("Successfully deleted all!");
+//                            res.redirect("/gradesystem");
+//                        } else {
+//                            console.log(err);
+//                        }
+//                    });
+//                } else {
+//                    console.log("Not registered!");
+//                }
+//            }
+//            //                    } else {
+//            //                        //        Overallstrt.findOneAndUpdate({
+//            //                        //            _id: req.user.id
+//            //                        //        }, {
+//            //                        //            $pullAll: {
+//            //                        //                calculategpaoverall: {}
+//            //                        //            }
+//            //                        //        }, function (err, results) {
+//            //                        //            if (!err) {
+//            //                        //                res.redirect("/calculate");
+//            //                        //                console.log("Successfully deleted all!");
+//            //                        //            } else {
+//            //                        //                console.log("Couldn't delete");
+//            //                        //            }
+//            //                        //        })
+//            //                    }
+//        });
+
+
+
+
 // Delete request from calculate gpa.
 app.post("/deleteitem2", function (req, res) {
     const UserID = req.user.id;
@@ -546,6 +643,99 @@ app.post("/deleteitem2", function (req, res) {
         }
     });
 });
+
+app.get("/review", function (req, res) {
+    Commentinput.find({}, function (err, foundComments) {
+        if (!foundComments) {
+            res.redirect("/review");
+        } else {
+            Commentinput.find({}, function (err, allDatas) {
+                if (allDatas) {
+                    const CommentLength = allDatas.length;
+                    Replyinput.find({}, function (err, allInfos) {
+                        const ReplyLength = allInfos.length;
+                        const sumLength = CommentLength + ReplyLength;
+                        console.log(sumLength);
+                        res.render("review", {
+                            allcomments: foundComments,
+                            totalcomment: sumLength
+                        });
+                    })
+                }
+            });
+
+        }
+    });
+});
+
+app.post("/reply", function (req, res) {
+    const gottenreply = req.body.replycomment;
+    const commentID = req.body.commentId;
+
+    const insertreply = new Replyinput({
+        commentid: commentID,
+        replyOne: gottenreply
+    });
+    insertreply.save(function (err) {
+        if (!err) {
+            Commentinput.findOne({
+                _id: commentID
+            }, function (err, founddata) {
+                if (founddata) {
+                    founddata.reply.push(insertreply);
+                    founddata.save(function (err) {
+                        if (!err) {
+                            Replyinput.find({
+                                commentid: commentID
+                            }, function (err, founddata1) {
+                                const dataLength = founddata1.length;
+                                founddata.replylength.pop();
+                                founddata.replylength.push(dataLength);
+                                founddata.save(function (err) {
+                                    if (!err) {
+
+                                        res.redirect("/review");
+                                    }
+                                })
+                            });
+
+                        } else {
+                            console.log("Reply couldn't save");
+                        }
+                    })
+                }
+            })
+        } else {
+            console.log("Reply couldn't save");
+        }
+    })
+
+});
+
+app.route("/comment")
+    .post(function (req, res) {
+        const commentPost = req.body.commentpost;
+        //        Commentinput.find({}, function (err, allDatas) {
+        //            if (allDatas) {
+        //                const CommentLength = allDatas.length;
+        //                Replyinput.find({}, function (err, allInfos) {
+        //                    const ReplyLength = allInfos.length;
+        //                    const sumLength = CommentLength + ReplyLength;
+        //
+        //                })
+        //
+        //            }
+        //        })
+
+        const insertcomment = new Commentinput({
+            comment: commentPost
+        });
+        insertcomment.save(function (err) {
+            if (!err) {
+                res.redirect("/review");
+            }
+        });
+    });
 
 app.get("/signup", function (req, res) {
     res.render("signup");
