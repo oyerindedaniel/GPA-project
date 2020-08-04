@@ -106,6 +106,14 @@ h6:hover {
     color: #FFFFFF;
 }
 
+.nothing {
+    margin-bottom: 7rem;
+}
+
+.margin-help {
+    margin-bottom: 5rem;
+}
+
 /*
 .button-div {
     width: 50%

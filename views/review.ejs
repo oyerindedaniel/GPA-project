@@ -81,8 +81,13 @@
             </div>
         </form>
         <div class="div-viewreply">
+            <%     if(allcomment.replylength  >= 1){%>
             <i id="<%=allcomment._id + 159%>" class=" fas fa-1x fa-caret-down arrow-style"></i>
-            <h5 id="<%=allcomment._id  %>" class="view-reply"><span class="<%=allcomment._id + 987%> view-hide"> View </span> <%=allcomment.replylength %> reply</h5>
+            <h5 id="<%=allcomment._id  %>" class="view-reply"><span class="<%=allcomment._id + 987%> view-hide"> View </span> <span id="<%=allcomment._id + 987%>" class="replyLength"><%=allcomment.replylength %> </span><span id="<%=allcomment._id + 9872%>" class="reply-replies"> reply</span></h5>
+            <%  }else {%>
+            <h1 class="margin-help"></h1>
+
+            <%  }%>
         </div>
         <% allcomment.reply.forEach(function(allcommentreply){ %>
         <%  if(allcommentreply.commentid == allcomment._id){ %>
@@ -96,7 +101,7 @@
         <%  } %>
         <% }); %>
         <% }); %>
-
+        <h1 class="nothing"></h1>
         <!--
 
         <div class="button-div">

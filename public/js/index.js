@@ -74,14 +74,28 @@ function selectItem1(event) {
     }
 }
 
+//Monitoring Comment Numbers
 const comment = document.querySelector(".totalcomment");
 commentHtml = comment.innerHTML;
-console.log(commentHtml)
 if (commentHtml === "0") {
     console.log("Yeah");
     const comment1 = document.querySelector(".totalcomment1");
     comment1.innerHTML = "Comment";
 }
+
+//Monitoring the replies
+const replys = document.querySelectorAll(".replyLength");
+replys.forEach(function (reply) {
+    const replyHtml = reply.innerHTML;
+    if (replyHtml > 1) {
+        const viewreplys = $(`#${reply.id + 2}`);
+        viewreplys.html("replies");
+    } else {
+        console.log("err");
+    }
+
+})
+
 
 //const replycancelButtons1 = document.querySelectorAll(".view-replyq");
 //replycancelButtons1.forEach(replycancelButton1 => {
