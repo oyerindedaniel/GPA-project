@@ -21,14 +21,14 @@ a {
 }
 
 h1 {
-    font-family: 'Ranchers', cursive;
+    font-family: 'Ranchers', sans-serif !important;
     color: #000000;
     font-size: 8rem;
     width: 25%;
 }
 
 .h1-check {
-    font-family: 'Ranchers', cursive;
+    font-family: 'Ranchers', sans-serif !important;
     color: #000000;
 }
 
@@ -40,7 +40,6 @@ h1 {
 img.calculator-img {
     width: 10%;
 }
-
 
 /*
 .btn-navbar {

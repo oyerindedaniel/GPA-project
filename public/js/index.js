@@ -96,6 +96,20 @@ replys.forEach(function (reply) {
 
 })
 
+//Click menu
+//const menuButton = document.querySelector(".menu-button");
+//menuButton.addEventListener("click", menuclick);
+//
+//
+//function menuclick() {
+//    const showMenu = document.querySelector(".dropdown");
+//    showMenu.classList.remove("drop-hide");
+//}
+//
+//$(window).click(function () {
+//    const showMenu1 = $(".dropdown");
+//    showMenu1.
+//});
 
 //const replycancelButtons1 = document.querySelectorAll(".view-replyq");
 //replycancelButtons1.forEach(replycancelButton1 => {

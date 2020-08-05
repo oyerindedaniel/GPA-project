@@ -64,8 +64,7 @@ const commentSchema = new mongoose.Schema({
         required: [true, 'Comment required']
     },
     reply: [replySchema],
-    replylength: [],
-    totallength: []
+    replylength: []
 });
 
 const Commentinput = mongoose.model("Commentinput", commentSchema);
@@ -655,7 +654,6 @@ app.get("/review", function (req, res) {
                     Replyinput.find({}, function (err, allInfos) {
                         const ReplyLength = allInfos.length;
                         const sumLength = CommentLength + ReplyLength;
-                        console.log(sumLength);
                         res.render("review", {
                             allcomments: foundComments,
                             totalcomment: sumLength
@@ -715,18 +713,6 @@ app.post("/reply", function (req, res) {
 app.route("/comment")
     .post(function (req, res) {
         const commentPost = req.body.commentpost;
-        //        Commentinput.find({}, function (err, allDatas) {
-        //            if (allDatas) {
-        //                const CommentLength = allDatas.length;
-        //                Replyinput.find({}, function (err, allInfos) {
-        //                    const ReplyLength = allInfos.length;
-        //                    const sumLength = CommentLength + ReplyLength;
-        //
-        //                })
-        //
-        //            }
-        //        })
-
         const insertcomment = new Commentinput({
             comment: commentPost
         });

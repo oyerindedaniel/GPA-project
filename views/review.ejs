@@ -52,6 +52,15 @@
             </ul>
         </div>
     </nav>
+    <div class="alert alert alert-danger alert-dismissible fade show alert-beware" role="alert">
+        <div class="text-beware">
+            <strong>BEWARE!</strong> Comments cannot be deleted or edited.
+        </div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
     <div class="main-container">
         <img class="pics1" src="pics/reviewpics/1.png">
         <img class="pics2" src="pics/reviewpics/2.png">
@@ -70,6 +79,12 @@
         <% allcomments.slice().reverse().forEach(function(allcomment){ %>
         <div class="reply-css">
             <h5><%= allcomment.comment %> </h5>
+            <!--
+            <div class="dropdown drop-hide">
+                <h5 class="drop drop1">Edit</h5>
+                <h5 class="drop drop2">Delete</h5>
+            </div>
+-->
             <h6 id="<%=allcomment._id  %>" class="reply">Reply</h6>
             <h6 id="<%=allcomment._id  %>" class="cancel">Cancel</h6>
         </div>
