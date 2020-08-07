@@ -74,14 +74,6 @@ function selectItem1(event) {
     }
 }
 
-//Monitoring Comment Numbers
-const comment = document.querySelector(".totalcomment");
-commentHtml = comment.innerHTML;
-if (commentHtml === "0") {
-    console.log("Yeah");
-    const comment1 = document.querySelector(".totalcomment1");
-    comment1.innerHTML = "Comment";
-}
 
 //Monitoring the replies
 const replys = document.querySelectorAll(".replyLength");
@@ -94,7 +86,15 @@ replys.forEach(function (reply) {
         console.log("err");
     }
 
-})
+});
+
+// Flash alert timer.
+const flashAlert = $(".alert-css");
+console.log(flashAlert);
+setTimeout(function () {
+    flashAlert.fadeOut("fast");
+}, 2000);
+
 
 //Click menu
 //const menuButton = document.querySelector(".menu-button");
@@ -159,11 +159,7 @@ replys.forEach(function (reply) {
 
 
 
-// Flash timer.
-const flashAlert = $(".alert-css");
-setTimeout(function () {
-    flashAlert.fadeOut('fast');
-}, 2000);
+
 
 
 //const homeBoxes = document.querySelectorAll(".home-box");
@@ -214,10 +210,10 @@ setTimeout(function () {
 //
 //}
 
-const values = $(".gradeget");
-values.each(function (value) {
-    value.addClass("red");
-})
+//const values = $(".gradeget");
+//values.each(function (value) {
+//    value.addClass("red");
+//})
 
 
 

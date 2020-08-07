@@ -21,16 +21,8 @@
     <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;1,300&family=Ranchers&display=swap" rel="stylesheest">
 
-    <!--
-    <script>
-        const replyForm = document.querySelector("#form-reply");
-        window.onload = function() {
-            replyForm.className = "form-hide";
-        };
-
-    </script>
--->
 </head>
+
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -54,7 +46,7 @@
     </nav>
     <div class="alert alert alert-danger alert-dismissible fade show alert-beware" role="alert">
         <div class="text-beware">
-            <strong>BEWARE!</strong> Comments cannot be deleted or edited.
+            <strong>BEWARE!</strong> Comments cannot be edited or deleted.
         </div>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -69,24 +61,22 @@
         <img class="pics5" src="pics/reviewpics/5.png">
 
         <h2><span class="totalcomment"><%=totalcomment%></span> <span class="totalcomment1">Comments</span></h2>
+
         <form action="/comment" method="POST">
             <div class="form-structure">
                 <textarea class="form-control text-css" name="commentpost" rows="2" placeholder="Add a comment"></textarea>
+
+
                 <button type="submit" class="button-css" onchange="this.form.submit()">Comment</button>
             </div>
         </form>
-
         <% allcomments.slice().reverse().forEach(function(allcomment){ %>
         <div class="reply-css">
+            <h6 class="timeh6"><%= moment(allcomment.timecreated, "YYYY-MM-DD h:m:s.SS a").fromNow() %></h6>
             <h5><%= allcomment.comment %> </h5>
-            <!--
-            <div class="dropdown drop-hide">
-                <h5 class="drop drop1">Edit</h5>
-                <h5 class="drop drop2">Delete</h5>
-            </div>
--->
-            <h6 id="<%=allcomment._id  %>" class="reply">Reply</h6>
-            <h6 id="<%=allcomment._id  %>" class="cancel">Cancel</h6>
+            <h6 id="<%=allcomment._id  %>" class="reply h6style ">Reply</h6>
+            <h6 id="<%=allcomment._id  %>" class="cancel h6style">Cancel</h6>
+            <input type="hidden" name="mainid" value="<%=allcomment._id  %>" class="">
         </div>
         <form action="/reply" method="POST">
             <div id="<%=allcomment._id + 123%>" class="form-hide">
@@ -107,9 +97,13 @@
         <% allcomment.reply.forEach(function(allcommentreply){ %>
         <%  if(allcommentreply.commentid == allcomment._id){ %>
         <div class="reply-css2red form-hide <%=allcomment._id  + 234%>">
-            <h5> <%=allcommentreply.replyOne %></h5>
-            <h6 class="reply">Reply</h6>
-            <h6 class="cancel">Cancel</h6>
+            <h6 class="timeh6"><%= moment(allcommentreply.timereplycreated, "YYYY-MM-DD h:m:s.SS a").fromNow() %></h6>
+            <img class="picsreply" src="pics/clown.png">
+            <h5 class="h5style"> <%=allcommentreply.replyOne %></h5>
+            <!--
+            <h6 class="reply h6style">Reply</h6>
+            <h6 class="cancel h6style">Cancel</h6>
+-->
         </div>
         <% } else{ %>
         <%= console.log("Comment reply did not work.")%>
@@ -124,7 +118,18 @@
         </div>
 -->
     </div>
+    <script>
+        //Monitoring Comment Numbers
+        const comment1 = document.querySelector(".totalcomment");
+        const commentHtml = comment1.innerHTML;
+        console.log(commentHtml);
+        if (commentHtml === "0" || commentHtml === "1") {
+            console.log("Yeah");
+            const comment1 = document.querySelector(".totalcomment1");
+            comment1.innerHTML = "Comment";
+        }
 
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="js/index.js">
     </script>

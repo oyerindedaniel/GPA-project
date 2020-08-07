@@ -21,7 +21,13 @@ a {
     text-decoration: none;
 }
 
-img {
+img {}
+
+.pics1,
+.pics2,
+.pics3,
+.pics4,
+.pics5 {
     width: 5%;
     opacity: 0.5;
 }
@@ -56,6 +62,10 @@ img {
     right: 5rem;
 }
 
+.picsreply {
+    width: 2rem;
+}
+
 hr {
     background-color: rgba(0, 0, 0, 1);
     height: 1px;
@@ -72,14 +82,20 @@ h5 {
     line-height: 1.5;
 }
 
-h6 {
+/*h6 styles*/
+.h6style {
     display: inline-block;
     margin-left: 0rem;
     width: 5rem;
     cursor: pointer;
 }
 
-h6:hover {
+.h5style {
+    display: inline-block;
+    margin-left: 0.25rem;
+}
+
+.h6style:hover {
     cursor: pointer;
     font-size: 1.1rem;
 }
@@ -255,7 +271,11 @@ menu button .menu-button {
 }
 */
 
+/*display time styles*/
+.timeh6 {
+    width: 50%;
 
+}
 
 /*Comment styles*/
 .comment-search {}

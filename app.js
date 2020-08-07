@@ -7,11 +7,18 @@ const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
+//Moment js
+const moment = require("moment");
+moment().format();
+//Module require date
+const date = require(__dirname + "/appmodule.js");
 const app = express();
 const _ = require('lodash');
 const mongoose = require('mongoose');
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
+app.locals.recentdate = date.getdate()
+app.locals.moment = require('moment');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -52,7 +59,9 @@ const replySchema = new mongoose.Schema({
     replyOne: {
         type: String,
         required: [true, 'Comment required']
-    }
+    },
+    timereplycreated: String
+
 });
 
 const Replyinput = mongoose.model("Replyinput", replySchema);
@@ -64,7 +73,11 @@ const commentSchema = new mongoose.Schema({
         required: [true, 'Comment required']
     },
     reply: [replySchema],
-    replylength: []
+    replylength: [],
+    timecreated: [String]
+    //timecreated: [Date]
+
+
 });
 
 const Commentinput = mongoose.model("Commentinput", commentSchema);
@@ -113,7 +126,7 @@ const overallstrtSchema = new mongoose.Schema({
     calculategpaoverall: [calculateSchema],
     totalcalcunits: [Number],
     totalunit: [Number],
-    finalresult: [Number]
+    finalresult: []
 });
 
 overallstrtSchema.plugin(passportLocalMongoose);
@@ -669,10 +682,11 @@ app.get("/review", function (req, res) {
 app.post("/reply", function (req, res) {
     const gottenreply = req.body.replycomment;
     const commentID = req.body.commentId;
-
+    const getDatereply = moment().format("YYYY-MM-DD h:m:s.SS a");
     const insertreply = new Replyinput({
         commentid: commentID,
-        replyOne: gottenreply
+        replyOne: gottenreply,
+        timereplycreated: getDatereply
     });
     insertreply.save(function (err) {
         if (!err) {
@@ -712,16 +726,36 @@ app.post("/reply", function (req, res) {
 
 app.route("/comment")
     .post(function (req, res) {
+        const getDate = moment().format("YYYY-MM-DD h:m:s.SS a");
         const commentPost = req.body.commentpost;
+        const mainID = req.body.mainid;
         const insertcomment = new Commentinput({
-            comment: commentPost
+            comment: commentPost,
         });
         insertcomment.save(function (err) {
             if (!err) {
-                res.redirect("/review");
+                Commentinput.find(function (err, foundUser) {
+                    if (foundUser) {
+                        const userLength = foundUser.length;
+                        const calcLength = userLength - 1
+                        const userFound = foundUser[calcLength];
+                        userFound.timecreated.push(getDate);
+                        userFound.save(function (err) {
+                            if (!err) {
+                                res.redirect("/review");
+                            }
+                        })
+                    }
+                })
             }
         });
     });
+
+
+app.get("/", function (req, res) {
+    res.render("signin");
+});
+
 
 app.get("/signup", function (req, res) {
     res.render("signup");
@@ -783,6 +817,17 @@ app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("/");
 });
+
+
+//app.get('*', function (req, res) {
+//    res.status(404).send('what???');
+//});
+
+app.get("/*", function (req, res, next) {
+    res.status(404);
+    console.log(res.status(404));
+    res.render("404error")
+})
 
 app.listen(3000, function () {
     console.log("server started on port 3000");
