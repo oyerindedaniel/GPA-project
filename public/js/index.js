@@ -1,9 +1,6 @@
 const replyquestionButtons = document.querySelectorAll(".reply");
 const replycancelButtons = document.querySelectorAll(".cancel");
 const replyanswerButtons = document.querySelectorAll(".button-js");
-//const replyForms = document.querySelector("#${this.id}");
-
-
 
 //Getting the reply button
 replyquestionButtons.forEach(replyquestionButton => {
@@ -35,17 +32,6 @@ function cancelItem(event) {
     reply12.setAttribute("class", "form-hide");
 }
 
-
-//const getLengthreplies = document.querySelectorAll(".h1-contorl");
-//getLengthreplies.forEach(function (getLengthreply) {
-//    console.log(getLengthreply.innerHTML);
-//})
-
-//const idlength = document.getElementById("htmlh1Control");
-//const replyanswerButtonsLength = idlength.length;
-//
-//console.log(replyanswerButtonsLength);
-
 //Controlling the view reply and hide reply
 const replycancelButtons1 = $(".view-reply");
 replycancelButtons1.click(selectItem1);
@@ -74,7 +60,6 @@ function selectItem1(event) {
     }
 }
 
-
 //Monitoring the replies
 const replys = document.querySelectorAll(".replyLength");
 replys.forEach(function (reply) {
@@ -96,155 +81,12 @@ setTimeout(function () {
 }, 2000);
 
 
-//Click menu
-//const menuButton = document.querySelector(".menu-button");
-//menuButton.addEventListener("click", menuclick);
-//
-//
-//function menuclick() {
-//    const showMenu = document.querySelector(".dropdown");
-//    showMenu.classList.remove("drop-hide");
-//}
-//
-//$(window).click(function () {
-//    const showMenu1 = $(".dropdown");
-//    showMenu1.
-//});
+var mediaQuery = window.matchMedia("(max-width: 1400px)");
 
-//const replycancelButtons1 = document.querySelectorAll(".view-replyq");
-//replycancelButtons1.forEach(replycancelButton1 => {
-//    replycancelButton1.addEventListener("click", selectItem1)
-//});
-//
-//
-//function selectItem2(event) {
-//
-//
-//}
-//
-//
-
-//const viewHide1 = $(".view-hide");
-//const innerValue = viewHide1.html();
-//if (innerValue == "View") {
-
-
-//}
-//    const replycancelButtons1 = document.querySelectorAll(".view-reply");
-//    replycancelButtons1.forEach(replycancelButton1 => {
-//        replycancelButton1.addEventListener("click", selectItem1)
-//    });
-//
-//    function selectItem1(event) {
-//        const reply = $(`.${this.id}234`);
-//        reply.addClass("form-show");
-//        const viewHide = $(`.${this.id}987`);
-//        viewHide.html("Hide");
-//    }
-//
-//} else {
-//    const replycancelButtons1 = document.querySelectorAll(".view-reply");
-//    replycancelButtons1.forEach(replycancelButton1 => {
-//        replycancelButton1.addEventListener("click", selectItem1)
-//    });
-//
-//    function selectItem1(event) {
-//        const reply = $(`.${this.id}234`);
-//        reply.addClass("form-hide");
-//        const viewHide = $(`.${this.id}987`);
-//        viewHide.html("View");
-//    }
-//
-//}
-
-
-
-
-
-
-//const homeBoxes = document.querySelectorAll(".home-box");
-//
-//function selectItem(event) {
-//    removeBorder();
-//    this.classList.add("border-styles");
-//    event.preventDefault()
-//}
-//
-//// Remove border styles from former ones new as been click.
-//function removeBorder() {
-//    homeBoxes.forEach(homebox => {
-//        homebox.classList.remove("border-styles")
-//    })
-//}
-//
-//Listen
-//for click.
-//homeBoxes.forEach(homeBox => {
-//    homeBox.addEventListener("click", selectItem)
-//});
-
-
-//value.forEach(function (value) {
-//    console.log(value);
-//})
-
-//const values = $(".gradeget");
-//const lengthValue = values.length;
-//for (var i = 0; i < lengthValue; i++) {
-//    const ans = values.eq(i).html();
-//    const tables = $("#table-row");
-//    const lengthtable = tables.length;
-//    for (var i = 0; i < lengthtable; i++) {
-//        tables.eq(i).attr("class", ans);
-//    }
-//}
-
-
-//const values = $(".gradeget");
-//const lengthValue = values.length;
-//for (var i = 0; i < lengthValue; i++) {
-//    const ans = values.eq(i).html();
-//    if (ans === "A") {
-//        $this.addClass("red");
-//    }
-//
-//}
-
-//const values = $(".gradeget");
-//values.each(function (value) {
-//    value.addClass("red");
-//})
-
-
-
-
-//const values = $(".gradeget");
-//const lengthValue = values.length;
-//for (var i = 0; i < lengthValue; i++) {
-//    var ans = values.eq(i).html();
-//    if (ans === "A") {
-//        $("#table-row").addClass("green");
-//    } else if (ans = "B") {
-//        $("#table-row").addClass("red");
-//    }
-//
-//}
-
-
-
-
-
-
-
-
-
-//
-//var values = $(".gradeget").eq(3).html();
-//console.log(values);
-////values.each(function (value) {
-////    var eee = value.html();
-////    console.log(eee);
-////})
-//////values.forEach(function (value) {
-////$("#table-row").attr("class", values);
-//////});
+function setColor(mediaQuery) {
+    if (mediaQuery.matches) {
+        document.querySelector("grid-row").classList.remove("row");
+    }
+}
+setColor(mediaQuery);
+mediaQuery.addListener(myFunction);

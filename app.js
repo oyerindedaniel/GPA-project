@@ -1,20 +1,35 @@
+// Env.
 require('dotenv').config();
+// Express.
 const express = require('express');
+// Body parser.
 const bodyParser = require("body-parser");
+// Ejs.
 const ejs = require("ejs");
+// Express session.
 const session = require('express-session');
+// Passport.
 const passport = require('passport');
+// Passport local mongoose.
 const passportLocalMongoose = require('passport-local-mongoose');
+// Connect flash.
 const flash = require('connect-flash');
+// Cookie parser.
 const cookieParser = require('cookie-parser');
-//Moment js
+// Moment js.
 const moment = require("moment");
 moment().format();
-//Module require date
+// Module require date.
 const date = require(__dirname + "/appmodule.js");
 const app = express();
+// Lodash.
 const _ = require('lodash');
+// Mongoose.
 const mongoose = require('mongoose');
+// Google strategy.
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const findOrCreate = require('mongoose-findorcreate');
+
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 app.locals.recentdate = date.getdate()
@@ -33,13 +48,6 @@ app.use(session({
 }));
 app.use(flash())
 app.use(cookieParser());
-////app.use(cookieParser());
-////app.configure(function () {
-//    app.use(express.cookieParser({"gpaapp": config.cookieSecret}));   
-// //   app.use(express.cookieParser('gpaapp'));
-//    app.use(flash());
-////});
-
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -75,9 +83,6 @@ const commentSchema = new mongoose.Schema({
     reply: [replySchema],
     replylength: [],
     timecreated: [String]
-    //timecreated: [Date]
-
-
 });
 
 const Commentinput = mongoose.model("Commentinput", commentSchema);
@@ -96,6 +101,7 @@ const gradeSchema = new mongoose.Schema({
 
 });
 
+// Collection grade system Schema.
 const Gradesystemvalue = mongoose.model("Gradesystemvalue", gradeSchema);
 
 const calculateSchema = new mongoose.Schema({
@@ -126,24 +132,63 @@ const overallstrtSchema = new mongoose.Schema({
     calculategpaoverall: [calculateSchema],
     totalcalcunits: [Number],
     totalunit: [Number],
-    finalresult: []
+    finalresult: [],
+    googleId: String
 });
 
 overallstrtSchema.plugin(passportLocalMongoose);
+overallstrtSchema.plugin(findOrCreate);
 
 const Overallstrt = new mongoose.model("Overallstrt", overallstrtSchema);
 
 passport.use(Overallstrt.createStrategy());
 
-passport.serializeUser(Overallstrt.serializeUser());
-passport.deserializeUser(Overallstrt.deserializeUser());
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
 
+passport.deserializeUser(function (id, done) {
+    Overallstrt.findById(id, function (err, user) {
+        done(err, user);
+    });
+});
+
+passport.use(new GoogleStrategy({
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: "http://localhost:3000/auth/google/grade-system",
+        userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+    },
+    function (accessToken, refreshToken, profile, cb) {
+        Overallstrt.findOrCreate({
+            googleId: profile.id
+        }, function (err, user) {
+            return cb(err, user);
+        });
+    }
+));
+
+// Get request for home route.
 app.route("/")
     .get(function (req, res) {
         res.render("gpalandingpage");
     });
 
+app.get('/auth/google',
+    passport.authenticate('google', {
+        scope: ["profile"]
+    }));
 
+app.get("/auth/google/grade-system",
+    passport.authenticate("google", {
+        failureRedirect: "/signin"
+    }),
+    function (req, res) {
+        // Successful authentication, redirect grade-system.
+        res.redirect('/grade-system');
+    });
+
+// Get request for grade system route.
 app.route("/grade-system")
     // Work on this.
     .get(function (req, res) {
@@ -163,47 +208,14 @@ app.route("/grade-system")
         }
     })
 
+    // Post request for grade system route.
     .post(function (req, res) {
         const gradealpha = _.upperCase(req.body.grade1);
         const pointalpha = req.body.point;
-        //        Overallstrt.findById(req.user.id, function (err, foundUser) {
-        //            if (err) {
-        //                console.log(err);
-        //            } else {
-        //                if (foundUser) {
-        //        Gradesystemvalue.findOne({
-        //            grade1: gradealpha
-        //        }, function (err, grade) {
-        //            if (!grade) {
         const gradesystem = new Gradesystemvalue({
             grade1: gradealpha,
             points: pointalpha
         });
-        //        Overallstrt.findById(req.user.id, function (err, foundUser) {
-        //            if (!foundUser) {
-        //                console.log("No User")
-        //            } else {
-        //                foundUser.updateOne({
-        //                        _id: req.user.id
-        //
-        //                    }, {
-        //
-        //                        $addToSet: {
-        //                            gradesystemoverall: gradesystem
-        //                        }
-        //                    },
-        //                    function (err, result) {
-        //                        if (err) {
-        //                            res.send(err);
-        //                        } else {
-        //                            res.redirect("/grade-system");
-        //                        }
-        //                    }
-        //                )
-        //
-        //            }
-        //
-        //        });
         Overallstrt.updateOne({
                 _id: req.user.id
             }, {
@@ -220,69 +232,9 @@ app.route("/grade-system")
                 }
             }
         );
-        //        gradesystem.save(function (err) {
-        //            if (!err) {
-        //                console.log(gradesystem);
-        //                Overallstrt.findByIdAndUpdate(
-        //                    req.user.id, {
-        //                        $addToSet: {
-        //                            gradesystemoverall: {
-        //                                kind: 'tortoise',
-        //                                hashtag: 'foo'
-        //
-        //                            }
-        //                        }
-        //                    })
-        //
-        //            } else {
-        //                console.log("Couldn't Saved");
-        //            }
-        //
-        //    });
-
-
-        //                Overallstrt.findById(req.user.id, function (err, foundUser) {
-        //                    if (!foundUser) {
-        //                        console("No found user")
-        //                    } else {
-        //                        const usercoll = foundUser.gradesystemoverall;
-        //                         
-        //                        foundUser.gradesystemoverall.push(gradesystem);
-        //                        foundUser.save(function () {
-        //                            res.redirect("/grade-system");
-        //                        });
-        //                    }
-        //
-        //                });
-        //            } else {
-        //                console.log("Couldn't Saved");
-        //            }
-
-        //                                        }else{
-        //                        console.log("Couldn't find data in database signup");    
-        //                                        }
-
-
-        //   gradesystem.save(function (err) {
-        //  if (!err) {
-        //    console.log("Saved");
-        //  res.redirect("/grade-system");
-        //         } else {
-        //   console.log("Couldn't Saved");
-        //                  }
-        //         });
-        //            } else {
-        //                console.log("Grade already there");
-        //            }
-        //        });
-        //                } else {
-        //                    console.log("Couldn't find user in database signup");
-        //                }
-        //            }
-        //
-        //        });
     });
 
+// Get request for calculate route.
 app.route("/calculate")
     .get(function (req, res) {
         if (req.isAuthenticated()) {
@@ -299,6 +251,8 @@ app.route("/calculate")
             res.redirect("/signin");
         }
     })
+
+    // Post request for calculate route.
     .post(function (req, res) {
         const coursecodebeta = _.upperCase(req.body.coursecode);
         const gradebeta = _.upperCase(req.body.grade2);
@@ -367,8 +321,6 @@ app.route("/calculate")
                                             }
                 ]).exec(function (err, sumData) {
                                                                 if (!err) {
-                                                                    //                                                                    console.log("Yeah");
-                                                                    //                                                                    res.redirect("/calculate");
                                                                     sumData.forEach(function (sumDate) {
                                                                         const sum2 = sumDate.totaleachunits;
                                                                         foundUser.totalunit.pop();
@@ -384,48 +336,6 @@ app.route("/calculate")
                                                         }
                                                     })
                                                 });
-
-
-                                                //                                                const overallall = new Overallstrt({
-                                                //                                                    totalunit: sumcalcData
-                                                //                                                });
-                                                //                                                overallall.save(function (err) {
-                                                //                                                    if (!err) {
-                                                //                                                        res.redirect("/calculate");
-                                                //                                                    }
-                                                //                                                })
-                                                //The total units
-                                                //                                                const userId = mongoose.Types.ObjectId(req.user.id);
-                                                //                                                Overallstrt.aggregate([{
-                                                //                                                            $match: {
-                                                //                                                                _id: userId
-                                                //                                                            }
-                                                //                                            },
-                                                //                                                        {
-                                                //                                                            $group: {
-                                                //                                                                _id: null,
-                                                //                                                                "totalunits": {
-                                                //                                                                    $sum: {
-                                                //                                                                        $sum: "$calculategpaoverall.unitpercourse"
-                                                //                                                                    }
-                                                //                                                                }
-                                                //                                                            }
-                                                //                                            }
-                                                //                ]),
-                                                //                                                    function (err, sumData) {
-                                                //                                                        if (!err) {
-                                                //                                                            const overallall = new Overallstrt({
-                                                //                                                                totalcalcunits: sumData,
-                                                //                                                                totalunit: sumcalcData
-                                                //                                                            });
-                                                //                                                            overallall.save(function (err) {
-                                                //                                                                if (!err) {
-                                                //                                                                    console.log(sumData);
-                                                //                                                                    res.redirect("/calculate");
-                                                //                                                                }
-                                                //                                                            })
-                                                //                                                        }
-                                                //                                                    }
                                             } else {
                                                 res.redirect("/grade-system");
                                             }
@@ -440,39 +350,9 @@ app.route("/calculate")
                 })
             }
         });
-
-        //             
-        //        const coursecodebeta = req.body.coursecode;
-        //        const gradebeta = req.body.grade2;
-        //        const unitpercoursebeta = req.body.unitpercourse;
-        //        Gradesystemvalue.findOne({
-        //            grade1: gradebeta
-        //        }, function (err, founds) {
-        //            if (!founds) {
-        //                console.log("Bitch go to grade system.")
-        //                res.redirect("/grade-system");
-        //            } else {
-        //                if (founds.grade1 === gradebeta) {
-        //                    const multipyunits = founds.points * unitpercoursebeta;
-        //                    const calculategpa = new Calculategpavalue({
-        //                        coursecode: coursecodebeta,
-        //                        grade2: gradebeta,
-        //                        unitpercourse: unitpercoursebeta,
-        //                        multiplyunit: multipyunits
-        //                    });
-        //                    calculategpa.save(function (err) {
-        //                        if (!err) {
-        //                            res.redirect("/calculate");
-        //                        }
-        //                    });
-        //                } else {
-        //                    console.log("No");
-        //                    res.redirect("/calculate");
-        //                }
-        //            }
-        //        });
     });
 
+// Get request for history route.
 app.get("/history", function (req, res) {
     if (req.isAuthenticated()) {
         Overallstrt.findById(req.user.id, function (err, foundUser) {
@@ -495,9 +375,6 @@ app.get("/history", function (req, res) {
             }
 
         });
-
-
-
     } else {
         res.redirect("/signin");
     }
@@ -525,77 +402,6 @@ app.post("/deleteitem1", function (req, res) {
     });
 
 });
-
-// Delete all.
-app.post("/delete/:deleteall", function (req, res) {
-    const deletereq = _.lowerCase(req.params.deleteall);
-    if (deletereq === "deleteallcalculate") {
-        Overallstrt.updateOne({
-            _id: req.user.id
-        }, {
-            $set: {
-                calculategpaoverall: []
-            }
-        }, function (err, result) {
-            console.log("Successfully deleted all!");
-            res.redirect("/calculate");
-        });
-    } else {
-        Overallstrt.updateOne({
-            _id: req.user.id
-        }, {
-            $set: {
-                gradesystemoverall: []
-            }
-        }, function (err, result) {
-            console.log("Successfully deleted all!");
-            res.redirect("/grade-system");
-        });
-    }
-});
-
-
-
-
-
-
-//    if (deletereq === "deleteallgradesystem") {
-//        Overallstrt.findById(req.user.id, function (err, foundUser) {
-//                if (foundUser) {
-//                    foundUser.gradesystemoverall.deleteOne({
-//                        grade1: "A"
-//                    }, function (err, result) {
-//                        if (!err) {
-//                            console.log("Successfully deleted all!");
-//                            res.redirect("/gradesystem");
-//                        } else {
-//                            console.log(err);
-//                        }
-//                    });
-//                } else {
-//                    console.log("Not registered!");
-//                }
-//            }
-//            //                    } else {
-//            //                        //        Overallstrt.findOneAndUpdate({
-//            //                        //            _id: req.user.id
-//            //                        //        }, {
-//            //                        //            $pullAll: {
-//            //                        //                calculategpaoverall: {}
-//            //                        //            }
-//            //                        //        }, function (err, results) {
-//            //                        //            if (!err) {
-//            //                        //                res.redirect("/calculate");
-//            //                        //                console.log("Successfully deleted all!");
-//            //                        //            } else {
-//            //                        //                console.log("Couldn't delete");
-//            //                        //            }
-//            //                        //        })
-//            //                    }
-//        });
-
-
-
 
 // Delete request from calculate gpa.
 app.post("/deleteitem2", function (req, res) {
@@ -642,12 +448,8 @@ app.post("/deleteitem2", function (req, res) {
                                     });
                                 }
                             });
-
                         }
-
-
                     });
-
                 }
             });
         } else {
@@ -656,6 +458,35 @@ app.post("/deleteitem2", function (req, res) {
     });
 });
 
+// Delete all.
+app.post("/delete/:deleteall", function (req, res) {
+    const deletereq = _.lowerCase(req.params.deleteall);
+    if (deletereq === "deleteallcalculate") {
+        Overallstrt.updateOne({
+            _id: req.user.id
+        }, {
+            $set: {
+                calculategpaoverall: []
+            }
+        }, function (err, result) {
+            console.log("Successfully deleted all!");
+            res.redirect("/calculate");
+        });
+    } else {
+        Overallstrt.updateOne({
+            _id: req.user.id
+        }, {
+            $set: {
+                gradesystemoverall: []
+            }
+        }, function (err, result) {
+            console.log("Successfully deleted all!");
+            res.redirect("/grade-system");
+        });
+    }
+});
+
+// Get request for review route.
 app.get("/review", function (req, res) {
     Commentinput.find({}, function (err, foundComments) {
         if (!foundComments) {
@@ -679,6 +510,7 @@ app.get("/review", function (req, res) {
     });
 });
 
+// Post request for reply route.
 app.post("/reply", function (req, res) {
     const gottenreply = req.body.replycomment;
     const commentID = req.body.commentId;
@@ -724,6 +556,7 @@ app.post("/reply", function (req, res) {
 
 });
 
+// Get request for comment route.
 app.route("/comment")
     .post(function (req, res) {
         const getDate = moment().format("YYYY-MM-DD h:m:s.SS a");
@@ -751,29 +584,17 @@ app.route("/comment")
         });
     });
 
-
-app.get("/", function (req, res) {
-    res.render("signin");
-});
-
-
+// Get request for siginup route.
 app.get("/signup", function (req, res) {
     res.render("signup");
 });
 
+// Post request for siginup route.
 app.post("/signup", function (req, res) {
     const regUsername = req.body.regusername;
     const regEmail = req.body.username;
     const regPassword = req.body.password;
     const regConpassword = req.body.regconpassword;
-    //    const overallreg = new Overallstrt({
-    //        username1: regUsername,
-    //    });
-    //    overallreg.save(function (err) {
-    //        if (!err) {
-    //            res.redirect("/");
-    //        }
-    //    });
     Overallstrt.register({
         username: regEmail,
         username1: regUsername
@@ -789,10 +610,12 @@ app.post("/signup", function (req, res) {
     });
 });
 
+// Get request for siginin route.
 app.get("/signin", function (req, res) {
     res.render("signin");
 });
 
+// Post request for siginin route.
 app.post("/signin", function (req, res) {
     const loginEmail = req.body.username;
     const loginPassword = req.body.password;
@@ -813,22 +636,29 @@ app.post("/signin", function (req, res) {
     });
 });
 
+// Get request for privary policy route.
+app.get("/privacy-policy", function (req, res) {
+    res.render("privacypolicy");
+});
+
+// Get request for terms & conditions route.
+app.get("/terms&conditions", function (req, res) {
+    res.render("conditions");
+});
+
+// Get request for logout route.
 app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("/");
 });
 
+// 404 error route.
+app.get("*", function (req, res, next) {
 
-//app.get('*', function (req, res) {
-//    res.status(404).send('what???');
-//});
-
-app.get("/*", function (req, res, next) {
-    res.status(404);
-    console.log(res.status(404));
     res.render("404error")
 })
 
-app.listen(3000, function () {
+// Listen at port 3000.
+app.listen(process.env.PORT, function () {
     console.log("server started on port 3000");
 });

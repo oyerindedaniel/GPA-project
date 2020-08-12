@@ -1,62 +1,64 @@
 <%- include('partials/header'); -%>
-<div class="table-history">
-    <table class="table table-striped">
-        <thead>
-            <tr class="all">
-                <th scope="col">COURSE CODE</th>
-                <th scope="col">UNIT</th>
-                <th scope="col">GRADE</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% allitems.forEach(function(allitem){ %>
-            <% if(allitem.grade2 === "A" ){ %>
-            <tr id="table-row" class="A">
-                <td><%= allitem.coursecode%></td>
-                <td><%= allitem.unitpercourse%></td>
-                <td class="gradeget"><%= allitem.grade2 %></td>
-            </tr>
-            <%    }else if(allitem.grade2 === "B"){  %>
-            <tr id="table-row" class="B">
-                <td><%= allitem.coursecode%></td>
-                <td><%= allitem.unitpercourse%></td>
-                <td class="gradeget"><%= allitem.grade2 %></td>
-            </tr>
-            <%  }else if(allitem.grade2 === "C"){  %>
-            <tr id="table-row" class="C">
-                <td><%= allitem.coursecode%></td>
-                <td><%= allitem.unitpercourse%></td>
-                <td class="gradeget"><%= allitem.grade2 %></td>
-            </tr>
-            <%   }else if(allitem.grade2 === "D"){ %>
-            <tr id="table-row" class="D">
-                <td><%= allitem.coursecode%></td>
-                <td><%= allitem.unitpercourse%></td>
-                <td class="gradeget"><%= allitem.grade2 %></td>
-            </tr>
-            <%  }else if(allitem.grade2 === "F"){ %>
-            <tr id="table-row" class="F">
-                <td><%= allitem.coursecode%></td>
-                <td><%= allitem.unitpercourse%></td>
-                <td class="gradeget"><%= allitem.grade2 %></td>
-            </tr>
-            <%   }else { %>
-            <tr id="table-row" class="othercolors">
-                <td><%= allitem.coursecode%></td>
-                <td><%= allitem.unitpercourse%></td>
-                <td class="gradeget"><%= allitem.grade2 %></td>
-            </tr>
+<div class="div2">
+    <div class="table-history">
+        <table class="table table-striped">
+            <thead>
+                <tr class="all">
+                    <th scope="col">COURSE CODE</th>
+                    <th scope="col">UNIT</th>
+                    <th scope="col">GRADE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% allitems.forEach(function(allitem){ %>
+                <% if(allitem.grade2 === "A" ){ %>
+                <tr id="table-row" class="A">
+                    <td><%= allitem.coursecode%></td>
+                    <td><%= allitem.unitpercourse%></td>
+                    <td class="gradeget"><%= allitem.grade2 %></td>
+                </tr>
+                <%    }else if(allitem.grade2 === "B"){  %>
+                <tr id="table-row" class="B">
+                    <td><%= allitem.coursecode%></td>
+                    <td><%= allitem.unitpercourse%></td>
+                    <td class="gradeget"><%= allitem.grade2 %></td>
+                </tr>
+                <%  }else if(allitem.grade2 === "C"){  %>
+                <tr id="table-row" class="C">
+                    <td><%= allitem.coursecode%></td>
+                    <td><%= allitem.unitpercourse%></td>
+                    <td class="gradeget"><%= allitem.grade2 %></td>
+                </tr>
+                <%   }else if(allitem.grade2 === "D"){ %>
+                <tr id="table-row" class="D">
+                    <td><%= allitem.coursecode%></td>
+                    <td><%= allitem.unitpercourse%></td>
+                    <td class="gradeget"><%= allitem.grade2 %></td>
+                </tr>
+                <%  }else if(allitem.grade2 === "F"){ %>
+                <tr id="table-row" class="F">
+                    <td><%= allitem.coursecode%></td>
+                    <td><%= allitem.unitpercourse%></td>
+                    <td class="gradeget"><%= allitem.grade2 %></td>
+                </tr>
+                <%   }else { %>
+                <tr id="table-row" class="othercolors">
+                    <td><%= allitem.coursecode%></td>
+                    <td><%= allitem.unitpercourse%></td>
+                    <td class="gradeget"><%= allitem.grade2 %></td>
+                </tr>
 
-            <%  } %>
-            <% }); %>
+                <%  } %>
+                <% }); %>
 
-            <tr id="" class="gpa-css anscss">
-                <td></td>
-                <td>GPA</td>
-                <td><%= allfinalresults.finalresult[0]%></td>
-            </tr>
+                <tr id="" class="gpa-css anscss">
+                    <td></td>
+                    <td>GPA</td>
+                    <td><%= allfinalresults.finalresult[0]%></td>
+                </tr>
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
 <%- include('partials/footer'); -%>

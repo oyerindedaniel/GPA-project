@@ -12,7 +12,7 @@ html {
 }
 
 body {
-    background-color: #faf4ff;
+    background-color: #faf4ff !important;
     color: #000000;
 }
 
@@ -40,16 +40,6 @@ h1 {
 img.calculator-img {
     width: 10%;
 }
-
-/*
-.btn-navbar {
-    padding: 0.75rem 2rem;
-    border-radius: 2.5rem;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    font-weight: 100;
-}
-*/
 
 .nav-link {
     margin: 2rem 1.5rem 2rem 1.5rem !important;
@@ -89,8 +79,6 @@ img.calculator-img {
     padding: 1rem;
 }
 
-
-
 /* Footer */
 .my-socials {
     text-align: center;
@@ -119,4 +107,90 @@ img.calculator-img {
     width: 50%;
     margin-left: 1rem;
     bottom: 0;
+}
+
+/* Media queries at 1000px */
+@media(max-width: 1000px) {
+    .main-carousel {
+        text-align: center;
+        margin: auto 10rem;
+    }
+
+    h1 {
+        width: 70%;
+        text-align: center;
+        margin: auto 11rem;
+    }
+
+    img.calculator-img {
+        display: none !important;
+    }
+
+    .nav-link {
+        margin: 2rem 2rem -0.5rem 3rem !important;
+        border: none !important;
+        padding: 0 !important;
+        background-color: #faf4ff !important;
+        border-radius: 0rem !important;
+        color: rgba(0, 0, 0, 1) !important;
+        font-weight: bold !important;
+        font-size: 1.2rem !important;
+    }
+
+    .nav-link:hover {
+        background-color: #faf4ff !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .nav-button {
+        margin: 1rem 2rem -0.5rem 3rem;
+        border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+    }
+
+
+}
+
+/* Media queries at 800px */
+@media(max-width: 800px) {
+
+    h1 {
+        text-align: center;
+        margin: auto;
+        font-size: 6rem;
+    }
+
+    .main-carousel {
+        text-align: center;
+        margin: auto;
+    }
+
+    .row2 {
+        padding: 1rem 0 0 1.6rem;
+    }
+
+}
+
+/* Media queries at 500px */
+@media(max-width: 500px) {
+
+    h1 {
+        font-size: 5rem;
+    }
+
+    .main-carousel {
+        width: 30rem;
+        height: 30rem;
+        padding: 0.35rem;
+        text-align: center;
+        margin: auto;
+
+    }
+
+    .item500 {
+        height: 270px !important;
+    }
+
+    .p-copyright {
+        width: 100%;
+    }
 }

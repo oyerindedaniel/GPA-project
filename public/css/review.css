@@ -21,7 +21,13 @@ a {
     text-decoration: none;
 }
 
-img {}
+h2 {
+    margin: 2rem 4rem;
+}
+
+h5 {
+    line-height: 1.5;
+}
 
 .pics1,
 .pics2,
@@ -66,22 +72,6 @@ img {}
     width: 2rem;
 }
 
-hr {
-    background-color: rgba(0, 0, 0, 1);
-    height: 1px;
-    border: none;
-    padding: 0;
-    margin: 0;
-}
-
-h2 {
-    margin: 2rem 4rem;
-}
-
-h5 {
-    line-height: 1.5;
-}
-
 /*h6 styles*/
 .h6style {
     display: inline-block;
@@ -104,10 +94,9 @@ h5 {
     margin: 4rem 4rem;
 }
 
-
 .text-css {
     font-size: 1.5rem;
-    width: 53%;
+    width: 53.15%;
     border-radius: 1rem;
 }
 
@@ -119,10 +108,6 @@ h5 {
     background-color: white;
     font-weight: 100;
     font-size: 1rem;
-    /*
-    position: relative;
-    left: 61.5rem;
-*/
 }
 
 .button-css:hover {
@@ -138,12 +123,6 @@ h5 {
     margin-bottom: 5rem;
 }
 
-/*
-.button-div {
-    width: 50%
-}
-*/
-
 .showmore-button {
     border: 0.1rem solid rgba(0, 0, 0, 1);
     border-radius: 2rem;
@@ -152,7 +131,6 @@ h5 {
     background-color: rgba(0, 0, 0, 1);
     color: rgb(255, 255, 255, 1);
     margin: 5rem 27rem;
-    /*    margin: 5rem 27rem;*/
     width: 18rem;
 }
 
@@ -218,15 +196,6 @@ h5 {
     margin: 1.75rem 0 1.5rem 6.2rem;
 }
 
-/*
-menu button .menu-button {
-    position: absolute;
-    cursor: pointer;
-    right: 1rem;
-    top: 1.5rem;
-}
-*/
-
 /*Alert Beware*/
 .alert-beware {
     width: 70%;
@@ -250,27 +219,6 @@ menu button .menu-button {
     padding: 0;
 }
 
-/*
-.dropdown {
-    background-color: #dfd3c3;
-    width: 10%;
-    text-align: center;
-    line-height: 0;
-    cursor: pointer;
-    position: absolute;
-    right: -2.7rem;
-    top: 3.5rem;
-}
-
-.drop-hide {
-    display: none;
-}
-
-.drop:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-}
-*/
-
 /*display time styles*/
 .timeh6 {
     width: 50%;
@@ -284,10 +232,36 @@ menu button .menu-button {
     margin-left: 32rem !important;
 }
 
+/*Media query at 5000px*/
+@media(max-width: 5000px) {
+    img {
+        display: none;
+    }
+
+}
+
+/*Media query at 1800px*/
+@media(max-width: 1800px) {
+    img {
+        display: inline-block;
+    }
+
+}
+
+/*Media query at 1001px*/
 @media(max-width: 1001px) {
 
     img {
         display: none;
+    }
+
+    .form-structure {
+        width: 84.5%;
+    }
+
+
+    .form-structure1 {
+        width: 91.5%;
     }
 
     .nav-link {
@@ -296,15 +270,19 @@ menu button .menu-button {
         padding: 0 !important;
         background-color: #faf4ff !important;
         border-radius: 0rem !important;
-        color: rgb(0, 0, 0, 1) !important;
+        color: rgba(0, 0, 0, 1) !important;
         font-weight: bold !important;
         font-size: 1.2rem !important;
     }
 
+    .alert-beware {
+        width: 70%;
+        margin: 2rem 3rem;
+    }
 
     .nav-link:hover {
         background-color: #faf4ff !important;
-        color: rgb(0, 0, 0, 0.8) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
     }
 
     .nav-button {
@@ -322,11 +300,6 @@ menu button .menu-button {
         position: static;
     }
 
-    .showmore-button {
-        width: 17rem;
-        margin: 5rem 15.5rem;
-    }
-
     .reply-css {
         width: 70%;
     }
@@ -337,9 +310,33 @@ menu button .menu-button {
 
 }
 
+/* Media queries at 800px */
+@media(max-width: 800px) {
+    .form-structure1 {
+        width: 93%;
+    }
+}
+
+/* Media queries at 800px */
+/*Media query at 500px*/
 @media(max-width: 500px) {
+
+    h2 {
+        margin: 2rem 2rem;
+    }
+
+    .nav-link {
+        margin: 2rem 2rem -0.5rem 2rem !important;
+    }
+
+    .alert-beware {
+        width: 84%;
+        margin: 2rem 2rem;
+    }
+
     .form-structure {
         margin: 4rem 2rem;
+        width: 91%;
     }
 
     .reply-css,
@@ -349,10 +346,27 @@ menu button .menu-button {
 
     }
 
+    .nav-button {
+        margin: 1rem 2rem -0.5rem 2rem;
+    }
 
     .text-css {
-        font-size: 1.5rem;
         width: 92%;
-        border-radius: 1rem;
+    }
+
+    .form-structure1 {
+        margin-left: -2rem !important;
+        width: 109%;
+    }
+
+    .div-viewreply {
+        margin-left: -2rem !important;
+    }
+}
+
+/* Media queries at 350px */
+@media(max-width: 350px) {
+    .form-structure1 {
+        width: 120%;
     }
 }

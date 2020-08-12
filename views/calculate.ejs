@@ -1,75 +1,80 @@
 <%- include('partials/header'); -%>
-<div class="table-calculate">
-    <table class="table table-striped table-dark">
-        <thead>
-            <tr>
-                <th scope="col">COURSE CODE</th>
-                <th scope="col">GRADE</th>
-                <th scope="col">UNIT FOR EACH COURSE</th>
-                <form action="/delete/deleteallcalculate" method="post">
-                    <th><button type="submit" class="ion-but" onchange="this.form.submit()"><i class="icon-css fas fa-1x fa-trash-alt"></i></button></th>
-                </form>
-            </tr>
-        </thead>
-        <tbody>
-            <% allcalculateitems.forEach(function(allcalculateitem){ %>
-            <tr class="main">
-                <td><%= allcalculateitem.coursecode %></td>
-                <td><%= allcalculateitem.grade2 %></td>
-                <td><%= allcalculateitem.unitpercourse %></td>
-                <form action="/deleteitem2" method="post">
-                    <td><button type="submit" name="deleteitemcalculate" value="<%= allcalculateitem._id %>" onchange="this.form.submit()" class="button-ions"><i class=" icon-css fas fa-1x fa-trash"></i></button></td>
-                </form>
-            </tr>
-            <% }); %>
-        </tbody>
-    </table>
+<div class="div4">
+    <div class="table-calculate">
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">COURSE CODE</th>
+                    <th scope="col">GRADE</th>
+                    <th scope="col">UNIT <span class="unit-remove">PER COURSE</span></th>
+                    <form action="/delete/deleteallcalculate" method="post">
+                        <th><button type="submit" class="ion-but" onchange="this.form.submit()"><i class="icon-css fas fa-1x fa-trash-alt"></i></button></th>
+                    </form>
+                </tr>
+            </thead>
+            <tbody>
+                <% allcalculateitems.forEach(function(allcalculateitem){ %>
+                <tr class="main">
+                    <td><%= allcalculateitem.coursecode %></td>
+                    <td><%= allcalculateitem.grade2 %></td>
+                    <td><%= allcalculateitem.unitpercourse %></td>
+                    <form action="/deleteitem2" method="post">
+                        <td><button type="submit" name="deleteitemcalculate" value="<%= allcalculateitem._id %>" onchange="this.form.submit()" class="button-ions"><i class=" icon-css fas fa-1x fa-trash"></i></button></td>
+                    </form>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div class="home-container">
-    <a href="/grade-system"><img src="pics/homepics/calculator.png" class="img-systems" alt="calculator.png"></a>
-    <h5>Enter your Course Code, Grade & Unit </h5>
-    <form action="/calculate" method="POST">
-        <div class="form-group">
-            <input type="text" name="coursecode" autocomplete="off" class="form-calculate form-control" placeholder="Enter Course Code">
-            <small class="form-text text-muted"></small>
-        </div>
-        <div class="form-group">
-            <input type="text" name="grade2" autocomplete="off" class="form-calculate form-control" placeholder="Enter Grade">
-            <small class="form-text text-muted"></small>
-        </div>
-        <div class="form-group">
-            <input type="text" name="unitpercourse" autocomplete="off" class="form-calculate form-control" placeholder="Enter unit for each course ">
-            <small class="form-text text-muted"></small>
-        </div>
-        <button type="submit" class="form-calculate btn btn-dark">Add</button>
-    </form>
+<div class="div4">
+    <div class="home-container">
+        <a href="/grade-system"><img src="pics/homepics/calculator.png" class="img-systems" alt="calculator.png"></a>
+        <h5>Enter your Course Code, Grade & Unit </h5>
+        <form action="/calculate" method="POST">
+            <div class="form-group">
+                <input type="text" name="coursecode" autocomplete="off" class="form-calculate form-control" placeholder="Enter Course Code">
+                <small class="form-text text-muted"></small>
+            </div>
+            <div class="form-group">
+                <input type="text" name="grade2" autocomplete="off" class="form-calculate form-control" placeholder="Enter Grade">
+                <small class="form-text text-muted"></small>
+            </div>
+            <div class="form-group">
+                <input type="text" name="unitpercourse" autocomplete="off" class="form-calculate form-control" placeholder="Enter unit for each course ">
+                <small class="form-text text-muted"></small>
+            </div>
+            <button type="submit" class="form-calculate btn btn-dark">Add</button>
+        </form>
+    </div>
 </div>
 
-<div class="table-calculate">
-    <h4>EXAMPLE</h4>
-    <table class="table table-striped table-dark">
-        <thead>
-            <tr>
-                <th scope="col">COURSE CODE</th>
-                <th scope="col">GRADE</th>
-                <th scope="col">UNIT FOR EACH COURSE</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>OYE 320</td>
-                <td>A</td>
-                <td>3</td>
-            </tr>
-            <tr>
-                <td>DAN 421</td>
-                <td>B</td>
-                <td>2</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="div4">
+    <div class="table-calculate">
+        <h4>EXAMPLE</h4>
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">COURSE CODE</th>
+                    <th scope="col">GRADE</th>
+                    <th scope="col">UNIT PER COURSE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>OYE 320</td>
+                    <td>A</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>DAN 421</td>
+                    <td>B</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-
 
 <%- include('partials/footer'); -%>

@@ -20,22 +20,13 @@
     <script src="https://kit.fontawesome.com/734dcc4b6d.js" crossorigin="anonymous"></script>
     <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;1,300&family=Ranchers&display=swap" rel="stylesheest">
-
 </head>
-
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <button class="nav-button navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <!--
-        <div class="form-group comment-search">
-            <input type="text" name="commentsearch" autocomplete="off" class=" form-control" placeholder="Search for Comment">
-            <small class="form-text text-muted"></small>
-        </div>
-        <button type="submit" class="comment-button btn btn-dark">Search</button>
--->
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -65,8 +56,6 @@
         <form action="/comment" method="POST">
             <div class="form-structure">
                 <textarea class="form-control text-css" name="commentpost" rows="2" placeholder="Add a comment"></textarea>
-
-
                 <button type="submit" class="button-css" onchange="this.form.submit()">Comment</button>
             </div>
         </form>
@@ -80,9 +69,11 @@
         </div>
         <form action="/reply" method="POST">
             <div id="<%=allcomment._id + 123%>" class="form-hide">
-                <textarea class="form-control text-css" name="replycomment" rows="2" placeholder="Reply"></textarea>
-                <input type="hidden" name="commentId" value="<%=allcomment._id  %>">
-                <button type="submit" id="<%=allcomment._id  %>" class="button-js button-css">Reply</button>
+                <div class="form-structure1">
+                    <textarea class="form-control text-css" name="replycomment" rows="2" placeholder="Reply"></textarea>
+                    <input type="hidden" name="commentId" value="<%=allcomment._id  %>">
+                    <button type="submit" id="<%=allcomment._id  %>" class="button-js button-css">Reply</button>
+                </div>
             </div>
         </form>
         <div class="div-viewreply">
@@ -100,10 +91,6 @@
             <h6 class="timeh6"><%= moment(allcommentreply.timereplycreated, "YYYY-MM-DD h:m:s.SS a").fromNow() %></h6>
             <img class="picsreply" src="pics/clown.png">
             <h5 class="h5style"> <%=allcommentreply.replyOne %></h5>
-            <!--
-            <h6 class="reply h6style">Reply</h6>
-            <h6 class="cancel h6style">Cancel</h6>
--->
         </div>
         <% } else{ %>
         <%= console.log("Comment reply did not work.")%>
@@ -111,20 +98,12 @@
         <% }); %>
         <% }); %>
         <h1 class="nothing"></h1>
-        <!--
-
-        <div class="button-div">
-            <button type="submit" class="showmore-button">SHOW MORE</button>
-        </div>
--->
     </div>
     <script>
         //Monitoring Comment Numbers
         const comment1 = document.querySelector(".totalcomment");
         const commentHtml = comment1.innerHTML;
-        console.log(commentHtml);
         if (commentHtml === "0" || commentHtml === "1") {
-            console.log("Yeah");
             const comment1 = document.querySelector(".totalcomment1");
             comment1.innerHTML = "Comment";
         }

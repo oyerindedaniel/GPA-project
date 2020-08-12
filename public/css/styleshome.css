@@ -22,30 +22,33 @@ h1 {
     margin: 5rem 0 5rem 5rem;
 }
 
-.gradesystem-container h5 {
-    margin: 0.5rem 0 1rem 0;
-}
-
 a {
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 hr {
     border-top: 1px solid rgb(0, 0, 0);
     padding: 0rem 2rem;
+    background-color:
 }
 
-img {
-    width: 18%;
-    cursor: pointer;
+
+.custom-toggler {}
+
+
+.home-pics {
+    width: 4.5rem;
+}
+
+.gradesystem-container h5 {
+    margin: 0.5rem 0 1rem 0;
 }
 
 .img-systems {
-    width: 5rem;
+    width: 4rem;
     margin: 1rem 0 0.3rem 0;
     cursor: context-menu;
 }
-
 
 form button {
     padding: 0.4rem 5rem !important;
@@ -55,15 +58,9 @@ form button {
     font-weight: 100 !important;
 }
 
-/*
-.main:hover {
-    background-color: rgba(0, 0, 0, 0.1) !important;
-}
-*/
 table tbody tr {
     border: none;
 }
-
 
 table tbody tr.main:hover {
     background-color: rgba(0, 0, 0, 0.1) !important;
@@ -100,14 +97,17 @@ table tbody tr:hover .button-ions {
 
 div.grid-box {
     text-align: center;
-    padding: 2rem 8rem;
+    padding: 2rem 10rem;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .grid-box h4 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     width: 80%;
     margin: 1rem auto 0.5rem;
     color: #FFFFFF;
+    text-transform: uppercase;
 }
 
 .home-container {
@@ -115,9 +115,27 @@ div.grid-box {
     margin: 4rem auto;
     text-align: center;
     box-shadow: inset 0 0 2rem 0 rgba(0, 0, 0, 1);
-    width: 30rem;
+    width: 80%;
     height: 25rem;
     padding: 0 3rem 0 3rem;
+}
+
+.div {
+    text-align: center;
+    margin: auto;
+    width: 40rem;
+}
+
+.div2 {
+    text-align: center;
+    margin: auto;
+    width: 50rem;
+}
+
+.div4 {
+    text-align: center;
+    margin: auto;
+    width: 42rem;
 }
 
 .home-container1 {
@@ -125,7 +143,7 @@ div.grid-box {
     margin: 4rem auto;
     text-align: center;
     box-shadow: inset 0 0 2rem 0 rgba(0, 0, 0, 1);
-    width: 30rem;
+    width: 80%;
     height: 20rem;
     padding: 0 3rem 0 3rem;
 }
@@ -137,7 +155,7 @@ div.grid-box {
     padding: 1rem;
     font-size: 1.25rem;
     text-align: center;
-    width: 40rem;
+    width: 100%;
     margin: 3rem auto;
 }
 
@@ -148,7 +166,7 @@ div.grid-box {
     padding: 1rem;
     font-size: 1.25rem;
     text-align: center;
-    width: 50rem;
+    width: 100%;
     margin: 3rem auto;
 }
 
@@ -156,27 +174,16 @@ div.grid-box {
 .table-history {
     font-size: 1.25rem;
     text-align: center;
-    width: 50rem;
+    width: 100%;
     margin: 3rem auto;
     background-color: white;
     margin-bottom: 7rem;
 }
 
-
-/*
-table thead tr.all th:first-of-type {
-    border-left: 8px solid rgba(0, 0, 0, 0.7);
-}
-*/
-
+/* Table colour code styles */
 table tbody tr.A td:first-of-type {
     border-left: 0.5rem solid #206a5d;
 }
-
-.othercolors {
-    border-left: 0.5rem solid #521262;
-}
-
 
 table tbody tr.B td:first-of-type {
     border-left: 0.5rem solid #394989;
@@ -194,6 +201,9 @@ table tbody tr.F td:first-of-type {
     border-left: 0.5rem solid #d92027;
 }
 
+.othercolors {
+    border-left: 0.5rem solid #521262;
+}
 
 .gpa-css,
 .all {
@@ -211,4 +221,103 @@ table tbody tr.F td:first-of-type {
     width: 50%;
     margin: auto;
     text-align: center
+}
+
+/* Media queries at 900px */
+@media(max-width: 900px) {
+    .home-pics {
+        width: 4rem;
+    }
+
+
+    div.grid-box {
+        text-align: center;
+        padding: 2rem 2rem;
+    }
+}
+
+/* Media queries at 575px */
+@media(max-width: 575px) {
+    .home-pics {
+        display: none;
+    }
+
+    .alert-css {
+        width: 70%;
+    }
+
+    div.grid-box {
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+
+    .grid-box h4 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .grid-box h4:hover {
+        font-size: 1.23rem;
+    }
+
+    .div {
+        width: 30rem;
+    }
+
+    .div2 {
+        width: 40rem;
+    }
+
+    .div4 {
+        width: 32rem;
+    }
+}
+
+/* Media queries at 410px */
+@media(max-width: 410px) {
+    .div2 {
+        width: 31rem;
+    }
+}
+
+/* Media queries at 300px */
+@media(max-width: 300px) {
+
+    .div {
+        width: 25rem;
+    }
+
+    .home-container1 {
+        width: 100%;
+    }
+
+    .table-gradesystem {
+        width: 100%;
+    }
+
+    .div4 {
+        width: 25.5rem;
+    }
+
+    .home-container {
+        width: 100%;
+    }
+
+    .table-calculate {
+        width: 100%;
+    }
+
+    .unit-remove {
+        display: none;
+    }
+
+    .div2 {
+        width: 25.5rem;
+    }
+
+
+    .table-history {
+        width: 95%;
+    }
+
 }

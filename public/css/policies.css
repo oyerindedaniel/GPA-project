@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 10px !important;
+    min-height: 100%;
+}
+
+body {
+    background-color: #faf4ff;
+    position: relative;
+}
+
+a {
+    font-size: 1.8rem;
+}
+
+p {
+    font-family: sans-serif;
+    font-size: 1.8rem;
+    font-weight: 50;
+    line-height: 2;
+}
+
+h2 {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 2.3rem;
+    margin-bottom: 1rem !important;
+    margin-top: 1rem !important;
+
+}
+
+.body-container {
+    padding: 1em;
+    z-index: 1;
+}
+
+.nav-link {
+    margin: 2rem 1.5rem 2rem 1.5rem !important;
+    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+    padding: 0.6rem 2rem 0.6rem 2rem !important;
+    border-radius: 1.5rem !important;
+    background-color: white !important;
+    font-weight: 100 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 1rem !important;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+img.calculator-img {
+    width: 10%;
+}
+
+.main-container {
+    padding: 2rem 12rem;
+    text-align: justify;
+}
+
+.pics1,
+.pics2,
+.pics3,
+.pics4,
+.pics5,
+.pics6,
+.pics7,
+.pics8 {
+    width: 4%;
+    opacity: 0.5;
+    z-index: 0;
+}
+
+.pics1 {
+    position: absolute;
+    top: 15rem;
+    right: 3.5rem;
+}
+
+.pics2 {
+    position: absolute;
+    top: 15rem;
+    left: 3.5rem;
+}
+
+.pics3 {
+    position: absolute;
+    top: 45rem;
+    left: 3.5rem;
+}
+
+.pics4 {
+    position: absolute;
+    top: 45rem;
+    right: 3.5rem;
+}
+
+.pics5 {
+    position: absolute;
+    top: 75rem;
+    left: 3.5rem;
+}
+
+.pics6 {
+    position: absolute;
+    top: 75rem;
+    right: 3.5rem;
+}
+
+.pics7 {
+    position: absolute;
+    top: 105rem;
+    left: 3.5rem;
+}
+
+.pics8 {
+    position: absolute;
+    top: 105rem;
+    right: 3.5rem;
+}
+
+.p-copyright {
+    text-align: center;
+    margin-top: -1rem !important;
+}
+
+/*Media query at 1000px*/
+@media(max-width: 1000px) {
+    .main-container {
+        padding: 2rem 1rem;
+        text-align: justify;
+    }
+
+    img {
+        display: none;
+    }
+
+    h2 {
+        font-family: sans-serif;
+        font-weight: bold;
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1.6rem;
+    }
+}
