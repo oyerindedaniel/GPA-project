@@ -150,13 +150,19 @@ img.calculator-img {
 
 }
 
+/* Media queries at 900px */
+@media(max-width: 900px) {
+    h1 {
+        font-size: 5.8rem;
+    }
+}
+
 /* Media queries at 800px */
 @media(max-width: 800px) {
 
     h1 {
         text-align: center;
         margin: auto;
-        font-size: 6rem;
     }
 
     .main-carousel {
@@ -193,4 +199,20 @@ img.calculator-img {
     .p-copyright {
         width: 100%;
     }
+}
+
+@media(max-width: 350px) {
+    .main-carousel {
+        width: 22rem;
+        height: 22rem;
+        padding: 0.2rem;
+        text-align: center;
+        margin: auto;
+
+    }
+
+    .item500 {
+        height: 197px !important;
+    }
+
 }

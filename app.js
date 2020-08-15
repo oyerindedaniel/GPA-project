@@ -16,9 +16,17 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const flash = require('connect-flash');
 // Cookie parser.
 const cookieParser = require('cookie-parser');
+// Nodemailer.
+const nodemailer = require("nodemailer");
+// uuid4.
+const {
+    v4: uuidv4
+} = require('uuid');
 // Moment js.
 const moment = require("moment");
 moment().format();
+// Morgan.
+const morgan = require('morgan')
 // Module require date.
 const date = require(__dirname + "/appmodule.js");
 const app = express();
@@ -32,14 +40,14 @@ const findOrCreate = require('mongoose-findorcreate');
 
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
-app.locals.recentdate = date.getdate()
+app.locals.recentyear = date.getyear()
 app.locals.moment = require('moment');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 
 app.use(session({
-    secret: "Our little secret.",
+    secret: process.env.SECRET,
     cookie: {
         maxAge: null
     },
@@ -128,12 +136,14 @@ const overallstrtSchema = new mongoose.Schema({
     username1: String,
     username: String,
     password: String,
+    resetpasswordtoken: String,
     gradesystemoverall: [gradeSchema],
     calculategpaoverall: [calculateSchema],
     totalcalcunits: [Number],
     totalunit: [Number],
     finalresult: [],
-    googleId: String
+    googleId: String,
+    googlename: String
 });
 
 overallstrtSchema.plugin(passportLocalMongoose);
@@ -160,8 +170,10 @@ passport.use(new GoogleStrategy({
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
     },
     function (accessToken, refreshToken, profile, cb) {
+        console.log(profile);
         Overallstrt.findOrCreate({
-            googleId: profile.id
+            googleId: profile.id,
+            googlename: profile.displayName
         }, function (err, user) {
             return cb(err, user);
         });
@@ -191,13 +203,14 @@ app.get("/auth/google/grade-system",
 // Get request for grade system route.
 app.route("/grade-system")
     // Work on this.
-    .get(function (req, res) {
+    .get(authgradesystem, function (req, res) {
         if (req.isAuthenticated()) {
             Overallstrt.findById(req.user.id, function (err, gradeperperson) {
                 if (gradeperperson) {
                     res.render("gradesystem", {
                         allgradeitems: gradeperperson.gradesystemoverall,
-                        message: req.flash("message")
+                        message: req.flash("message"),
+                        message1: req.flash("message"),
                     });
                 } else {
                     console.log("Nothing found");
@@ -227,12 +240,33 @@ app.route("/grade-system")
                 if (err) {
                     res.send(err);
                 } else {
-                    req.flash("message", "Saved Successfully!")
+                    req.flash("message", "Saved Successfully.")
                     res.redirect("/grade-system");
                 }
             }
         );
     });
+
+// Middleware for grade system.
+function authgradesystem(req, res, next) {
+    console.log("Worked");
+    next();
+    //    const filterGrade = _.upperCase(req.body.grade1);
+    //    Overallstrt.findById(req.user.id, function (err, foundUser) {
+    //        if (foundUser) {
+    //            const foundGrades = foundUser.gradesystemoverall;
+    //            foundGrades.forEach(function (foundGrade) {
+    //                if (foundGrade.length >= 2) {
+    //                    console.log(foundGrade);
+    //                    next();
+    //                    //s  console.log("Princess");
+    //                }
+    //            });
+    //        }
+    //    });
+
+}
+
 
 // Get request for calculate route.
 app.route("/calculate")
@@ -241,7 +275,8 @@ app.route("/calculate")
             Overallstrt.findById(req.user.id, function (err, calculategpaperson) {
                 if (calculategpaperson) {
                     res.render("calculate", {
-                        allcalculateitems: calculategpaperson.calculategpaoverall
+                        allcalculateitems: calculategpaperson.calculategpaoverall,
+                        message: req.flash("message")
                     });
                 } else {
                     console.log("Nothing found");
@@ -327,6 +362,7 @@ app.route("/calculate")
                                                                         foundUser.totalunit.push(sum2);
                                                                         foundUser.save(function (err) {
                                                                             if (!err) {
+                                                                                req.flash("message", "Saved Successfully.");
                                                                                 res.redirect("/calculate");
                                                                             }
                                                                         });
@@ -345,7 +381,7 @@ app.route("/calculate")
                             }
                         });
                     } else {
-                        console.log("No it");
+                        console.log("Not it");
                     }
                 })
             }
@@ -394,8 +430,8 @@ app.post("/deleteitem1", function (req, res) {
         }
     }, function (err, results) {
         if (!err) {
+            req.flash("message", "Successfully deleted grade.");
             res.redirect("/grade-system");
-            console.log("Successfully deleted");
         } else {
             console.log("Couldn't delete");
         }
@@ -418,6 +454,7 @@ app.post("/deleteitem2", function (req, res) {
             const usercalcs = foundUser.calculategpaoverall;
             usercalcs.forEach(function (usercalc) {
                 if (usercalc.id === calculatedeleteitem) {
+
                     const gottenValue = usercalc.multiplyunit;
                     const gottenresult = (gottencalcValue - gottenValue);
                     foundcalcresult.pop();
@@ -440,8 +477,8 @@ app.post("/deleteitem2", function (req, res) {
                                         }
                                     }, function (err, results) {
                                         if (!err) {
+                                            req.flash("message", "Successfully deleted course.");
                                             res.redirect("/calculate");
-                                            console.log("Successfully deleted");
                                         } else {
                                             console.log("Couldn't delete");
                                         }
@@ -480,7 +517,7 @@ app.post("/delete/:deleteall", function (req, res) {
                 gradesystemoverall: []
             }
         }, function (err, result) {
-            console.log("Successfully deleted all!");
+            req.flash("message", "Successfully deleted all.");
             res.redirect("/grade-system");
         });
     }
@@ -589,12 +626,14 @@ app.get("/signup", function (req, res) {
     res.render("signup");
 });
 
+
+
 // Post request for siginup route.
-app.post("/signup", function (req, res) {
+app.post("/signup", authsignup, function (req, res) {
     const regUsername = req.body.regusername;
     const regEmail = req.body.username;
     const regPassword = req.body.password;
-    const regConpassword = req.body.regconpassword;
+    const regConpassword = req.body.reqconpassword;
     Overallstrt.register({
         username: regEmail,
         username1: regUsername
@@ -610,30 +649,178 @@ app.post("/signup", function (req, res) {
     });
 });
 
+// Middleware for signup.
+function authsignup(req, res, next) {
+    Overallstrt.findOne({
+        username: req.body.username
+    }, function (err, foundUser) {
+        if (foundUser) {
+            req.flash("message", "Email is invalid or already taken.")
+            res.render("signup", {
+                userexists: req.flash("message")
+            });
+        } else {
+            if (req.body.password === req.body.reqconpassword) {
+                const passwformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+                if (req.body.password.match(passwformat)) {
+                    next();
+                } else {
+                    req.flash("message", "Password didn't meet required format. Try again")
+                    res.render("signup", {
+                        passwordformat: req.flash("message")
+                    });
+                }
+            } else {
+                req.flash("message", "Those passwords didn't match. Try again.")
+                res.render("signup", {
+                    invalidpassword: req.flash("message")
+                });
+            }
+        }
+    })
+}
+
 // Get request for siginin route.
 app.get("/signin", function (req, res) {
     res.render("signin");
 });
 
 // Post request for siginin route.
-app.post("/signin", function (req, res) {
-    const loginEmail = req.body.username;
-    const loginPassword = req.body.password;
-    const user = new Overallstrt({
-        username: loginEmail,
-        password: loginPassword
+app.post("/signin", function (req, res, next) {
+    passport.authenticate("local", function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            req.flash("message", "Invalid email or password.")
+            res.render("signin", {
+                emailexists: req.flash("message")
+            });
+        } else {
+            req.login(user, function (err) {
+                if (err) {
+                    return next(err);
+                }
+                return res.redirect("/grade-system");
+            });
+        }
+    })(req, res, next);
+});
+
+// Get request for forgetpassword route.
+app.get("/forgotpassword", function (req, res) {
+    res.render("forgetpassword");
+});
+
+
+// Post request for forgetpassword route.
+app.post("/forgotpassword", authforgotpassword, function (req, res) {
+    const resetUUIDuser = (`${req.resetUUID}`);
+    const checkGPAurl = "http://localhost:3000/resetpassword/" + resetUUIDuser;
+    // const emailUSER = (`${req.eMAIL}`);
+    const output = `
+        <p>We heard that you lost your checkGPA password. Sorry about that!</p>
+        <p>But don’t worry! You can use the following link below to reset your password.</p>
+<a href="${checkGPAurl}">${checkGPAurl}</a>
+  <p>If you don’t use this link within 3 hours, it will expire.</p>
+  <p>Note: if you are not the one that required a reset in password just ignore.</p>
+      `;
+
+    let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: 'checkgpa2020@gmail.com',
+            pass: process.env.AUTHPASSWORD
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
     });
 
-    req.login(user, function (err) {
-        if (err) {
-            console.log(err);
-            res.redirect("/signin");
+    let mailOptions = {
+        from: '"checkGPA" checkgpa2020@yahoo.com',
+        to: `${req.eMAIL}`,
+        subject: 'checkGPA password reset',
+        text: 'checkGPA password reset',
+        html: output
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
         } else {
-            passport.authenticate("local")(req, res, function () {
-                res.redirect("/grade-system");
+            req.flash("message", "Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.")
+            res.render("forgetpassword", {
+                successalert: req.flash("message")
             });
         }
     });
+});
+
+// Middleware for forgot password.
+function authforgotpassword(req, res, next) {
+    Overallstrt.findOne({
+        username: req.body.username
+    }, function (err, foundUser) {
+        if (foundUser) {
+            const userFound = foundUser.username;
+            const resetuuid = uuidv4();
+            foundUser.resetpasswordtoken = resetuuid;
+            foundUser.save(function (err) {
+                if (!err) {
+                    req.eMAIL = userFound;
+                    req.resetUUID = resetuuid;
+                    next();
+                } else {
+                    console.log("Couldn't generate");
+                }
+            })
+        } else {
+            req.flash("message", "Email is invalid or doesn't exist.")
+            res.render("forgetpassword", {
+                emailexists: req.flash("message")
+            });
+        }
+
+    });
+}
+
+app.get("/resetpassword", function (req, res) {
+    res.render("resetpassword");
+})
+
+
+// Get request for reset password route.
+app.get("/resetpassword/:uuiduser", function (req, res) {
+    const uuidUSER = req.params.uuiduser;
+    Overallstrt.findOne({
+        resetpasswordtoken: uuidUSER
+    }, function (err, foundUser) {
+        if (foundUser) {
+            res.render("resetpassword", {
+                resetpass: foundUser.username,
+                resetuuid: uuidUSER
+            });
+        } else {
+            res.redirect("/*")
+        }
+    });
+});
+
+// Post request for reset password route.
+app.post("/resetpassword/:uuiduser", function (req, res) {
+    const uuidUSER = req.params.uuiduser;
+    Overallstrt.findOne({
+        resetpasswordtoken: uuidUSER
+    }, function (err, foundUser) {
+        if (foundUser) {
+            console.log("Found USER BITCH");
+        } else {
+            res.redirect("/*")
+        }
+    });
+
 });
 
 // Get request for privary policy route.
@@ -651,6 +838,8 @@ app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("/");
 });
+
+
 
 // 404 error route.
 app.get("*", function (req, res, next) {

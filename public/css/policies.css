@@ -15,8 +15,17 @@ body {
 }
 
 a {
+    font-family: sans-serif;
     font-size: 1.8rem;
+    text-decoration: none;
+    color: blue;
 }
+
+a:hover {
+    text-decoration: underline;
+
+}
+
 
 p {
     font-family: sans-serif;
@@ -37,26 +46,6 @@ h2 {
 .body-container {
     padding: 1em;
     z-index: 1;
-}
-
-.nav-link {
-    margin: 2rem 1.5rem 2rem 1.5rem !important;
-    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
-    padding: 0.6rem 2rem 0.6rem 2rem !important;
-    border-radius: 1.5rem !important;
-    background-color: white !important;
-    font-weight: 100 !important;
-    font-family: 'Montserrat', sans-serif !important;
-    font-size: 1rem !important;
-}
-
-.nav-link:hover {
-    background-color: rgba(0, 0, 0, 0.9) !important;
-    color: white !important;
-}
-
-img.calculator-img {
-    width: 10%;
 }
 
 .main-container {
@@ -130,6 +119,20 @@ img.calculator-img {
     margin-top: -1rem !important;
 }
 
+/*Media query at 5000px*/
+@media(max-width: 5000px) {
+    img {
+        display: none !important;
+    }
+}
+
+/*Media query at 2000px*/
+@media(max-width: 2000px) {
+    img {
+        display: inline-block !important;
+    }
+}
+
 /*Media query at 1000px*/
 @media(max-width: 1000px) {
     .main-container {
@@ -138,7 +141,7 @@ img.calculator-img {
     }
 
     img {
-        display: none;
+        display: none !important;
     }
 
     h2 {

@@ -1,17 +1,31 @@
 <%- include('partials/header'); -%>
+<div class="alert alert alert-danger alert-dismissible fade show alert-css1" role="alert">
+    <div class="text-beware">
+        <strong>BEWARE!</strong> Don't repeat grade.
+    </div>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
 <% if(message.length > 0){ %>
 <div id="yeah" class="alert-css alert alert-success">
     <%= message %>
 </div>
 <% }%>
 
+<% if(locals.gradeexists){ %>
+<div class="alertcsssign alert alert-danger">
+    <%= gradeexists %>
+</div>
+<% }%>
 <div class="div">
     <div class="table-gradesystem">
         <table class="table table-striped table-dark">
             <thead>
                 <tr>
                     <th scope="col">GRADE</th>
-                    <th scope="col">POINTS</th>
+                    <th scope="col">POINT</th>
                     <form action="/delete/deleteallgradesystem" method="post">
                         <th><button type="submit" class="ion-but" onchange="this.form.submit()"><i class="icon-css fas fa-1x fa-trash-alt"></i></button></th>
                     </form>

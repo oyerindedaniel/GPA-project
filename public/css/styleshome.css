@@ -207,24 +207,26 @@ table tbody tr.F td:first-of-type {
 
 .gpa-css,
 .all {
-    background-color: rgba(0, 0, 0, 0.7) !important;
+    background-color: rgba(0, 0, 0, 1) !important;
     color: rgb(255, 255, 255, 1);
-    font-weight: 100 !important;
+    font-weight: bold;
     font-family: 'Montserrat', sans-serif !important;
 }
 
 /* Alert */
-.alert-css {
+.alert-css,
+.alert-css1 {
     border-radius: 0;
-    font-size: 1.5rem;
-    padding: 1rem 3rem;
+    font-size: 1.3rem;
+    padding: 0.5rem 3rem;
     width: 50%;
-    margin: auto;
-    text-align: center
+    margin: 0.5rem auto;
+/*    text-align: justify;*/
+    text-align: center;
 }
 
 /* Media queries at 900px */
-@media(max-width: 900px) {
+@media screen and (max-width: 900px) {
     .home-pics {
         width: 4rem;
     }
@@ -234,16 +236,17 @@ table tbody tr.F td:first-of-type {
         text-align: center;
         padding: 2rem 2rem;
     }
+
+    .alert-css,
+    .alert-css1 {
+        width: 65%;
+    }
 }
 
 /* Media queries at 575px */
-@media(max-width: 575px) {
+@media screen and (max-width: 575px) {
     .home-pics {
         display: none;
-    }
-
-    .alert-css {
-        width: 70%;
     }
 
     div.grid-box {
@@ -274,14 +277,19 @@ table tbody tr.F td:first-of-type {
 }
 
 /* Media queries at 410px */
-@media(max-width: 410px) {
+@media screen and (max-width: 410px) {
     .div2 {
         width: 31rem;
+    }
+
+    .alert-css,
+    .alert-css1 {
+        width: 90%;
     }
 }
 
 /* Media queries at 300px */
-@media(max-width: 300px) {
+@media screen and (max-width: 300px) {
 
     .div {
         width: 25rem;
@@ -320,4 +328,32 @@ table tbody tr.F td:first-of-type {
         width: 95%;
     }
 
+}
+
+/* Media query for print */
+@media print {
+    img {
+        display: none !important;
+    }
+
+    .grid-box h4 {
+        display: none !important;
+    }
+
+    table {
+        color: rgba(0, 0, 0, 1);
+    }
+
+    .norm1 {
+        font-size: 1.5rem;
+    }
+
+    .norm {
+        color: rgba(0, 0, 0, 1);
+    }
+}
+
+@page {
+    size: auto;
+    margin: 0mm;
 }

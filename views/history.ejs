@@ -4,9 +4,9 @@
         <table class="table table-striped">
             <thead>
                 <tr class="all">
-                    <th scope="col">COURSE CODE</th>
-                    <th scope="col">UNIT</th>
-                    <th scope="col">GRADE</th>
+                    <th class="norm" scope="col">COURSE CODE</th>
+                    <th class="norm" scope="col">UNIT</th>
+                    <th class="norm" scope="col">GRADE</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,10 +51,10 @@
                 <%  } %>
                 <% }); %>
 
-                <tr id="" class="gpa-css anscss">
+                <tr class="gpa-css">
                     <td></td>
-                    <td>GPA</td>
-                    <td><%= allfinalresults.finalresult[0]%></td>
+                    <td class="norm norm1">GPA</td>
+                    <td class="norm norm1"><%= allfinalresults.finalresult[0]%></td>
                 </tr>
 
             </tbody>

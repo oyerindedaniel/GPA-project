@@ -5,7 +5,10 @@ body {
 
 h1 {
     font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem !important;
 }
+
+h3 {}
 
 .text-center {
     display: -ms-flexbox;
@@ -20,6 +23,10 @@ h1 {
 img.calculator-img {
     width: 10%;
     margin: 0.5rem 0 0 0.5rem;
+}
+
+.navbar-margin {
+    margin-bottom: 1rem;
 }
 
 .form-signin {
@@ -70,6 +77,10 @@ input.mainpassword {
     border-top-right-radius: 0;
 }
 
+.small-text {
+    font-size: 0.75rem !important;
+}
+
 input.signin-email {
     border-top-left-radius: 4px !important;
     border-top-right-radius: 4px !important;
@@ -81,21 +92,35 @@ input.signin-password {
 }
 
 button.signin-button {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
     margin-top: 10px !important;
-
+    font-size: 1.1rem !important;
 }
 
 button.signup-button {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    font-size: 1.1rem !important;
+}
 
+div.alertcsssign {
+    border-radius: 0;
+    font-size: 0.9rem;
+    padding: 0.45rem;
+    width: 60%;
+    margin: auto;
+    text-align: center
 }
 
 .rules {
     margin-top: 2rem;
     font-size: 0.8rem;
+}
+
+.rules1 {
+    margin-top: 0rem !important;
+    font-size: 0.9rem;
 }
 
 .p-copyright {

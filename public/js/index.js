@@ -47,7 +47,6 @@ function selectItem1(event) {
         viewHide.html("View");
         const reversearrow = $(`#${this.id}159`);
         reversearrow.attr("class", "fas fa-1x fa-caret-down arrow-style");
-        reversearrow.addClass("arrow-up");
 
     } else {
         const reply = $(`.${this.id}234`);
@@ -55,8 +54,7 @@ function selectItem1(event) {
         const viewHide = $(`.${this.id}987`);
         viewHide.html("Hide");
         const reversearrow = $(`#${this.id}159 `);
-        reversearrow.attr("class", "fas fa-1x fa-sort-up arrow-adjust  arrow-style");
-        reversearrow.addClass("arrow-up");
+        reversearrow.attr("class", "fas fa-1x fa-sort-up arrow-style");
     }
 }
 
@@ -75,18 +73,11 @@ replys.forEach(function (reply) {
 
 // Flash alert timer.
 const flashAlert = $(".alert-css");
-console.log(flashAlert);
 setTimeout(function () {
     flashAlert.fadeOut("fast");
 }, 2000);
 
-
-var mediaQuery = window.matchMedia("(max-width: 1400px)");
-
-function setColor(mediaQuery) {
-    if (mediaQuery.matches) {
-        document.querySelector("grid-row").classList.remove("row");
-    }
-}
-setColor(mediaQuery);
-mediaQuery.addListener(myFunction);
+const flashAlertsign = $(".alertcsssign");
+setTimeout(function () {
+    flashAlertsign.fadeOut("fast");
+}, 3000);
