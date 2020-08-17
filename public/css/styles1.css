@@ -104,7 +104,9 @@ button.signup-button {
     font-size: 1.1rem !important;
 }
 
-div.alertcsssign {
+div.alertcsssign,
+.alertcssforpass,
+.alertcsssign2 {
     border-radius: 0;
     font-size: 0.9rem;
     padding: 0.45rem;
@@ -121,6 +123,18 @@ div.alertcsssign {
 .rules1 {
     margin-top: 0rem !important;
     font-size: 0.9rem;
+}
+
+div.rules3 {
+    margin-bottom: 0rem !important;
+    margin-top: 0rem !important;
+    font-size: 0.8rem;
+    text-align: right !important;
+    text-decoration: none !important;
+}
+
+a.rules4 {
+    padding-left: 1rem;
 }
 
 .p-copyright {

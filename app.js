@@ -1,3 +1,5 @@
+// OYERINDE DANIEL DIEKOLOLUWA.
+// checkGPA PROJECT.
 // Env.
 require('dotenv').config();
 // Express.
@@ -22,6 +24,8 @@ const nodemailer = require("nodemailer");
 const {
     v4: uuidv4
 } = require('uuid');
+// Cron.
+const cron = require('node-cron');
 // Moment js.
 const moment = require("moment");
 moment().format();
@@ -77,7 +81,6 @@ const replySchema = new mongoose.Schema({
         required: [true, 'Comment required']
     },
     timereplycreated: String
-
 });
 
 const Replyinput = mongoose.model("Replyinput", replySchema);
@@ -137,10 +140,16 @@ const overallstrtSchema = new mongoose.Schema({
     username: String,
     password: String,
     resetpasswordtoken: String,
+    changepasswordtoken: String,
     gradesystemoverall: [gradeSchema],
     calculategpaoverall: [calculateSchema],
     totalcalcunits: [Number],
     totalunit: [Number],
+    resethournow: Number,
+    resetdaynow: Number,
+    resetmonthnow: Number,
+    resetyearnow: Number,
+    resetampmnow: String,
     finalresult: [],
     googleId: String,
     googlename: String
@@ -249,7 +258,6 @@ app.route("/grade-system")
 
 // Middleware for grade system.
 function authgradesystem(req, res, next) {
-    console.log("Worked");
     next();
     //    const filterGrade = _.upperCase(req.body.grade1);
     //    Overallstrt.findById(req.user.id, function (err, foundUser) {
@@ -264,7 +272,6 @@ function authgradesystem(req, res, next) {
     //            });
     //        }
     //    });
-
 }
 
 
@@ -589,8 +596,7 @@ app.post("/reply", function (req, res) {
         } else {
             console.log("Reply couldn't save");
         }
-    })
-
+    });
 });
 
 // Get request for comment route.
@@ -623,10 +629,10 @@ app.route("/comment")
 
 // Get request for siginup route.
 app.get("/signup", function (req, res) {
-    res.render("signup");
+    res.render("signup", {
+        message1: req.flash("message1")
+    });
 });
-
-
 
 // Post request for siginup route.
 app.post("/signup", authsignup, function (req, res) {
@@ -643,6 +649,7 @@ app.post("/signup", authsignup, function (req, res) {
             res.redirect("/signup");
         } else {
             passport.authenticate("local")(req, res, function () {
+                req.flash("message", "Successfully Registered. Try signing in.")
                 res.redirect("/signin");
             });
         }
@@ -655,26 +662,20 @@ function authsignup(req, res, next) {
         username: req.body.username
     }, function (err, foundUser) {
         if (foundUser) {
-            req.flash("message", "Email is invalid or already taken.")
-            res.render("signup", {
-                userexists: req.flash("message")
-            });
+            req.flash("message1", "Email is invalid or already taken.")
+            res.redirect("/signup");
         } else {
             if (req.body.password === req.body.reqconpassword) {
                 const passwformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
                 if (req.body.password.match(passwformat)) {
                     next();
                 } else {
-                    req.flash("message", "Password didn't meet required format. Try again")
-                    res.render("signup", {
-                        passwordformat: req.flash("message")
-                    });
+                    req.flash("message1", "Password didn't meet required format. Try again")
+                    res.redirect("/signup");
                 }
             } else {
-                req.flash("message", "Those passwords didn't match. Try again.")
-                res.render("signup", {
-                    invalidpassword: req.flash("message")
-                });
+                req.flash("message1", "Those passwords didn't match. Try again.")
+                res.redirect("/signup");
             }
         }
     })
@@ -682,7 +683,10 @@ function authsignup(req, res, next) {
 
 // Get request for siginin route.
 app.get("/signin", function (req, res) {
-    res.render("signin");
+    res.render("signin", {
+        message: req.flash("message"),
+        message1: req.flash("message1")
+    });
 });
 
 // Post request for siginin route.
@@ -692,10 +696,8 @@ app.post("/signin", function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            req.flash("message", "Invalid email or password.")
-            res.render("signin", {
-                emailexists: req.flash("message")
-            });
+            req.flash("message1", "Invalid email or password.")
+            res.redirect("/signin")
         } else {
             req.login(user, function (err) {
                 if (err) {
@@ -709,23 +711,24 @@ app.post("/signin", function (req, res, next) {
 
 // Get request for forgetpassword route.
 app.get("/forgotpassword", function (req, res) {
-    res.render("forgetpassword");
+    res.render("signup", {
+        message: req.flash("message"),
+        message1: req.flash("message1")
+    });
 });
-
 
 // Post request for forgetpassword route.
 app.post("/forgotpassword", authforgotpassword, function (req, res) {
     const resetUUIDuser = (`${req.resetUUID}`);
     const checkGPAurl = "http://localhost:3000/resetpassword/" + resetUUIDuser;
-    // const emailUSER = (`${req.eMAIL}`);
+    const emailUSER = (`${req.eMAIL}`);
     const output = `
         <p>We heard that you lost your checkGPA password. Sorry about that!</p>
         <p>But don’t worry! You can use the following link below to reset your password.</p>
 <a href="${checkGPAurl}">${checkGPAurl}</a>
-  <p>If you don’t use this link within 3 hours, it will expire.</p>
-  <p>Note: if you are not the one that required a reset in password just ignore.</p>
+  <p>If you don’t use this link within a day, it will expire.</p>
+  <p>Note: if you did not request this, please ignore this email and your password will remain  unchanged. </p>
       `;
-
     let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -736,7 +739,6 @@ app.post("/forgotpassword", authforgotpassword, function (req, res) {
             rejectUnauthorized: false
         }
     });
-
     let mailOptions = {
         from: '"checkGPA" checkgpa2020@yahoo.com',
         to: `${req.eMAIL}`,
@@ -744,16 +746,13 @@ app.post("/forgotpassword", authforgotpassword, function (req, res) {
         text: 'checkGPA password reset',
         html: output
     };
-
     // send mail with defined transport object
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             return console.log(error);
         } else {
             req.flash("message", "Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.")
-            res.render("forgetpassword", {
-                successalert: req.flash("message")
-            });
+            res.redirect("/forgetpassword");
         }
     });
 });
@@ -767,6 +766,216 @@ function authforgotpassword(req, res, next) {
             const userFound = foundUser.username;
             const resetuuid = uuidv4();
             foundUser.resetpasswordtoken = resetuuid;
+            foundUser.resetyearnow = moment().format('YYYY');
+            foundUser.resetmonthnow = moment().format('M');
+            foundUser.resetdaynow = moment().format('D');
+            foundUser.resethournow = moment().format('H');
+            foundUser.resetampmnow = moment().format('a');
+            foundUser.save(function (err) {
+                if (!err) {
+                    req.eMAIL = userFound;
+                    req.resetUUID = resetuuid;
+
+                    next();
+                } else {
+                    console.log("Couldn't generate");
+                }
+            })
+        } else {
+            req.flash("message1", "Email is invalid or doesn't exist.")
+            res.redirect("/forgetpassword");
+        }
+
+    });
+}
+
+// Get request for reset password for other routes.
+app.get("/resetpassword/:uuiduser", function (req, res) {
+    const uuidUSER = req.params.uuiduser;
+    Overallstrt.findOne({
+        resetpasswordtoken: uuidUSER
+    }, function (err, foundUser) {
+        if (foundUser) {
+            const year = foundUser.resetyearnow;
+            const month = foundUser.resetmonthnow;
+            const day = foundUser.resetdaynow;
+            const hour = foundUser.resethournow;
+            const ampm = foundUser.resetampmnow;
+
+            if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
+                console.log()
+                if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
+                    if (ampm === moment().format('a')) {
+                        res.render("resetpassword", {
+                            resetuuid: uuidUSER,
+                            resetpass: foundUser.username
+                        });
+                    } else {
+                        req.flash("message1", "The link has expired. Try again.")
+                        res.redirect("/forgetpassword");
+                    }
+                } else {
+                    req.flash("message1", "The link has expired. Try again.")
+                    res.redirect("/forgetpassword");
+                }
+
+            } else {
+                req.flash("message1", "The link has expired. Try again.")
+                res.redirect("/forgetpassword");
+            }
+
+        } else {
+            req.flash("message1", "The link has expired. Try again.")
+            res.redirect("/forgetpassword");
+        }
+    });
+});
+
+// Post request for reset password for other routes.
+app.post("/resetpassword/:uuiduser", authresetpassword, function (req, res) {
+    const uuidUSER = req.params.uuiduser;
+    const newPASS = req.body.password;
+    Overallstrt.findOne({
+        resetpasswordtoken: uuidUSER
+    }, function (err, foundUser) {
+        if (foundUser) {
+            const passwformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+            if (newPASS.match(passwformat)) {
+                const newUUID = uuidv4();
+                foundUser.resetpasswordtoken = process.env.ONEHOURRESET + newUUID
+                foundUser.save(function (err) {
+                    if (!err) {
+                        foundUser.setPassword(newPASS, function () {
+                            foundUser.save(function (err) {
+                                if (!err) {
+                                    const output = `
+            <p>checkGPA Password has successfully been changed.</p>
+            <p>Please try not to forget again.</p>
+    <p>With love from checkGPA</p>
+    <a href="/privacy-policy">Privacy Statement</a>
+    <a href="/terms&conditions">Terms of Service</a>
+          `;
+                                    let transporter = nodemailer.createTransport({
+                                        service: "gmail",
+                                        auth: {
+                                            user: 'checkgpa2020@gmail.com',
+                                            pass: process.env.AUTHPASSWORD
+                                        },
+                                        tls: {
+                                            rejectUnauthorized: false
+                                        }
+                                    });
+                                    let mailOptions = {
+                                        from: '"checkGPA" checkgpa2020@yahoo.com',
+                                        to: foundUser.username,
+                                        subject: 'checkGPA Password successfully changed',
+                                        text: 'checkGPA Password successfully changed',
+                                        html: output
+                                    };
+                                    transporter.sendMail(mailOptions, (error, info) => {
+                                        if (error) {
+                                            return console.log(error);
+                                        } else {
+                                            req.flash("message", "Password has successfully been changed. Try signing in.")
+                                            res.redirect("/signin")
+                                        }
+                                    });
+                                } else {
+                                    req.flash("message1", "Password couldn't  be changed. Try again later and please try to follow all instructions.")
+                                    res.redirect("/signin");
+                                }
+                            })
+                        })
+                    } else {
+                        req.flash("message", "Password didn't meet required format. Try again")
+                        res.render("resetpassword", {
+                            passwrld: req.flash("message"),
+                            resetuuid: uuidUSER,
+                            resetpass: foundUser.username
+                        });
+                    }
+                });
+            } else {
+                req.flash("message", "Password didn't meet required format. Try again")
+                res.render("resetpassword", {
+                    passwrld: req.flash("message"),
+                    resetuuid: uuidUSER,
+                    resetpass: foundUser.username
+                });
+            }
+        } else {
+            res.redirect("/*");
+        }
+    });
+});
+
+// Middleware for reset password for other routes.
+function authresetpassword(req, res, next) {
+    next();
+}
+
+// Get request for change password route.
+app.get("/changepassword", function (req, res) {
+    res.render("changepassword", {
+        message: req.flash("message"),
+        message1: req.flash("message1")
+    });
+});
+
+// Post request for change password route.
+app.post("/changepassword", authchangepassword, function (req, res) {
+    const resetUUIDuser = (`${req.resetUUID}`);
+    const checkGPAurl = "http://localhost:3000/changeresetpassword/" + resetUUIDuser;
+    const emailUSER = (`${req.eMAIL}`);
+    const output = `
+        <p>We heard that you want your checkGPA password change. </p>
+        <p>You can use the following link below to change your password.</p>
+<a href="${checkGPAurl}">${checkGPAurl}</a>
+  <p>If you don’t use this link before 2 hours, it will expire.</p>
+  <p>Note: if you did not request this, please ignore this email and your password will remain  unchanged. </p>
+      `;
+    let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: 'checkgpa2020@gmail.com',
+            pass: process.env.AUTHPASSWORD
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    });
+    let mailOptions = {
+        from: '"checkGPA" checkgpa2020@yahoo.com',
+        to: `${req.eMAIL}`,
+        subject: 'checkGPA change password',
+        text: 'checkGPA change password',
+        html: output
+    };
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        } else {
+            req.flash("message", "Check your email for a link to change your password. If it doesn’t appear within a few minutes, check your spam folder.")
+            res.redirect("/changepassword");
+        }
+    });
+});
+
+// Middleware for change password.
+function authchangepassword(req, res, next) {
+    Overallstrt.findOne({
+        username: req.body.username
+    }, function (err, foundUser) {
+        if (foundUser) {
+            const userFound = foundUser.username;
+            const resetuuid = uuidv4();
+            foundUser.changepasswordtoken = resetuuid;
+            foundUser.resetyearnow = moment().format('YYYY');
+            foundUser.resetmonthnow = moment().format('M');
+            foundUser.resetdaynow = moment().format('D');
+            foundUser.resethournow = moment().format('H');
+            foundUser.resetampmnow = moment().format('a');
             foundUser.save(function (err) {
                 if (!err) {
                     req.eMAIL = userFound;
@@ -777,51 +986,145 @@ function authforgotpassword(req, res, next) {
                 }
             })
         } else {
-            req.flash("message", "Email is invalid or doesn't exist.")
-            res.render("forgetpassword", {
-                emailexists: req.flash("message")
-            });
+            req.flash("message1", "Email is invalid or doesn't exist.")
+            res.redirect("/changepassword");
         }
 
     });
 }
 
-app.get("/resetpassword", function (req, res) {
-    res.render("resetpassword");
+// Get request for changepassword other route
+app.get("/changeresetpassword/:uuiduser", function (req, res) {
+    const uuidUSER = req.params.uuiduser;
+    Overallstrt.findOne({
+        changepasswordtoken: uuidUSER
+    }, function (err, foundUser) {
+        if (foundUser) {
+            const year = foundUser.resetyearnow;
+            const month = foundUser.resetmonthnow;
+            const day = foundUser.resetdaynow;
+            const hour = foundUser.resethournow;
+            const ampm = foundUser.resetampmnow;
+            if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
+                console.log()
+                if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
+                    if (ampm === moment().format('a')) {
+                        res.render("changeresetpassword", {
+                            resetuuid: uuidUSER,
+                            resetpass: foundUser.username
+                        });
+                    } else {
+                        req.flash("message1", "The link has expired. Try again.")
+                        res.redirect("/changepassword");
+                    }
+                } else {
+                    req.flash("message1", "The link has expired. Try again.")
+                    res.redirect("/changepassword");
+                }
+
+            } else {
+                req.flash("message1", "The link has expired. Try again.")
+                res.redirect("/changepassword");
+            }
+
+        } else {
+            req.flash("message1", "The link has expired. Try again.")
+            res.redirect("/changepassword");
+        }
+    });
 })
 
-
-// Get request for reset password route.
-app.get("/resetpassword/:uuiduser", function (req, res) {
+// Post request for changepassword other route
+app.post("/changeresetpassword/:uuiduser", authchangeresetpassword, function (req, res) {
+    const oldPassword = req.body.oldpassword;
+    const newPassword = req.body.newpassword;
+    const newreqPassword = req.body.newreqpassword;
     const uuidUSER = req.params.uuiduser;
     Overallstrt.findOne({
-        resetpasswordtoken: uuidUSER
+        changepasswordtoken: uuidUSER
     }, function (err, foundUser) {
         if (foundUser) {
-            res.render("resetpassword", {
-                resetpass: foundUser.username,
-                resetuuid: uuidUSER
-            });
+            if (req.body.newpassword === req.body.newreqconpassword) {
+                const changepasswformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+                if (req.body.newpassword.match(changepasswformat)) {
+                    foundUser.changePassword(oldPassword, newPassword, function (err) {
+                        if (!err) {
+                            const newUUID2 = uuidv4();
+                            foundUser.changepasswordtoken = process.env.ONEHOURRESET2 + newUUID2
+                            foundUser.save(function (err) {
+                                if (!err) {
+                                    const output = `
+                <p>checkGPA Password has successfully been changed.</p>
+                <p>Please try not to forget again.</p>
+        <p>With love from checkGPA</p>
+        <a href="/privacy-policy">Privacy Statement</a>
+        <a href="/terms&conditions">Terms of Service</a>
+              `;
+                                    let transporter = nodemailer.createTransport({
+                                        service: "gmail",
+                                        auth: {
+                                            user: 'checkgpa2020@gmail.com',
+                                            pass: process.env.AUTHPASSWORD
+                                        },
+                                        tls: {
+                                            rejectUnauthorized: false
+                                        }
+                                    });
+                                    let mailOptions = {
+                                        from: '"checkGPA" checkgpa2020@yahoo.com',
+                                        to: foundUser.username,
+                                        subject: 'checkGPA Password successfully changed',
+                                        text: 'checkGPA Password successfully changed',
+                                        html: output
+                                    };
+                                    transporter.sendMail(mailOptions, (error, info) => {
+                                        if (error) {
+                                            return console.log(error);
+                                        } else {
+                                            req.flash("message", "Password has successfully been changed. Try signing in.")
+                                            res.redirect("/signin");
+                                        }
+                                    });
+                                } else {
+                                    console.log("uuid insertion error");
+                                    res.redirect("/signin")
+                                }
+                            });
+                        } else {
+                            req.flash("message", "Formal password is invalid. Try again.");
+                            res.render("changeresetpassword", {
+                                passwrld: req.flash("message"),
+                                resetuuid: uuidUSER,
+                                resetpass: foundUser.username
+                            });
+                        }
+                    });
+                } else {
+                    req.flash("message", "Password didn't meet required format. Try again.")
+                    res.render("changeresetpassword", {
+                        passwrld: req.flash("message"),
+                        resetuuid: uuidUSER,
+                        resetpass: foundUser.username
+                    });
+                }
+            } else {
+                req.flash("message", "Those passwords didn't match. Try again.")
+                res.render("changeresetpassword", {
+                    passwrld: req.flash("message"),
+                    resetuuid: uuidUSER,
+                    resetpass: foundUser.username
+                });
+            }
         } else {
-            res.redirect("/*")
+            res.redirect("/*");
         }
     });
 });
 
-// Post request for reset password route.
-app.post("/resetpassword/:uuiduser", function (req, res) {
-    const uuidUSER = req.params.uuiduser;
-    Overallstrt.findOne({
-        resetpasswordtoken: uuidUSER
-    }, function (err, foundUser) {
-        if (foundUser) {
-            console.log("Found USER BITCH");
-        } else {
-            res.redirect("/*")
-        }
-    });
-
-});
+// Middleware for reset change password.
+function authchangeresetpassword(req, res, next) {
+    next();
+}
 
 // Get request for privary policy route.
 app.get("/privacy-policy", function (req, res) {
@@ -843,7 +1146,6 @@ app.get("/logout", function (req, res) {
 
 // 404 error route.
 app.get("*", function (req, res, next) {
-
     res.render("404error")
 })
 

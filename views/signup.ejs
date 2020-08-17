@@ -47,23 +47,11 @@
             <img src="pics/calculator.png" class="calculator-img d-inline-block align-top " alt="gpa.jpg">
         </a>
     </nav>
-    <% if(locals.userexists){ %>
-    <div class="alertcsssign alert alert-danger">
-        <%= userexists %>
+    <% if(message1.length > 0){ %>
+    <div class="alertcsssign2 alert alert-danger">
+        <%= message1 %>
     </div>
     <% }%>
-    <% if(locals.passwordformat){ %>
-    <div class="alertcsssign alert alert-danger">
-        <%= passwordformat %>
-    </div>
-    <% }%>
-    <% if(locals.invalidpassword){ %>
-    <div class="alertcsssign alert alert-danger">
-        <%= invalidpassword %>
-    </div>
-    <% }%>
-
-
     <div class="text-center">
         <form action="/signup" method="POST" class="form-signin">
             <img class="mb-4" src="pics/clown.png" alt="" width="72" height="72">

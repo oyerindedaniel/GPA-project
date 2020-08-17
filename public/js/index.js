@@ -80,4 +80,14 @@ setTimeout(function () {
 const flashAlertsign = $(".alertcsssign");
 setTimeout(function () {
     flashAlertsign.fadeOut("fast");
-}, 3000);
+}, 4000);
+
+const flashAlertforg = $(".alertcssforpass");
+setTimeout(function () {
+    flashAlertforg.fadeOut("fast");
+}, 20000);
+
+const flashAlertsign2 = $(".alertcsssign2");
+setTimeout(function () {
+    flashAlertsign2.fadeOut("fast");
+}, 6000);
