@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    background-color: #f6f5f5;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 10px;
+    max-width: 100%;
+    min-height: 100%;
+    position: relative;
+}
+
+.calculator-img {
+    width: 4.3rem;
+}
+
+.nav-link,
+.btn-style {
+    background-color: white;
+    border: 0.1rem solid rgba(0, 0, 0);
+    border-radius: 1.5rem;
+    color: rgba(0, 0, 0) !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 2rem 1.5rem 2rem 1.5rem !important;
+    padding: 0.6rem 2rem 0.6rem 2rem !important;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.btn-style:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.drop-item {
+    color: black;
+    font-size: 1.3rem !important;
+}
+
+.drop-item:hover {
+    background-color: white !important;
+    color: blue;
+}
+
+a.sign-up {
+    background-color: rgba(0, 0, 0, 1);
+    color: white !important;
+}
+
+.container-one {
+    padding-left: 15rem;
+}
+
+.container-two {
+    padding-left: 15rem;
+    padding-right: 7rem;
+}
+
+.container-three {
+    padding-left: 15rem;
+    padding-right: 15rem;
+}
+
+
+h1 {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 4rem;
+}
+
+h2 {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+p {
+    font-size: 1.8rem;
+    line-height: 2;
+}
+
+.p-joke {
+    font-size: 1.3rem;
+    margin-bottom: 0;
+}
+
+.point-h2 {
+    font-size: 2.2rem;
+}
+
+.unorder-list {
+    padding-left: 3rem;
+}
+
+.motvquote {
+    font-style: italic;
+}
+
+.table-raise {
+    font-size: 1.8rem;
+    width: 45%;
+}
+
+/*
+.appspo {
+    font-size: 3rem;
+}*/

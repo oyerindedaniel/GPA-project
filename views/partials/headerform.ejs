@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="GPA signin">
+    <meta name="description" content="GPA signup">
     <meta name="author" content="Oyerinde Daniel Diekololuwa">
     <!-- <meta name="generator" content=""> -->
-    <title>GPA Signin</title>
+    <title>GPA Signup</title>
     <!-- Favicon -->
     <link rel="icon" href="favicon/favicon.ico">
     <!-- Social icons -->
@@ -51,47 +51,3 @@
             <img src="/pics/calculator.png" class="calculator-img d-inline-block align-top " alt="gpa.jpg">
         </a>
     </nav>
-    <% if(message1.length > 0){ %>
-    <div class="alert alert alert-danger alert-dismissible fade show alert-css1" role="alert">
-        <div class="text-beware">
-            <%= message1 %>
-        </div>
-        <button type="button" class="close close-button" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <% }%>
-    <% if(message.length > 0){ %>
-    <div class="alert alert alert-success alert-dismissible fade show alert-css1" role="alert">
-        <div class="text-beware">
-            <%= message %>
-        </div>
-        <button type="button" class="close close-button" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <% }%>
-    <div class="text-center">
-        <form action="/signin" method="POST" class="form-signin">
-            <img class="mb-4" src="/pics/clown.png" alt="" width="72" height="72">
-            <h1 class="h3 mb-3 font-weight-normal">SIGN IN</h1>
-            <input type="email" name="username" class="signin-email form-control" placeholder="Email address" required autofocus>
-            <input type="password" name="password" class="signin-password mainpassword form-control" placeholder="Password" required autofocus>
-            <div class="rules3">
-                <a class="rules3" href="/forgotpassword">
-                    Forgot Password?
-                </a>
-                <a class="rules4" href="/changepassword">
-                    Change Password?
-                </a>
-            </div>
-            <button class="btn btn-lg btn-primary btn-block signin-button" type="submit">Sign in</button>
-            <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
-                <i class="fab fa-google"></i>
-                Sign In with Google
-            </a>
-            <p class="rules">By clicking “Sign in for checkGPA”, you agree to our <a href="/terms&conditions" target="_blank"> Terms of Service</a> and <a href="/privacy-policy" target="_blank">Privacy Statement</a>. </p>
-            <p class="p-copyright mt-5 mb-3 text-muted">&copy; <%= recentyear %></p>
-        </form>
-    </div>
-    <%- include('partials/footerform'); -%>

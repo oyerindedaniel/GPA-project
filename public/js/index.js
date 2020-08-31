@@ -91,3 +91,9 @@ const flashAlertsign2 = $(".alertcsssign2");
 setTimeout(function () {
     flashAlertsign2.fadeOut("fast");
 }, 6000);
+
+// Award timer.
+const awardshow = $(".award");
+setTimeout(function () {
+    awardshow.fadeOut("fast");
+}, 20000);

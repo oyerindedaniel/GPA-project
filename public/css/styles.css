@@ -1,13 +1,15 @@
 * {
+    background-color: #f1f3f8;
+    box-sizing: inherit;
     margin: 0;
     padding: 0;
-    box-sizing: inherit;
 }
 
 html {
     box-sizing: border-box;
     font-size: 10px !important;
     min-height: 100%;
+    max-width: 100%;
     position: relative;
 }
 
@@ -21,39 +23,73 @@ a {
 }
 
 h1 {
-    font-family: 'Ranchers', sans-serif !important;
     color: #000000;
+    font-family: 'Ranchers', sans-serif !important;
     font-size: 8rem;
     width: 25%;
 }
 
+h6 {
+    font-weight: bold;
+}
+
 .h1-check {
-    font-family: 'Ranchers', sans-serif !important;
     color: #000000;
+    font-family: 'Ranchers', sans-serif;
 }
 
 .carousel-item img {
+    display: block;
     width: 100%;
 }
 
-
-img.calculator-img {
-    width: 10%;
+.main-carousel {
+    background-color: #faf4ff;
+    box-shadow: inset 0 0 1.5rem 0 #f1f3f8;
+    height: 45rem;
+    padding: 1rem;
+    width: 45rem;
 }
 
-.nav-link {
-    margin: 2rem 1.5rem 2rem 1.5rem !important;
-    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
-    padding: 0.6rem 2rem 0.6rem 2rem !important;
-    border-radius: 1.5rem !important;
+img.calculator-img {
+    width: 4.3rem;
+}
+
+.nav-link,
+.btn-style {
     background-color: white !important;
-    font-weight: 100 !important;
+    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+    border-radius: 1.5rem !important;
+    color: rgba(0, 0, 0, 1) !important;
+    font-weight: bold !important;
     font-family: 'Montserrat', sans-serif !important;
     font-size: 1rem !important;
+    margin: 2rem 1.5rem 2rem 1.5rem !important;
+    padding: 0.6rem 2rem 0.6rem 2rem !important;
+}
+
+.btn-style:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
 }
 
 .nav-link:hover {
     background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.drop-item {
+    color: black;
+    font-size: 1.3rem !important;
+}
+
+.drop-item:hover {
+    background-color: white !important;
+    color: blue;
+}
+
+a.sign-up {
+    background-color: rgba(0, 0, 0, 1) !important;
     color: white !important;
 }
 
@@ -66,29 +102,23 @@ img.calculator-img {
     padding: 2rem 0 0 10rem;
 }
 
-.main-carousel {
-    background-color: #faf4ff;
-    box-shadow: inset 0 0 1.5rem 0 rgba(0, 0, 0, 0.2);
-    width: 45rem;
-    height: 45rem;
-    padding: 1rem;
-
-}
-
 .carousel-inner {
     padding: 1rem;
 }
 
 /* Footer */
-.my-socials {
-    text-align: center;
-    padding: 3rem 0 0 0;
-    margin-bottom: 0;
+
+h6.contact-me {
+    margin-bottom: 1.2rem;
 }
 
-.all-socials {
-    margin: 0 3rem 5rem 0;
+.my-socials {
+    margin-bottom: 0;
+    padding: 3rem 0 0 0;
+    text-align: center;
 }
+
+.all-socials {}
 
 .insta-social {
     color: #405DE6;
@@ -102,24 +132,64 @@ img.calculator-img {
     color: #720e9e;
 }
 
+.tooltiptext {
+    display: none;
+    background-color: #fff;
+    border: 0.1rem solid rgba(0, 0, 0);
+    color: #000;
+    padding: 1px 4px;
+    position: relative;
+    top: 2.5rem;
+    right: 4rem;
+    text-align: center;
+    width: 120px;
+}
+
+. {
+    display: block;
+    /*    visibility: visible;*/
+}
+
+.div-socials {
+    display: inline-block;
+    margin: 0 3rem 5rem 0;
+}
+
+.checkgpa {
+    margin-right: 0.75rem;
+}
+
+.termss {
+    margin-right: 0.25rem;
+}
+
+.privs {
+    margin-left: 0.25rem;
+    margin-right: 0.5rem;
+}
+
+.cont {
+    margin-left: 0.25rem;
+}
+
 .p-copyright {
-    position: absolute;
-    width: 50%;
-    margin-left: 1rem;
     bottom: 0;
+    position: absolute;
+    margin-left: 1rem;
+    width: 100%;
 }
 
 /* Media queries at 1000px */
 @media(max-width: 1000px) {
     .main-carousel {
-        text-align: center;
         margin: auto 10rem;
+        text-align: center;
     }
 
     h1 {
-        width: 70%;
-        text-align: center;
         margin: auto 11rem;
+        text-align: center;
+        width: 70%;
     }
 
     img.calculator-img {
@@ -127,14 +197,14 @@ img.calculator-img {
     }
 
     .nav-link {
-        margin: 2rem 2rem -0.5rem 3rem !important;
-        border: none !important;
-        padding: 0 !important;
         background-color: #faf4ff !important;
+        border: none !important;
         border-radius: 0rem !important;
         color: rgba(0, 0, 0, 1) !important;
         font-weight: bold !important;
         font-size: 1.2rem !important;
+        margin: 2rem 2rem -0.5rem 3rem !important;
+        padding: 0 !important;
     }
 
     .nav-link:hover {
@@ -143,76 +213,74 @@ img.calculator-img {
     }
 
     .nav-button {
-        margin: 1rem 2rem -0.5rem 3rem;
         border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+        color: black !important;
+        margin: 1rem 2rem -0.5rem 3rem;
     }
 
-
-}
-
-/* Media queries at 900px */
-@media(max-width: 900px) {
-    h1 {
-        font-size: 5.8rem;
-    }
-}
-
-/* Media queries at 800px */
-@media(max-width: 800px) {
-
-    h1 {
-        text-align: center;
-        margin: auto;
+    /* Media queries at 900px */
+    @media(max-width: 900px) {
+        h1 {
+            font-size: 5.8rem;
+        }
     }
 
-    .main-carousel {
-        text-align: center;
-        margin: auto;
-    }
+    /* Media queries at 800px */
+    @media(max-width: 800px) {
 
-    .row2 {
-        padding: 1rem 0 0 1.6rem;
-    }
+        h1 {
+            text-align: center;
+            margin: auto;
+        }
 
-}
+        .main-carousel {
+            text-align: center;
+            margin: auto;
+        }
 
-/* Media queries at 500px */
-@media(max-width: 500px) {
-
-    h1 {
-        font-size: 5rem;
-    }
-
-    .main-carousel {
-        width: 30rem;
-        height: 30rem;
-        padding: 0.35rem;
-        text-align: center;
-        margin: auto;
+        .row2 {
+            padding: 1rem 0 0 1.6rem;
+        }
 
     }
 
-    .item500 {
-        height: 270px !important;
+    /* Media queries at 500px */
+    @media(max-width: 500px) {
+
+        h1 {
+            font-size: 5rem;
+        }
+
+        .main-carousel {
+            width: 30rem;
+            height: 30rem;
+            padding: 0.35rem;
+            text-align: center;
+            margin: auto;
+
+        }
+
+        .item500 {
+            height: 270px !important;
+        }
+
+        .p-copyright {
+            width: 100%;
+        }
     }
 
-    .p-copyright {
-        width: 100%;
+    @media(max-width: 350px) {
+        .main-carousel {
+            width: 22rem;
+            height: 22rem;
+            padding: 0.2rem;
+            text-align: center;
+            margin: auto;
+
+        }
+
+        .item500 {
+            height: 197px !important;
+        }
+
     }
-}
-
-@media(max-width: 350px) {
-    .main-carousel {
-        width: 22rem;
-        height: 22rem;
-        padding: 0.2rem;
-        text-align: center;
-        margin: auto;
-
-    }
-
-    .item500 {
-        height: 197px !important;
-    }
-
-}

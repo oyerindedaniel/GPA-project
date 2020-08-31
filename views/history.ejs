@@ -1,4 +1,13 @@
 <%- include('partials/header'); -%>
+<div class="award-div">
+    <% if(allfinalresults.finalresult[0] >= highestgrade - 0.5){ %>
+    <img class="award" src="pics/1.png" alt="...">
+    <%    }else if(allfinalresults.finalresult[0] >= highestgrade - 1){  %>
+    <img class="award" src="pics/2.png" alt="...">
+    <%   }else if(allfinalresults.finalresult[0] >= highestgrade - 1.5){ %>
+    <img class="award" src="pics/3.png" alt="...">
+    <%  } %>
+</div>
 <div class="div2">
     <div class="table-history">
         <table class="table table-striped">
@@ -11,31 +20,31 @@
             </thead>
             <tbody>
                 <% allitems.forEach(function(allitem){ %>
-                <% if(allitem.grade2 === "A" ){ %>
+                <% if(allitem.grade2 === "A" || allitem.grade2 === "A+" || allitem.grade2 === "A++" || allitem.grade2 === "A*" || allitem.grade2 === "A**" || allitem.grade2 === "A1" ){ %>
                 <tr id="table-row" class="A">
                     <td><%= allitem.coursecode%></td>
                     <td><%= allitem.unitpercourse%></td>
                     <td class="gradeget"><%= allitem.grade2 %></td>
                 </tr>
-                <%    }else if(allitem.grade2 === "B"){  %>
+                <%    }else if(allitem.grade2 === "B" || allitem.grade2 === "B-" || allitem.grade2 === "B2" || allitem.grade2 === "B3"){  %>
                 <tr id="table-row" class="B">
                     <td><%= allitem.coursecode%></td>
                     <td><%= allitem.unitpercourse%></td>
                     <td class="gradeget"><%= allitem.grade2 %></td>
                 </tr>
-                <%  }else if(allitem.grade2 === "C"){  %>
+                <%  }else if(allitem.grade2 === "C" || allitem.grade2 === "C3" || allitem.grade2 === "C4" || allitem.grade2 === "C5" || allitem.grade2 === "C6"){  %>
                 <tr id="table-row" class="C">
                     <td><%= allitem.coursecode%></td>
                     <td><%= allitem.unitpercourse%></td>
                     <td class="gradeget"><%= allitem.grade2 %></td>
                 </tr>
-                <%   }else if(allitem.grade2 === "D"){ %>
+                <%   }else if(allitem.grade2 === "D" || allitem.grade2 === "D7" || allitem.grade2 === "D8"){ %>
                 <tr id="table-row" class="D">
                     <td><%= allitem.coursecode%></td>
                     <td><%= allitem.unitpercourse%></td>
                     <td class="gradeget"><%= allitem.grade2 %></td>
                 </tr>
-                <%  }else if(allitem.grade2 === "F"){ %>
+                <%  }else if(allitem.grade2 === "F" || allitem.grade2 === "F9"){ %>
                 <tr id="table-row" class="F">
                     <td><%= allitem.coursecode%></td>
                     <td><%= allitem.unitpercourse%></td>
@@ -47,7 +56,6 @@
                     <td><%= allitem.unitpercourse%></td>
                     <td class="gradeget"><%= allitem.grade2 %></td>
                 </tr>
-
                 <%  } %>
                 <% }); %>
 
@@ -56,7 +64,6 @@
                     <td class="norm norm1">GPA</td>
                     <td class="norm norm1"><%= allfinalresults.finalresult[0]%></td>
                 </tr>
-
             </tbody>
         </table>
     </div>

@@ -7,7 +7,8 @@
     <title>GPA review</title>
     <meta name="description" content="For easily calculation of GPA check out this site.">
     <meta name="author" content="Oyerinde Daniel Diekololuwa">
-
+    <!-- Favicon -->
+    <link rel="icon" href="favicon/favicon.ico">
     <!-- Bootstrap Javascript -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -23,7 +24,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <button class="nav-button navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -103,7 +104,7 @@
         //Monitoring Comment Numbers
         const comment1 = document.querySelector(".totalcomment");
         const commentHtml = comment1.innerHTML;
-        if (commentHtml === "0" || commentHtml === "1") {
+        if (commentHtml === "1") {
             const comment1 = document.querySelector(".totalcomment1");
             comment1.innerHTML = "Comment";
         }

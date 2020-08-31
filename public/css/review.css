@@ -1,13 +1,14 @@
 * {
+    background-color: #e0ece4;
+    box-sizing: inherit;
     margin: 0;
     padding: 0;
-    box-sizing: inherit;
 }
 
 html {
     box-sizing: border-box;
-    font-size: 10px !important;
-    font-family: 'Montserrat', sans-serif !important;
+    font-size: 10px;
+    font-family: 'Montserrat', sans-serif;
     min-height: 100%;
     position: relative;
 }
@@ -135,7 +136,7 @@ h5 {
 }
 
 .showmore-button:hover {
-    background-color: rgba(0, 0, 0, 0.91) !important;
+    background-color: rgba(0, 0, 0, 0.91);
 }
 
 .nav-link {
@@ -229,7 +230,7 @@ h5 {
 .comment-search {}
 
 .comment-button {
-    margin-left: 32rem !important;
+    margin-left: 32rem;
 }
 
 /*Media query at 5000px*/
@@ -281,12 +282,12 @@ h5 {
     }
 
     .nav-link:hover {
-        background-color: #faf4ff !important;
-        color: rgba(0, 0, 0, 0.8) !important;
+        background-color: #faf4ff;
+        color: rgba(0, 0, 0, 0.8);
     }
 
     .nav-button {
-        margin: 1rem 2rem -0.5rem 3rem;
+        margin: 1rem 2rem -0.5rem 2rem;
         border: 0.1rem solid rgba(0, 0, 0, 1) !important;
     }
 
@@ -326,7 +327,7 @@ h5 {
     }
 
     .nav-link {
-        margin: 2rem 2rem -0.5rem 2rem !important;
+        margin: 2rem 2rem -0.5rem 2rem;
     }
 
     .alert-beware {
@@ -355,12 +356,12 @@ h5 {
     }
 
     .form-structure1 {
-        margin-left: -2rem !important;
+        margin-left: -2rem;
         width: 109%;
     }
 
     .div-viewreply {
-        margin-left: -2rem !important;
+        margin-left: -2rem;
     }
 }
 

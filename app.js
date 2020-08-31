@@ -25,7 +25,7 @@ const {
     v4: uuidv4
 } = require('uuid');
 // Cron.
-const cron = require('node-cron');
+const cron = require("node-cron");
 // Moment js.
 const moment = require("moment");
 moment().format();
@@ -72,6 +72,16 @@ mongoose.connect("mongodb://localhost:27017/gpaDB", {
 });
 mongoose.set('useFindAndModify', false);
 mongoose.set("useCreateIndex", true);
+
+//Jokes
+const jokesSchema = new mongoose.Schema({
+    jokesgpa: {
+        type: String,
+    }
+});
+
+// Collection jokes Schema.
+const Jokes = mongoose.model("Jokes", jokesSchema);
 
 // Collection reply Schema. Comment route
 const replySchema = new mongoose.Schema({
@@ -179,7 +189,6 @@ passport.use(new GoogleStrategy({
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
     },
     function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
         Overallstrt.findOrCreate({
             googleId: profile.id,
             googlename: profile.displayName
@@ -192,8 +201,60 @@ passport.use(new GoogleStrategy({
 // Get request for home route.
 app.route("/")
     .get(function (req, res) {
+        res.locals.style = "styles.css"
+        res.locals.title = "checkGPA - Home"
         res.render("gpalandingpage");
     });
+
+
+app.route("/jokes")
+    .get(function (req, res) {
+        Jokes.find({}, function (err, foundJokes) {
+            if (!err) {
+                foundJokes.forEach(function (foundJoke) {
+                    console.log(foundJoke.jokesgpa);
+                })
+            }
+        })
+    })
+
+app.route("/jokes")
+    .post(function (req, res) {
+        const jokesGPA = req.body.jokes;
+        console.log(jokesGPA);
+        const jokes = new Jokes({
+            jokesgpa: jokesGPA
+        });
+        jokes.save(function (err) {
+            if (!err) {
+                console.log("Jokes inserted");
+                res.send("Jokes inserted");
+            } else {
+                console.log(err);
+                res.send(err);
+            }
+        })
+    });
+
+// Get request for raiseGPA route.
+app.get("/how-to-raise-gpa", function (req, res) {
+    res.locals.style = "checkGPAguide.css"
+    res.locals.title = "checkGPA - How to raise your GPA"
+    const randomNumb = Math.floor((Math.random() * 17));
+    console.log(randomNumb)
+    Jokes.find({}, function (err, foundJokes) {
+        if (foundJokes) {
+            //            cron.schedule("* * * * *", function () {
+            const filterJoke = foundJokes[randomNumb].jokesgpa;
+            res.render("raisegpa", {
+                jokeone: filterJoke
+            });
+            //            });
+        } else {
+            console.log(err);
+        }
+    })
+});
 
 app.get('/auth/google',
     passport.authenticate('google', {
@@ -232,7 +293,7 @@ app.route("/grade-system")
 
     // Post request for grade system route.
     .post(function (req, res) {
-        const gradealpha = _.upperCase(req.body.grade1);
+        const gradealpha = _.toUpper(req.body.grade1);
         const pointalpha = req.body.point;
         const gradesystem = new Gradesystemvalue({
             grade1: gradealpha,
@@ -283,7 +344,8 @@ app.route("/calculate")
                 if (calculategpaperson) {
                     res.render("calculate", {
                         allcalculateitems: calculategpaperson.calculategpaoverall,
-                        message: req.flash("message")
+                        message: req.flash("message"),
+                        message1: req.flash("message"),
                     });
                 } else {
                     console.log("Nothing found");
@@ -297,7 +359,7 @@ app.route("/calculate")
     // Post request for calculate route.
     .post(function (req, res) {
         const coursecodebeta = _.upperCase(req.body.coursecode);
-        const gradebeta = _.upperCase(req.body.grade2);
+        const gradebeta = _.toUpper(req.body.grade2);
         const unitpercoursebeta = req.body.unitpercourse;
         Overallstrt.findById(req.user.id, function (err, foundUser) {
             if (!foundUser) {
@@ -306,7 +368,9 @@ app.route("/calculate")
                 const foundUsergrades = foundUser.gradesystemoverall;
                 foundUsergrades.forEach(function (foundUsergrade) {
                     //Come back and put length that check how many and redirect them to another page.
+                    //         if (foundUsergrade.grade1.length > 1) {
                     if (foundUsergrade.grade1 === gradebeta) {
+
                         const multipyunits = foundUsergrade.points * unitpercoursebeta;
                         const calculategpa = new Calculategpavalue({
                             coursecode: coursecodebeta,
@@ -390,6 +454,10 @@ app.route("/calculate")
                     } else {
                         console.log("Not it");
                     }
+                    //                    } else {
+                    //                        req.flash("message1", "Grade letter was not indicated in your grade system.");
+                    //                        res.redirect("/calculate");
+                    //                    }
                 })
             }
         });
@@ -400,6 +468,9 @@ app.get("/history", function (req, res) {
     if (req.isAuthenticated()) {
         Overallstrt.findById(req.user.id, function (err, foundUser) {
             if (foundUser) {
+                const highGRADE = Math.max.apply(Math, foundUser.gradesystemoverall.map(function (hgrade) {
+                    return hgrade.points
+                }));
                 const calc1 = foundUser.totalcalcunits[0];
                 const calc = foundUser.totalunit[0];
                 const divCal1 = Math.round((calc1 / calc) * 100);
@@ -411,7 +482,8 @@ app.get("/history", function (req, res) {
                     if (!err) {
                         res.render("history", {
                             allitems: foundUser.calculategpaoverall,
-                            allfinalresults: foundUser
+                            allfinalresults: foundUser,
+                            highestgrade: highGRADE
                         });
                     }
                 })
@@ -696,28 +768,30 @@ app.post("/signin", function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            req.flash("message1", "Invalid email or password.")
-            res.redirect("/signin")
+            req.flash("message1", "Invalid email or password.");
+            res.redirect("/signin");
         } else {
             req.login(user, function (err) {
                 if (err) {
                     return next(err);
                 }
+                const usernameUP = _.toUpper(user.username1);
+                req.flash("message", usernameUP + ".");
                 return res.redirect("/grade-system");
             });
         }
     })(req, res, next);
 });
 
-// Get request for forgetpassword route.
+// Get request for forgotpassword route.
 app.get("/forgotpassword", function (req, res) {
-    res.render("signup", {
+    res.render("forgetpassword", {
         message: req.flash("message"),
         message1: req.flash("message1")
     });
 });
 
-// Post request for forgetpassword route.
+// Post request for forgotpassword route.
 app.post("/forgotpassword", authforgotpassword, function (req, res) {
     const resetUUIDuser = (`${req.resetUUID}`);
     const checkGPAurl = "http://localhost:3000/resetpassword/" + resetUUIDuser;
@@ -752,7 +826,7 @@ app.post("/forgotpassword", authforgotpassword, function (req, res) {
             return console.log(error);
         } else {
             req.flash("message", "Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.")
-            res.redirect("/forgetpassword");
+            res.redirect("/forgotpassword");
         }
     });
 });
@@ -775,7 +849,6 @@ function authforgotpassword(req, res, next) {
                 if (!err) {
                     req.eMAIL = userFound;
                     req.resetUUID = resetuuid;
-
                     next();
                 } else {
                     console.log("Couldn't generate");
@@ -783,7 +856,7 @@ function authforgotpassword(req, res, next) {
             })
         } else {
             req.flash("message1", "Email is invalid or doesn't exist.")
-            res.redirect("/forgetpassword");
+            res.redirect("/forgotpassword");
         }
 
     });
@@ -801,7 +874,6 @@ app.get("/resetpassword/:uuiduser", function (req, res) {
             const day = foundUser.resetdaynow;
             const hour = foundUser.resethournow;
             const ampm = foundUser.resetampmnow;
-
             if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
                 console.log()
                 if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
@@ -812,21 +884,21 @@ app.get("/resetpassword/:uuiduser", function (req, res) {
                         });
                     } else {
                         req.flash("message1", "The link has expired. Try again.")
-                        res.redirect("/forgetpassword");
+                        res.redirect("/forgotpassword");
                     }
                 } else {
                     req.flash("message1", "The link has expired. Try again.")
-                    res.redirect("/forgetpassword");
+                    res.redirect("/forgotpassword");
                 }
 
             } else {
                 req.flash("message1", "The link has expired. Try again.")
-                res.redirect("/forgetpassword");
+                res.redirect("/forgotpassword");
             }
 
         } else {
             req.flash("message1", "The link has expired. Try again.")
-            res.redirect("/forgetpassword");
+            res.redirect("/forgotpassword");
         }
     });
 });
@@ -1151,5 +1223,5 @@ app.get("*", function (req, res, next) {
 
 // Listen at port 3000.
 app.listen(process.env.PORT, function () {
-    console.log("server started on port 3000");
+    console.log(`server started on port ${process.env.PORT}`);
 });

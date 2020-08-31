@@ -1,42 +1,43 @@
 {
-    "name": "gpaproject",
-    "version": "1.0.0",
-    "description": "Oyerinde Daniel GPA project",
-    "main": "app.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "Oyerinde Daniel",
-    "license": "ISC",
-    "dependencies": {
-        "body-parser": "^1.19.0",
-        "connect-flash": "^0.1.1",
-        "cookie-parser": "^1.4.5",
-        "dotenv": "^8.2.0",
-        "ejs": "^3.1.3",
-        "express": "^4.17.1",
-        "express-session": "^1.17.1",
-        "lodash": "^4.17.19",
-        "moment": "^2.27.0",
-        "mongoose": "^5.9.25",
-        "mongoose-findorcreate": "^3.0.0",
-        "morgan": "^1.10.0",
-        "node-cron": "^2.0.3",
-        "nodemailer": "^6.4.11",
-        "passport": "^0.4.1",
-        "passport-google-oauth20": "^2.0.0",
-        "passport-local": "^1.0.0",
-        "passport-local-mongoose": "^6.0.1",
-        "uuidv4": "^6.2.2"
-    },
-    "devDependencies": {},
-    "keywords": [],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/oyerindedaniel/GPA-project.git"
-    },
-    "bugs": {
-        "url": "https://github.com/oyerindedaniel/GPA-project/issues"
-    },
-    "homepage": "https://github.com/oyerindedaniel/GPA-project#readme"
+  "name": "gpaproject",
+  "version": "1.0.0",
+  "description": "Oyerinde Daniel GPA project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Oyerinde Daniel",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.5",
+    "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.3",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "lodash": "^4.17.19",
+    "moment": "^2.27.0",
+    "mongoose": "^5.9.25",
+    "mongoose-findorcreate": "^3.0.0",
+    "morgan": "^1.10.0",
+    "node-cron": "^2.0.3",
+    "nodemailer": "^6.4.11",
+    "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^6.0.1",
+    "uuidv4": "^6.2.2"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oyerindedaniel/GPA-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oyerindedaniel/GPA-project/issues"
+  },
+  "homepage": "https://github.com/oyerindedaniel/GPA-project#readme"
 }
