@@ -1,7 +1,6 @@
 * {
     margin: 0;
     padding: 0;
-    background-color: #f6f5f5;
 }
 
 html {
@@ -10,6 +9,25 @@ html {
     max-width: 100%;
     min-height: 100%;
     position: relative;
+}
+
+body {
+    background-color: #fff;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+nav {
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    margin-bottom: 1.5rem;
+}
+
+ul {
+    font-size: 2rem;
+    margin-bottom: 10rem;
 }
 
 .calculator-img {
@@ -45,8 +63,8 @@ html {
 }
 
 .drop-item:hover {
-    background-color: white !important;
-    color: blue;
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
 }
 
 a.sign-up {
@@ -59,31 +77,39 @@ a.sign-up {
 }
 
 .container-two {
+    /*    margin-bottom: 7rem;*/
     padding-left: 15rem;
     padding-right: 7rem;
 }
 
 .container-three {
+    margin-bottom: 15rem;
     padding-left: 15rem;
     padding-right: 15rem;
 }
 
+/*
+.margin-bottom {
+    margin-bottom: 10rem;
+}
+*/
 
 h1 {
     font-family: sans-serif;
-    font-weight: bold;
     font-size: 4rem;
+    font-weight: bold;
 }
 
 h2 {
     font-family: sans-serif;
-    font-weight: bold;
     font-size: 3rem;
+    font-weight: bold;
 }
 
 p {
     font-size: 1.8rem;
     line-height: 2;
+    text-align: justify;
 }
 
 .p-joke {
@@ -103,12 +129,133 @@ p {
     font-style: italic;
 }
 
-.table-raise {
-    font-size: 1.8rem;
-    width: 45%;
+table {
+    border-collapse: collapse;
+    font-family: arial, sans-serif;
+    font-size: 1.5rem;
+    width: 60%;
 }
 
-/*
-.appspo {
-    font-size: 3rem;
-}*/
+table.allcalculation {
+    width: 80% !important;
+}
+
+td,
+th {
+    font-weight: bold;
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.table-a {
+    color: rgba(32, 106, 93)
+}
+
+.table-b {
+    color: rgba(58, 73, 138)
+}
+
+.table-c {
+    color: rgba(186, 121, 103)
+}
+
+.table-d {
+    color: rgba(65, 217, 192)
+}
+
+.table-f {
+    color: rgba(217, 32, 38)
+}
+
+.card-title {
+    font-size: 1.8rem;
+}
+
+.card-button {
+    width: 100%;
+
+}
+
+p.card-text {
+    line-height: 1.8;
+}
+
+.btn-btn1 {
+    background-color: rgba(0, 175, 254);
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.btn-btn2 {
+    background-color: rgba(1, 191, 166);
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.btn-btn3 {
+    background-color: rgba(58, 54, 104);
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.btn-btn1:hover {
+    background-color: rgba(0, 175, 250, 0.8);
+}
+
+.btn-btn2:hover {
+    background-color: rgba(1, 191, 166, 0.8);
+}
+
+.btn-btn3:hover {
+    background-color: rgba(58, 54, 104, 0.8);
+}
+
+/* Footer */
+.col-footer {
+    margin: auto;
+    text-align: center;
+}
+
+.checkGPA-name {
+    color: rgb(1, 1, 1);
+    font-family: 'Ranchers', sans-serif !important;
+    font-size: 2rem;
+    display: inline-block;
+    margin-right: 0.8rem;
+}
+
+.checkGPA-name:hover {
+    color: rgba(1, 1, 1, 0.9);
+}
+
+.checkgparight {
+    font-size: 1.2rem;
+    display: inline-block;
+}
+
+.checkgpap {
+    display: inline-block;
+    font-size: 1.2rem;
+}
+
+.pad-p {
+    padding: 0 1rem;
+}
+
+.all-socials {
+    padding: 0 0.5rem;
+}
+
+.div-socials {
+    display: inline-block;
+}
+
+.footer {
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    bottom: 0;
+    padding: 1.7rem 7rem;
+    position: absolute;
+    width: 100%;
+}

@@ -202,7 +202,7 @@ passport.use(new GoogleStrategy({
 app.route("/")
     .get(function (req, res) {
         res.locals.style = "styles.css"
-        res.locals.title = "checkGPA - Home"
+        res.locals.title = "checkGPA - Calculate GPA"
         res.render("gpalandingpage");
     });
 
@@ -256,6 +256,13 @@ app.get("/how-to-raise-gpa", function (req, res) {
     })
 });
 
+// Get request for raiseGPA route.
+app.get("/how-to-calculate-gpa", function (req, res) {
+    res.locals.style = "checkGPAguide.css"
+    res.locals.title = "checkGPA - How to calculate your GPA"
+    res.render("calculategpa");
+});
+
 app.get('/auth/google',
     passport.authenticate('google', {
         scope: ["profile"]
@@ -275,6 +282,7 @@ app.route("/grade-system")
     // Work on this.
     .get(authgradesystem, function (req, res) {
         if (req.isAuthenticated()) {
+            res.locals.title = "checkGPA - Grade-System"
             Overallstrt.findById(req.user.id, function (err, gradeperperson) {
                 if (gradeperperson) {
                     res.render("gradesystem", {
@@ -340,6 +348,7 @@ function authgradesystem(req, res, next) {
 app.route("/calculate")
     .get(function (req, res) {
         if (req.isAuthenticated()) {
+            res.locals.title = "checkGPA - CalculateGPA"
             Overallstrt.findById(req.user.id, function (err, calculategpaperson) {
                 if (calculategpaperson) {
                     res.render("calculate", {
@@ -466,6 +475,7 @@ app.route("/calculate")
 // Get request for history route.
 app.get("/history", function (req, res) {
     if (req.isAuthenticated()) {
+        res.locals.title = "checkGPA - History"
         Overallstrt.findById(req.user.id, function (err, foundUser) {
             if (foundUser) {
                 const highGRADE = Math.max.apply(Math, foundUser.gradesystemoverall.map(function (hgrade) {
@@ -475,9 +485,10 @@ app.get("/history", function (req, res) {
                 const calc = foundUser.totalunit[0];
                 const divCal1 = Math.round((calc1 / calc) * 100);
                 const divCal = (divCal1 / 100);
+                const two2f = divCal.toFixed(2)
                 const lastarrayResult = foundUser.finalresult;
                 lastarrayResult.pop();
-                lastarrayResult.push(divCal);
+                lastarrayResult.push(two2f);
                 foundUser.save(function (err) {
                     if (!err) {
                         res.render("history", {

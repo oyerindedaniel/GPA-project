@@ -1,6 +1,4 @@
 * {
-    background-color: #f1f3f8;
-    box-sizing: inherit;
     margin: 0;
     padding: 0;
 }
@@ -14,12 +12,18 @@ html {
 }
 
 body {
-    background-color: #faf4ff !important;
-    color: #000000;
+    /*
+    background-color: rgba(221, 239, 253, 0.3)
+*/
 }
 
 a {
     text-decoration: none;
+}
+
+nav {
+    background-color: rgb(221, 239, 253);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
 }
 
 h1 {
@@ -43,12 +47,17 @@ h6 {
     width: 100%;
 }
 
+.main-container {
+    margin-bottom: 8rem;
+}
+
 .main-carousel {
-    background-color: #faf4ff;
+    background-color: #fff;
     box-shadow: inset 0 0 1.5rem 0 #f1f3f8;
     height: 45rem;
     padding: 1rem;
     width: 45rem;
+    margin-bottom: 3rem;
 }
 
 img.calculator-img {
@@ -106,76 +115,54 @@ a.sign-up {
     padding: 1rem;
 }
 
+
+
 /* Footer */
-
-h6.contact-me {
-    margin-bottom: 1.2rem;
-}
-
-.my-socials {
-    margin-bottom: 0;
-    padding: 3rem 0 0 0;
+.col-footer {
+    margin: auto;
     text-align: center;
 }
 
-.all-socials {}
-
-.insta-social {
-    color: #405DE6;
+.checkGPA-name {
+    color: rgb(1, 1, 1);
+    font-family: 'Ranchers', sans-serif !important;
+    font-size: 2rem;
+    display: inline-block;
+    margin-right: 0.8rem;
 }
 
-.twitter-social {
-    color: #00acee;
+.checkGPA-name:hover {
+    color: rgba(1, 1, 1, 0.9);
 }
 
-.yahoo-social {
-    color: #720e9e;
+.checkgparight {
+    font-size: 1.2rem;
+    display: inline-block;
 }
 
-.tooltiptext {
-    display: none;
-    background-color: #fff;
-    border: 0.1rem solid rgba(0, 0, 0);
-    color: #000;
-    padding: 1px 4px;
-    position: relative;
-    top: 2.5rem;
-    right: 4rem;
-    text-align: center;
-    width: 120px;
+.checkgpap {
+    display: inline-block;
+    font-size: 1.2rem;
 }
 
-. {
-    display: block;
-    /*    visibility: visible;*/
+.pad-p {
+    padding: 0 1rem;
+}
+
+.all-socials {
+    padding: 0 0.5rem;
 }
 
 .div-socials {
     display: inline-block;
-    margin: 0 3rem 5rem 0;
 }
 
-.checkgpa {
-    margin-right: 0.75rem;
-}
-
-.termss {
-    margin-right: 0.25rem;
-}
-
-.privs {
-    margin-left: 0.25rem;
-    margin-right: 0.5rem;
-}
-
-.cont {
-    margin-left: 0.25rem;
-}
-
-.p-copyright {
+.footer {
+    background-color: rgb(221, 239, 253);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
     bottom: 0;
+    padding: 1.7rem 7rem;
     position: absolute;
-    margin-left: 1rem;
     width: 100%;
 }
 
