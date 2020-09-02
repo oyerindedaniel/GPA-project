@@ -8,6 +8,10 @@ h1 {
     font-size: 1.5rem !important;
 }
 
+a {
+    text-decoration: none !important;
+}
+
 .text-center {
     display: -ms-flexbox;
     display: flex;

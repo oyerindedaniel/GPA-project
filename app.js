@@ -46,6 +46,13 @@ app.use(express.static("public"));
 app.set('view engine', 'ejs');
 app.locals.recentyear = date.getyear()
 app.locals.moment = require('moment');
+app.locals.myemail1 = process.env.DANIELYAHOOEMAIL;
+app.locals.myemail2 = process.env.DANIELGMAILEMAIL;
+app.locals.checkgpa1 = process.env.CHECKGPAYAHOOEMAIL;
+app.locals.checkgpa2 = process.env.CHECKGPAGMAILEMAIL;
+app.locals.id1 = process.env.DANIELGOOGLEID;
+app.locals.id2 = process.env.CHECKGPAGOOGLEID;
+app.locals.my123 = process.env.FREEACCESS;
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -162,7 +169,11 @@ const overallstrtSchema = new mongoose.Schema({
     resetampmnow: String,
     finalresult: [],
     googleId: String,
-    googlename: String
+    googlefirstname: String,
+    googlelastname: String,
+    googlename: String,
+    googleimage: String,
+    googleyes: String
 });
 
 overallstrtSchema.plugin(passportLocalMongoose);
@@ -191,7 +202,11 @@ passport.use(new GoogleStrategy({
     function (accessToken, refreshToken, profile, cb) {
         Overallstrt.findOrCreate({
             googleId: profile.id,
-            googlename: profile.displayName
+            googlefirstname: profile.name.givenName,
+            googlelastname: profile.name.familyName,
+            googlename: profile.displayName,
+            googleimage: profile.photos[0].value,
+            googleyes: "yes"
         }, function (err, user) {
             return cb(err, user);
         });
@@ -287,6 +302,12 @@ app.route("/grade-system")
                 if (gradeperperson) {
                     res.render("gradesystem", {
                         allgradeitems: gradeperperson.gradesystemoverall,
+                        gradepictures: gradeperperson.googleimage,
+                        danielaccess: gradeperperson.username,
+                        mysignupname: gradeperperson.username1,
+                        googlesignupname: gradeperperson.googlename,
+                        validid: gradeperperson.googleId,
+                        googleyes: gradeperperson.googleyes,
                         message: req.flash("message"),
                         message1: req.flash("message"),
                     });
@@ -316,7 +337,8 @@ app.route("/grade-system")
             },
             function (err, result) {
                 if (err) {
-                    res.send(err);
+                    req.flash("message1", "Didn't save. Try Again.")
+                    res.redirect("/grade-system");
                 } else {
                     req.flash("message", "Saved Successfully.")
                     res.redirect("/grade-system");
@@ -351,8 +373,12 @@ app.route("/calculate")
             res.locals.title = "checkGPA - CalculateGPA"
             Overallstrt.findById(req.user.id, function (err, calculategpaperson) {
                 if (calculategpaperson) {
+
                     res.render("calculate", {
                         allcalculateitems: calculategpaperson.calculategpaoverall,
+                        gradepictures: calculategpaperson.googleimage,
+                        danielaccess: calculategpaperson.username,
+                        validid: calculategpaperson.googleId,
                         message: req.flash("message"),
                         message1: req.flash("message"),
                     });
@@ -494,7 +520,10 @@ app.get("/history", function (req, res) {
                         res.render("history", {
                             allitems: foundUser.calculategpaoverall,
                             allfinalresults: foundUser,
-                            highestgrade: highGRADE
+                            highestgrade: highGRADE,
+                            gradepictures: foundUser.googleimage,
+                            danielaccess: foundUser.username,
+                            validid: foundUser.googleId
                         });
                     }
                 })

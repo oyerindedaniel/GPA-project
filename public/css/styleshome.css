@@ -32,6 +32,96 @@ hr {
     background-color:
 }
 
+.display-div {
+    background-color: rgba(25, 25, 25);
+    height: 5rem;
+    margin-top: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    text-align: center;
+    width: 100%
+}
+
+.display-pics {
+    border-radius: 100%;
+    border: 0.2rem solid rgba(255, 255, 255, 1);
+    height: 4.5rem;
+    position: absolute;
+    right: 2rem;
+    width: 4.5rem;
+    z-index: 4;
+}
+
+.dropdown-name {
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    padding-top: 0.5rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    position: absolute;
+    right: 2rem;
+    top: 5rem;
+    z-index: 2;
+}
+
+.dropdown-name2 {
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    padding-top: 0.5rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    position: absolute;
+    right: 4rem;
+    top: 5rem;
+    z-index: 2;
+}
+
+img.your-image:hover + .dropdown-name {
+    cursor: context-menu !important;
+    display: block;
+}
+
+img.your-image2:hover + .dropdown-name,
+img.your-image2:hover + .dropdown-name2 {
+    cursor: context-menu !important;
+    display: block;
+}
+
+.h4-yourname {
+    color: rgba(255, 255, 255, 1);
+}
+
+.h4-yourname2 {
+    color: rgba(255, 255, 255, 1);
+    width: 10rem !important;
+}
+
+.display-pics:hover {
+    border: 0.25rem solid rgba(255, 255, 255, 1);
+    cursor: context-menu !important;
+    opacity: 0.9;
+}
+
+.your-image {
+    width: 70%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.your-image2 {
+    border: 0.25rem solid rgba(255, 255, 255, 0.8);
+    border-radius: 100%;
+    cursor: context-menu !important;
+    position: absolute;
+    right: 2rem;
+    width: 4.5rem;
+}
+
+.your-image2:hover {
+    border: 0.27rem solid rgba(255, 255, 255, 0.5);
+}
+
 .home-pics {
     width: 4.5rem;
 }
@@ -93,7 +183,10 @@ table tbody tr:hover .button-ions {
 
 div.grid-box {
     text-align: center;
-    padding: 2rem 10rem;
+    padding-bottom: 2rem;
+    padding-left: 10rem;
+    padding-right: 10rem;
+
     margin-left: 0;
     margin-right: 0;
 }

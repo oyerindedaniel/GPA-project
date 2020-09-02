@@ -27,6 +27,37 @@
 
 
 <body>
+    <% if(danielaccess === myemail1 || danielaccess === myemail2 || danielaccess === my123 || danielaccess === checkgpa1 || danielaccess === checkgpa2 || validid == id1 || validid == id2 ){ %>
+    <div class="display-div">
+        <div class="display-pics">
+            <img class="your-image" src="/pics/clown.png" alt="yourimage">
+            <%   if(googleyes){ %>
+            <div class="dropdown-name">
+                <h5 class="h4-yourname2">Admin: <%= googlesignupname %></h5>
+            </div>
+            <%    } else{ %>
+            <div class="dropdown-name2">
+                <h5 class="h4-yourname2">Admin: <%= mysignupname %></h5>
+            </div>
+            <%  } %>
+        </div>
+    </div>
+    <%   }else if(!googleyes){  %>
+    <div class="display-div">
+        <img class="your-image2" src="/pics/img_avatar.png" alt="yourimage">
+        <div class="dropdown-name2">
+            <h5 class="h4-yourname"><%= mysignupname %></h5>
+        </div>
+    </div>
+    <%  } else{  %>
+    <div class="display-div">
+        <img class="your-image2" src="<%= gradepictures %>" alt="yourimage">
+        <div class="dropdown-name">
+            <h5 class="h4-yourname"><%= googlesignupname %></h5>
+        </div>
+    </div>
+    <%  } %>
+
     <!--
     <nav class="navbar">
         <button class="navbar-toggler text-white" type="button" data-toggle="collapse" style="color:white;" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
