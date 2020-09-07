@@ -1,4 +1,21 @@
 <%- include('partials/mainheader'); -%>
+<div class="badge-div">
+    <div class="badge-divinner">
+        <form class="forms" action="/checkgpa/admin/<%= adminURL %>/home" method="get">
+            <button type="submit" class="btn">
+                Today <span class="badge badge-light"><%= todayusercounter %></span>
+                <span class="sr-only">unread messages</span>
+            </button>
+
+        </form>
+        <form class="forms" action="/checkgpa/admin/<%= adminURL %>/home" method="get">
+            <button type="submit" class="btn">
+                Total Users <span class="badge badge-light"><%= usercounter %></span>
+                <span class="sr-only">unread messages</span>
+            </button>
+        </form>
+    </div>
+</div>
 <form>
     <div class="divmain-admin">
         <div class="div-admin">
@@ -30,7 +47,7 @@
     </div>
 </form>
 <form>
-    <div class="divmain-admin">
+    <div class="divmain-admin2">
         <div class="div-admin">
             <h3 class="h3-admin">DELETE UNVERIFIED TIMEOUT</h3>
             <label class="sr-only" for="inlineFormInputGroup"></label>

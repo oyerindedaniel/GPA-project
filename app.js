@@ -162,17 +162,18 @@ const overallstrtSchema = new mongoose.Schema({
     username1: String,
     username: String,
     password: String,
-    resetpasswordtoken: String,
-    changepasswordtoken: String,
+    token: String,
     gradesystemoverall: [gradeSchema],
     calculategpaoverall: [calculateSchema],
     totalcalcunits: [Number],
     totalunit: [Number],
-    resethournow: Number,
-    resetdaynow: Number,
-    resetmonthnow: Number,
-    resetyearnow: Number,
-    resetampmnow: String,
+    hournow: Number,
+    daynow: Number,
+    mytodaydate: Number,
+    monthnow: Number,
+    yearnow: Number,
+    ampmnow: String,
+    emailverif: String,
     finalresult: [],
     googleId: String,
     googlefirstname: String,
@@ -275,11 +276,62 @@ app.route(`/checkgpa/admin/${process.env.ADMINURL}`)
 
 // Get request for AdminonlyHome route.
 app.route(`/checkgpa/admin/${process.env.ADMINURL}/home`)
-    .get(function (req, res) {
+    .get(authadminroute, function (req, res) {
         res.locals.style = "stylesadmin.css"
         res.locals.title = "checkGPA-AdminHome"
-        res.render("checkgpaadmin");
+        var counterlength = 0;
+        var counter2length = 0;
+        const allregisteredUsers = (`${ req.allregisteredUserslength}`);
+        Overallstrt.find({
+            emailverif: "True"
+        }, function (err, registerusers) {
+            const todayUsers = registerusers.map(function (todayUser) {
+                return todayUser.daynow
+            });
+            const includedatas = todayUsers.includes(parseInt(moment().format('D')));
+            if (includedatas == true) {
+                todayUsers.forEach(function (todayUser) {
+                    if (todayUser == moment().format('D')) {
+                        counterlength++
+                    } else {
+                        counter2length++
+                    }
+                });
+                res.render("checkgpaadmin", {
+                    usercounter: allregisteredUsers,
+                    todayusercounter: counterlength,
+                    adminURL: process.env.ADMINURL
+                });
+            } else {
+                res.render("checkgpaadmin", {
+                    usercounter: allregisteredUsers,
+                    todayusercounter: 0,
+                    adminURL: process.env.ADMINURL
+                });
+            }
+        });
     });
+
+// Middleware for AdminonlyHome route..
+function authadminroute(req, res, next) {
+    res.locals.style = "stylesadmin.css"
+    res.locals.title = "checkGPA-AdminHome"
+    Overallstrt.find({
+        emailverif: "True"
+    }, function (err, registerusers) {
+        if (registerusers) {
+            const checkGPAuserlength = registerusers.length;
+            req.allregisteredUserslength = checkGPAuserlength;
+            next();
+        } else {
+            res.render("checkgpaadmin", {
+                usercounter: 0,
+                todayusercounter: 0,
+                adminURL: process.env.ADMINURL
+            });
+        }
+    })
+}
 
 app.route("/jokes")
     .get(function (req, res) {
@@ -1005,16 +1057,22 @@ app.post("/signup", authpostsignup, function (req, res) {
     const regEmail = req.body.username;
     const regPassword = req.body.password;
     const regConpassword = req.body.reqconpassword;
+    const emailverifUUIDuser = (`${req.emailverifUUID}`);
     Overallstrt.register({
         username: regEmail,
-        username1: regUsername
+        username1: regUsername,
+        emailverif: "False",
+        yearnow: moment().format('YYYY'),
+        monthnow: moment().format('M'),
+        daynow: moment().format('D'),
+        token: emailverifUUIDuser
     }, regPassword, function (err, user) {
         if (err) {
             console.log(err);
             res.redirect("/signup");
         } else {
             passport.authenticate("local")(req, res, function () {
-                req.flash("message", "Successfully Registered. Try signing in.")
+                req.flash("message", "Check your email for a link to verif your email. If it doesn’t appear within a few minutes, check your spam folder.");
                 res.redirect("/signin");
             });
         }
@@ -1024,7 +1082,13 @@ app.post("/signup", authpostsignup, function (req, res) {
 // Middleware for Get signup.
 function authgetsignup(req, res, next) {
     if (req.isAuthenticated()) {
-        res.redirect("/grade-system");
+        Overallstrt.findById(req.user.id, function (err, foundUser) {
+            if (foundUser.emailverif == "True") {
+                res.redirect("/grade-system");
+            } else {
+                next();
+            }
+        });
     } else {
         next();
     }
@@ -1042,7 +1106,41 @@ function authpostsignup(req, res, next) {
             if (req.body.password === req.body.reqconpassword) {
                 const passwformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
                 if (req.body.password.match(passwformat)) {
-                    next();
+                    const emailverifuuid = uuidv4();
+                    req.emailverifUUID = emailverifuuid;
+                    const checkGPAurl = "http://localhost:3000/emailverification/" + emailverifuuid;
+                    const output = `
+        <p>Thanks for joining checkGPA.</p>
+<a href="${checkGPAurl}">${checkGPAurl}</a>
+  <p>If you don’t use this link before 2 hours, it will expire.</p>
+  <p>Note: if you did not request this, please ignore this email. </p>
+      `;
+                    let transporter = nodemailer.createTransport({
+                        service: "gmail",
+                        auth: {
+                            user: 'checkgpa2020@gmail.com',
+                            pass: process.env.AUTHPASSWORD
+                        },
+                        tls: {
+                            rejectUnauthorized: false
+                        }
+                    });
+                    let mailOptions = {
+                        from: '"checkGPA" checkgpa2020@yahoo.com',
+                        to: req.body.username,
+                        subject: 'checkGPA email verification',
+                        text: 'checkGPA email verification',
+                        html: output
+                    };
+                    // send mail with defined transport object
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            return console.log(error);
+                        } else {
+                            next();
+                        }
+                    });
+                    //                    next();
                 } else {
                     req.flash("message1", "Password didn't meet required format. Try again")
                     res.redirect("/signup");
@@ -1055,6 +1153,30 @@ function authpostsignup(req, res, next) {
     })
 }
 
+// Get request for emailverification other route
+app.get("/emailverification/:uuiduser", function (req, res) {
+    const uuidUSER = req.params.uuiduser;
+    const newUUID = uuidv4();
+    Overallstrt.findOne({
+        token: uuidUSER
+    }, function (err, foundUser) {
+        if (foundUser) {
+            foundUser.token = process.env.ONEHOURRESET2 + newUUID + process.env.ONEHOURRESET
+            foundUser.emailverif = "True"
+            foundUser.save(function (err) {
+                if (!err) {
+                    req.flash("message", "Successfully Registered. Try signing in.")
+                    res.redirect("/signin");
+                } else {
+                    console.log("err");
+                }
+            })
+        } else {
+            res.redirect("/*")
+        }
+    });
+});
+
 // Get request for siginin route.
 app.get("/signin", authgetsignin, function (req, res) {
     res.render("signin", {
@@ -1065,7 +1187,13 @@ app.get("/signin", authgetsignin, function (req, res) {
 
 function authgetsignin(req, res, next) {
     if (req.isAuthenticated()) {
-        res.redirect("/grade-system");
+        Overallstrt.findById(req.user.id, function (err, foundUser) {
+            if (foundUser.emailverif == "True") {
+                res.redirect("/grade-system");
+            } else {
+                next();
+            }
+        });
     } else {
         next();
     }
@@ -1086,7 +1214,7 @@ function authgetsignin(req, res, next) {
 //});
 
 // Post request for siginin route.
-app.post("/signin", function (req, res, next) {
+app.post("/signin", authpostsignin, function (req, res, next) {
     passport.authenticate("local", function (err, user, info) {
         if (err) {
             return next(err);
@@ -1106,6 +1234,24 @@ app.post("/signin", function (req, res, next) {
         }
     })(req, res, next);
 });
+
+function authpostsignin(req, res, next) {
+    Overallstrt.findOne({
+        username: req.body.username
+    }, function (err, foundUser) {
+        if (foundUser) {
+            if (foundUser.emailverif == "True") {
+                next();
+            } else {
+                req.flash("message1", "Email Verification before signing in.");
+                res.redirect("/signin");
+            }
+        } else {
+            req.flash("message1", "Invalid email or password.");
+            res.redirect("/signin");
+        }
+    });
+}
 
 // Get request for forgotpassword route.
 app.get("/forgotpassword", function (req, res) {
@@ -1163,12 +1309,12 @@ function authforgotpassword(req, res, next) {
         if (foundUser) {
             const userFound = foundUser.username;
             const resetuuid = uuidv4();
-            foundUser.resetpasswordtoken = resetuuid;
-            foundUser.resetyearnow = moment().format('YYYY');
-            foundUser.resetmonthnow = moment().format('M');
-            foundUser.resetdaynow = moment().format('D');
-            foundUser.resethournow = moment().format('H');
-            foundUser.resetampmnow = moment().format('a');
+            foundUser.token = resetuuid;
+            foundUser.yearnow = moment().format('YYYY');
+            foundUser.monthnow = moment().format('M');
+            foundUser.daynow = moment().format('D');
+            foundUser.hournow = moment().format('H');
+            foundUser.ampmnow = moment().format('a');
             foundUser.save(function (err) {
                 if (!err) {
                     req.eMAIL = userFound;
@@ -1190,14 +1336,14 @@ function authforgotpassword(req, res, next) {
 app.get("/resetpassword/:uuiduser", function (req, res) {
     const uuidUSER = req.params.uuiduser;
     Overallstrt.findOne({
-        resetpasswordtoken: uuidUSER
+        token: uuidUSER
     }, function (err, foundUser) {
         if (foundUser) {
-            const year = foundUser.resetyearnow;
-            const month = foundUser.resetmonthnow;
-            const day = foundUser.resetdaynow;
-            const hour = foundUser.resethournow;
-            const ampm = foundUser.resetampmnow;
+            const year = foundUser.yearnow;
+            const month = foundUser.monthnow;
+            const day = foundUser.daynow;
+            const hour = foundUser.hournow;
+            const ampm = foundUser.ampmnow;
             if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
                 console.log()
                 if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
@@ -1232,13 +1378,13 @@ app.post("/resetpassword/:uuiduser", authresetpassword, function (req, res) {
     const uuidUSER = req.params.uuiduser;
     const newPASS = req.body.password;
     Overallstrt.findOne({
-        resetpasswordtoken: uuidUSER
+        token: uuidUSER
     }, function (err, foundUser) {
         if (foundUser) {
             const passwformat = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
             if (newPASS.match(passwformat)) {
                 const newUUID = uuidv4();
-                foundUser.resetpasswordtoken = process.env.ONEHOURRESET + newUUID
+                foundUser.token = process.env.ONEHOURRESET + newUUID + process.env.ONEHOURRESET2
                 foundUser.save(function (err) {
                     if (!err) {
                         foundUser.setPassword(newPASS, function () {
@@ -1366,12 +1512,12 @@ function authchangepassword(req, res, next) {
         if (foundUser) {
             const userFound = foundUser.username;
             const resetuuid = uuidv4();
-            foundUser.changepasswordtoken = resetuuid;
-            foundUser.resetyearnow = moment().format('YYYY');
-            foundUser.resetmonthnow = moment().format('M');
-            foundUser.resetdaynow = moment().format('D');
-            foundUser.resethournow = moment().format('H');
-            foundUser.resetampmnow = moment().format('a');
+            foundUser.token = resetuuid;
+            foundUser.yearnow = moment().format('YYYY');
+            foundUser.monthnow = moment().format('M');
+            foundUser.daynow = moment().format('D');
+            foundUser.hournow = moment().format('H');
+            foundUser.ampmnow = moment().format('a');
             foundUser.save(function (err) {
                 if (!err) {
                     req.eMAIL = userFound;
@@ -1393,14 +1539,14 @@ function authchangepassword(req, res, next) {
 app.get("/changeresetpassword/:uuiduser", function (req, res) {
     const uuidUSER = req.params.uuiduser;
     Overallstrt.findOne({
-        changepasswordtoken: uuidUSER
+        token: uuidUSER
     }, function (err, foundUser) {
         if (foundUser) {
-            const year = foundUser.resetyearnow;
-            const month = foundUser.resetmonthnow;
-            const day = foundUser.resetdaynow;
-            const hour = foundUser.resethournow;
-            const ampm = foundUser.resetampmnow;
+            const year = foundUser.yearnow;
+            const month = foundUser.monthnow;
+            const day = foundUser.daynow;
+            const hour = foundUser.hournow;
+            const ampm = foundUser.ampmnow;
             if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
                 if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
                     if (ampm === moment().format('a')) {
@@ -1436,7 +1582,7 @@ app.post("/changeresetpassword/:uuiduser", authchangeresetpassword, function (re
     const newreqPassword = req.body.newreqpassword;
     const uuidUSER = req.params.uuiduser;
     Overallstrt.findOne({
-        changepasswordtoken: uuidUSER
+        token: uuidUSER
     }, function (err, foundUser) {
         if (foundUser) {
             if (req.body.newpassword === req.body.newreqconpassword) {
@@ -1445,7 +1591,7 @@ app.post("/changeresetpassword/:uuiduser", authchangeresetpassword, function (re
                     foundUser.changePassword(oldPassword, newPassword, function (err) {
                         if (!err) {
                             const newUUID2 = uuidv4();
-                            foundUser.changepasswordtoken = process.env.ONEHOURRESET2 + newUUID2
+                            foundUser.token = process.env.ONEHOURRESET2 + newUUID2 + process.env.ONEHOURRESET
                             foundUser.save(function (err) {
                                 if (!err) {
                                     const output = `
@@ -1538,7 +1684,7 @@ app.get("/logout", function (req, res) {
 });
 
 // 404 error route.
-app.get("*", function (req, res, next) {
+app.get("/*", function (req, res, next) {
     res.render("404error")
 })
 
