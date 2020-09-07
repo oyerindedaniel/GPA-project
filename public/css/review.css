@@ -1,25 +1,21 @@
 * {
-    background-color: #e0ece4;
-    box-sizing: inherit;
     margin: 0;
     padding: 0;
 }
 
 html {
     box-sizing: border-box;
-    font-size: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-size: 10px !important;
     min-height: 100%;
     position: relative;
 }
 
 body {
-    background-color: #faf4ff;
-    color: #000000;
+    background-color: rgba(255, 255, 255, 1);
 }
 
 a {
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 h2 {
@@ -28,6 +24,58 @@ h2 {
 
 h5 {
     line-height: 1.5;
+}
+
+nav {
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    margin-bottom: 1.5rem;
+}
+
+.calculator-img {
+    width: 4.3rem;
+}
+
+.nav-link,
+.btn-style {
+    background-color: white;
+    border: 0.1rem solid rgba(0, 0, 0);
+    border-radius: 0.5rem;
+    color: rgba(0, 0, 0) !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 2rem 1.5rem 2rem 1.5rem !important;
+    padding: 0.6rem 2rem 0.6rem 2rem !important;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.btn-style:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.drop-item {
+    color: black;
+    font-size: 1.3rem !important;
+}
+
+.dropdown2 {
+    display: none;
+}
+
+.drop-item:hover {
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+}
+
+a.sign-up {
+    background-color: rgba(0, 0, 0, 1);
+    color: white !important;
 }
 
 .pics1,
@@ -70,7 +118,13 @@ h5 {
 }
 
 .picsreply {
-    width: 2rem;
+    width: 1.5rem;
+    display: none;
+}
+
+.admin {
+    display: block;
+    margin-left: 0.24rem;
 }
 
 /*h6 styles*/
@@ -82,8 +136,17 @@ h5 {
 }
 
 .h5style {
-    display: inline-block;
+    display: inline-block !important;
     margin-left: 0.25rem;
+    text-align: justify;
+    word-break: break-word;
+}
+
+.h5style2 {
+    display: block;
+    margin-left: 0.25rem;
+    text-align: justify;
+    word-break: break-word;
 }
 
 .h6style:hover {
@@ -105,7 +168,7 @@ h5 {
     border: 0.1rem solid rgba(0, 0, 0, 1);
     padding: 0.3rem 2rem 0.3rem 2rem;
     margin-top: 0.3rem;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     background-color: white;
     font-weight: 100;
     font-size: 1rem;
@@ -139,22 +202,6 @@ h5 {
     background-color: rgba(0, 0, 0, 0.91);
 }
 
-.nav-link {
-    margin: 2rem 3.9rem 2rem 1.5rem !important;
-    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
-    padding: 0.6rem 2rem 0.6rem 2rem !important;
-    border-radius: 1.5rem !important;
-    background-color: #faf4ff !important;
-    font-family: 'Montserrat', sans-serif !important;
-    font-weight: 100 !important;
-    font-size: 1rem !important;
-}
-
-.nav-link:hover {
-    background-color: rgba(0, 0, 0, 0.9) !important;
-    color: white !important;
-}
-
 .form-show {
     margin: 1rem 4rem;
     display: block !important;
@@ -166,16 +213,17 @@ h5 {
 }
 
 .reply-css {
-    background-color: #b2ebf2;
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
     border-radius: 1rem;
     margin: 2rem 4rem -0.5rem 4rem;
     padding: 2rem;
-    position: relative;
     width: 50%;
 }
 
 .reply-css2red {
-    background-color: #e6b2c6;
+    background-color: rgba(230, 179, 198, 0.5);
+    border: 0.1rem solid rgba(230, 179, 198, 1);
     border-radius: 1rem;
     margin: 1.3rem 4rem -0.2rem 4rem;
     padding: 2rem;
@@ -183,9 +231,8 @@ h5 {
 }
 
 /*view reply button*/
-
 .div-viewreply {
-    cursor: pointer;
+    cursor: pointer
 }
 
 .view-reply {
@@ -223,14 +270,6 @@ h5 {
 /*display time styles*/
 .timeh6 {
     width: 50%;
-
-}
-
-/*Comment styles*/
-.comment-search {}
-
-.comment-button {
-    margin-left: 32rem;
 }
 
 /*Media query at 5000px*/
@@ -265,29 +304,12 @@ h5 {
         width: 91.5%;
     }
 
-    .nav-link {
-        margin: 2rem 2rem -0.5rem 3rem !important;
-        border: none !important;
-        padding: 0 !important;
-        background-color: #faf4ff !important;
-        border-radius: 0rem !important;
-        color: rgba(0, 0, 0, 1) !important;
-        font-weight: bold !important;
-        font-size: 1.2rem !important;
-    }
-
     .alert-beware {
         width: 70%;
         margin: 2rem 3rem;
     }
 
-    .nav-link:hover {
-        background-color: #faf4ff;
-        color: rgba(0, 0, 0, 0.8);
-    }
-
     .nav-button {
-        margin: 1rem 2rem -0.5rem 2rem;
         border: 0.1rem solid rgba(0, 0, 0, 1) !important;
     }
 
@@ -309,6 +331,58 @@ h5 {
         width: 70%;
     }
 
+}
+
+@media(max-width: 991px) {
+
+    .nav-link,
+    .btn-style {
+        margin: 0.8rem 0 !important;
+        background-color: rgba(85, 172, 238, 0) !important;
+        border: none !important;
+        padding: 0 !important;
+        border-radius: 0rem !important;
+        color: rgba(0, 0, 0, 1) !important;
+        font-family: sans-serif !important;
+        font-size: 1.5rem !important;
+        text-align: left;
+        width: 100% !important;
+    }
+
+    .nav-link:hover,
+    a.sign-up:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .btn-style:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+        cursor: context-menu !important;
+    }
+
+    a.sign-up {
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .dropdown-menu {
+        display: none !important;
+    }
+
+    .dropdown2 {
+        display: block;
+        color: rgba(0, 0, 0, 1) !important;
+        font-family: sans-serif !important;
+        font-size: 1.5rem !important;
+        font-weight: bold;
+        margin: 0.8rem auto;
+        width: 100% !important;
+    }
+
+    .dropdown2:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
 }
 
 /* Media queries at 800px */
@@ -345,10 +419,6 @@ h5 {
         width: 84%;
         margin-left: 2rem;
 
-    }
-
-    .nav-button {
-        margin: 1rem 2rem -0.5rem 2rem;
     }
 
     .text-css {

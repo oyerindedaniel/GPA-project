@@ -1,3 +1,41 @@
+const loading = document.querySelector('.loading');
+const commentLength = $('.reply-css').length;
+var i;
+window.addEventListener('scroll', () => {
+    const {
+        scrollTop,
+        scrollHeight,
+        clientHeight
+    } = document.documentElement;
+    if (clientHeight + scrollTop >= scrollHeight - 5) {
+        // show the loading animation.
+        showLoading();
+    }
+});
+
+//for (i = commentLength; i >= commentLength; i += 5) {
+//    if (commentLength >= 5) {
+//        loading.classList.add('show');
+//    } else {
+//        loading.classList.remove('show');
+//    }
+//}
+
+console.log(commentLength);
+
+function showLoading() {
+    if (commentLength >= 5) {
+        loading.classList.add('show');
+    } else {
+        loading.classList.remove('show');
+    }
+
+
+    // load more comments.
+    //	setTimeout(getPost, 1000)
+}
+
+
 const replyquestionButtons = document.querySelectorAll(".reply");
 const replycancelButtons = document.querySelectorAll(".cancel");
 const replyanswerButtons = document.querySelectorAll(".button-js");
@@ -47,7 +85,6 @@ function selectItem1(event) {
         viewHide.html("View");
         const reversearrow = $(`#${this.id}159`);
         reversearrow.attr("class", "fas fa-1x fa-caret-down arrow-style");
-
     } else {
         const reply = $(`.${this.id}234`);
         reply.addClass("form-show");
@@ -58,7 +95,13 @@ function selectItem1(event) {
     }
 }
 
-//Monitoring the replies
+//Admin privlegdes.
+const adminusers = document.querySelectorAll(".admin1");
+adminusers.forEach(function (adminuser) {
+    adminuser.style.color = "blue";
+});
+
+//Monitoring the replies.
 const replys = document.querySelectorAll(".replyLength");
 replys.forEach(function (reply) {
     const replyHtml = reply.innerHTML;
@@ -68,14 +111,13 @@ replys.forEach(function (reply) {
     } else {
         console.log("err");
     }
-
 });
 
 // Flash alert timer.
 const flashAlert = $(".alert-css");
 setTimeout(function () {
     flashAlert.fadeOut("fast");
-}, 2000);
+}, 4000);
 
 const flashAlertsign = $(".alertcsssign");
 setTimeout(function () {

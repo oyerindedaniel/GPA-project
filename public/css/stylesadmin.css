@@ -1,0 +1,232 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 10px !important;
+    min-height: 100%;
+    max-width: 100%;
+    position: relative;
+}
+
+body {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+a {
+    text-decoration: none !important;
+}
+
+nav {
+    background-color: rgb(221, 239, 253);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    margin-bottom: 1.5rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.calculator-img {
+    width: 4.3rem;
+}
+
+.nav-link,
+.btn-style {
+    background-color: white !important;
+    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+    border-radius: 0.5rem !important;
+    color: rgba(0, 0, 0, 1) !important;
+    font-weight: bold !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 1rem !important;
+    margin: 2rem 1.5rem 2rem 1.5rem !important;
+    padding: 0.6rem 2rem 0.6rem 2rem !important;
+}
+
+.btn-style:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+}
+
+.drop-item {
+    color: black;
+    font-size: 1.3rem !important;
+}
+
+.dropdown2 {
+    display: none;
+}
+
+.drop-item:hover {
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+}
+
+a.sign-up {
+    background-color: rgba(0, 0, 0, 1) !important;
+    color: white !important;
+}
+
+.divmain-admin {
+    margin-bottom: 3rem;
+    margin-top: 3.5rem;
+}
+
+.div-admin {
+    text-align: center;
+    margin: auto;
+}
+
+.h3-admin {
+    margin-bottom: 0.9rem;
+}
+
+.form-admin {
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    border-radius: 0.5rem;
+    padding: 0.7rem;
+    font-size: 1.5rem;
+    width: 30rem;
+}
+
+.form-admin2 {
+    background: linear-gradient(90deg, #e1eec3 0%, #f05053 100%);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    border-radius: 0.5rem;
+    padding: 0.7rem;
+    font-size: 1.5rem;
+    width: 10rem;
+}
+
+.form-admin:focus {
+    outline: none;
+}
+
+.form-admin2:hover {
+    background-color: rgba(85, 172, 238, 0.7);
+}
+
+.nav-button {
+    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+}
+
+/* Footer */
+
+.footer {
+    background-color: rgb(221, 239, 253);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    bottom: 0;
+    padding: 1.7rem 7rem;
+    position: absolute;
+    width: 100%;
+}
+
+.col-footer {
+    margin: auto;
+    text-align: center;
+}
+
+.checkGPA-name {
+    color: rgb(1, 1, 1);
+    font-family: 'Ranchers', sans-serif !important;
+    font-size: 2rem;
+    display: inline-block;
+    margin-right: 0.8rem;
+}
+
+.checkGPA-name:hover {
+    color: rgba(1, 1, 1, 0.9);
+}
+
+.checkgparight {
+    font-size: 1.2rem;
+    display: inline-block;
+}
+
+.checkgpap {
+    display: inline-block;
+    font-size: 1.2rem;
+}
+
+.pad-p {
+    padding: 0 1rem;
+}
+
+.all-socials {
+    padding: 0 0.5rem;
+}
+
+.div-socials {
+    display: inline-block;
+}
+
+@media(max-width: 991px) {
+
+    .nav-link,
+    .btn-style {
+        margin: 0.8rem 0 !important;
+        background-color: rgba(85, 172, 238, 0) !important;
+        border: none !important;
+        padding: 0 !important;
+        border-radius: 0rem !important;
+        color: rgba(0, 0, 0, 1) !important;
+        font-family: sans-serif !important;
+        font-size: 1.5rem !important;
+        text-align: left;
+        width: 100% !important;
+    }
+
+    .nav-link:hover,
+    a.sign-up:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .btn-style:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+        cursor: context-menu !important;
+    }
+
+    a.sign-up {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 1) !important;
+    }
+
+    .dropdown-menu {
+        display: none !important;
+    }
+
+    .dropdown2 {
+        display: block;
+        color: rgba(0, 0, 0, 1) !important;
+        font-family: sans-serif !important;
+        font-size: 1.5rem !important;
+        font-weight: bold;
+        margin: 0.8rem auto;
+        width: 100% !important;
+    }
+
+    .dropdown2:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+}

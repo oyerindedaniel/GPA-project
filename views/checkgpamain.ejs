@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="GPA signup">
+    <meta name="description" content="GPA signin">
     <meta name="author" content="Oyerinde Daniel Diekololuwa">
     <!-- <meta name="generator" content=""> -->
-    <title>GPA Signup</title>
+    <title><%= title %></title>
     <!-- Favicon -->
     <link rel="icon" href="favicon/favicon.ico">
     <!-- Social icons -->
@@ -40,7 +40,7 @@
 
     </style>
     <!-- Custom styles -->
-    <link href="css/styles1.css" rel="stylesheet">
+    <link href="/css/<%= style %>" rel="stylesheet">
     <!-- Bootstrap socials-->
     <link rel="stylesheet" href="css/bootstrap-social.css">
 </head>
@@ -51,34 +51,14 @@
             <img src="/pics/calculator.png" class="calculator-img d-inline-block align-top " alt="gpa.jpg">
         </a>
     </nav>
-    <% if(message1.length > 0){ %>
-    <div class="alert alert alert-danger alert-dismissible fade show alert-css1" role="alert">
-        <div class="text-beware">
-            <%= message1 %>
-        </div>
-        <button type="button" class="close close-button" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <% }%>
     <div class="text-center">
-        <form action="/signup" method="POST" class="form-signin">
-            <img class="mb-4" src="pics/clown.png" alt="clownlogo" style="width: 4rem;">
-            <h1 class="h3 mb-3 font-weight-normal">SIGN UP</h1>
-            <input type="text" name="regusername" class="form-control" placeholder="Username" required autofocus>
-            <input type="email" name="username" class="form-control" placeholder="Email address" required autofocus>
-            <input type="password" name="password" class="mainpassword form-control" data-toggle="password" placeholder="Password" required autofocus>
-            <input type="password" name="reqconpassword" class="form-control" data-toggle="password" placeholder="Confirm password" required>
-            <small id="emailHelp" class="form-text small-text text-muted">Make sure it's at least 8 characters including a number and uppercase.</small>
-            <button class="btn btn-lg btn-primary btn-block signup-button " type="submit">Sign up</button>
-            <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
-                <i class="fab fa-google"></i>
-                Sign In with Google
-            </a>
-            <p class="rules">Already have an account? <a href="/signin">Sign in.</a></p>
-            <p class="rules0">By clicking “Sign up for checkGPA”, you agree to our <a href="/terms&conditions" target="_blank"> Terms of Service</a> and <a href="/privacy-policy" target="_blank">Privacy Statement</a>. </p>
-            <p class="p-copyright mt-5 mb-3 text-muted">&copy; checkGPA <%= recentyear %></p>
+        <form action="/signin" method="POST" class="form-signin">
+            <img class="mb-4" src="/pics/clown.png" alt="clownlogo" style="width: 4rem;">
+            <h1 class="h3 mb-3 font-weight-normal">ADMIN</h1>
+            <input type="email" name="username" class="signin-email form-control" placeholder="Email address" required autofocus>
+            <input type="password" name="password" class="signin-password mainpassword form-control" placeholder="Password" required autofocus>
+            <button class="btn btn-lg btn-primary btn-block signin-button" type="submit">Sign in</button>
+            <p class="p-copyright mt-5 mb-3 text-muted">&copy;checkGPA <%= recentyear %></p>
         </form>
-
     </div>
     <%- include('partials/footerform'); -%>

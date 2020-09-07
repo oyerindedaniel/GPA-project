@@ -73,7 +73,7 @@
     <% }%>
     <div class="text-center">
         <form action="/signin" method="POST" class="form-signin">
-            <img class="mb-4" src="/pics/clown.png" alt="" width="72" height="72">
+            <img class="mb-4" src="/pics/clown.png" alt="clownlogo" style="width: 4rem;">
             <h1 class="h3 mb-3 font-weight-normal">SIGN IN</h1>
             <input type="email" name="username" class="signin-email form-control" placeholder="Email address" required autofocus>
             <input type="password" name="password" class="signin-password mainpassword form-control" placeholder="Password" required autofocus>
@@ -93,6 +93,9 @@
             <p class="rules">New to checkGPA? <a href="/signup">Create an account.</a></p>
             <p class="rules">By clicking “Sign in for checkGPA”, you agree to our <a href="/terms&conditions" target="_blank"> Terms of Service</a> and <a href="/privacy-policy" target="_blank">Privacy Statement</a>. </p>
             <p class="p-copyright mt-5 mb-3 text-muted">&copy;checkGPA <%= recentyear %></p>
+            <div class="checkbox mb-3">
+                <input type="checkbox" class="remember-css" name="rememberme"> Remember me
+            </div>
         </form>
     </div>
     <%- include('partials/footerform'); -%>

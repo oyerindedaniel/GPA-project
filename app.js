@@ -40,6 +40,8 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 // Google strategy.
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+//const RememberMeStrategy = require("passport-remember-me ").Strategy;
+const utils = require('utils');
 const findOrCreate = require('mongoose-findorcreate');
 
 app.use(express.static("public"));
@@ -60,7 +62,7 @@ app.use(bodyParser.urlencoded({
 app.use(session({
     secret: process.env.SECRET,
     cookie: {
-        maxAge: null
+        maxAge: 1 * 24 * 60 * 60 * 1000
     },
     resave: false,
     saveUninitialized: false
@@ -69,6 +71,7 @@ app.use(flash())
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
+//app.use(passport.authenticate('remember-me'));
 
 // Mongoose connection.
 mongoose.connect("mongodb://localhost:27017/gpaDB", {
@@ -97,7 +100,8 @@ const replySchema = new mongoose.Schema({
         type: String,
         required: [true, 'Comment required']
     },
-    timereplycreated: String
+    timereplycreated: String,
+    user: String
 });
 
 const Replyinput = mongoose.model("Replyinput", replySchema);
@@ -108,9 +112,11 @@ const commentSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Comment required']
     },
+    user: String,
     reply: [replySchema],
     replylength: [],
-    timecreated: [String]
+    timecreated: [String],
+    checkreply: String
 });
 
 const Commentinput = mongoose.model("Commentinput", commentSchema);
@@ -124,7 +130,7 @@ const gradeSchema = new mongoose.Schema({
     },
     points: {
         type: Number,
-        required: [true, 'Point required ']
+        required: [true, 'Point required']
     }
 
 });
@@ -193,6 +199,44 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
+// Remember Me cookie strategy
+//   This strategy consumes a remember me token, supplying the user the
+//   token was originally issued to.  The token is single-use, so a new
+//   token is then issued to replace it.
+//passport.use(new RememberMeStrategy(
+//    function (token, done) {
+//        consumeRememberMeToken(token, function (err, uid) {
+//            if (err) {
+//                return done(err);
+//            }
+//            if (!uid) {
+//                return done(null, false);
+//            }
+//
+//            findById(uid, function (err, user) {
+//                if (err) {
+//                    return done(err);
+//                }
+//                if (!user) {
+//                    return done(null, false);
+//                }
+//                return done(null, user);
+//            });
+//        });
+//    },
+//    issueToken
+//));
+//
+//function issueToken(user, done) {
+//    var token = utils.randomString(64);
+//    saveRememberMeToken(token, user.id, function (err) {
+//        if (err) {
+//            return done(err);
+//        }
+//        return done(null, token);
+//    });
+//}
+
 passport.use(new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -221,14 +265,27 @@ app.route("/")
         res.render("gpalandingpage");
     });
 
+// Get request for Adminonly route.
+app.route(`/checkgpa/admin/${process.env.ADMINURL}`)
+    .get(function (req, res) {
+        res.locals.style = "styles1.css"
+        res.locals.title = "checkGPA-Admin"
+        res.render("checkgpamain");
+    });
+
+// Get request for AdminonlyHome route.
+app.route(`/checkgpa/admin/${process.env.ADMINURL}/home`)
+    .get(function (req, res) {
+        res.locals.style = "stylesadmin.css"
+        res.locals.title = "checkGPA-AdminHome"
+        res.render("checkgpaadmin");
+    });
 
 app.route("/jokes")
     .get(function (req, res) {
         Jokes.find({}, function (err, foundJokes) {
             if (!err) {
-                foundJokes.forEach(function (foundJoke) {
-                    console.log(foundJoke.jokesgpa);
-                })
+                foundJokes.forEach(function (foundJoke) {})
             }
         })
     })
@@ -236,7 +293,6 @@ app.route("/jokes")
 app.route("/jokes")
     .post(function (req, res) {
         const jokesGPA = req.body.jokes;
-        console.log(jokesGPA);
         const jokes = new Jokes({
             jokesgpa: jokesGPA
         });
@@ -256,7 +312,6 @@ app.get("/how-to-raise-gpa", function (req, res) {
     res.locals.style = "checkGPAguide.css"
     res.locals.title = "checkGPA - How to raise your GPA"
     const randomNumb = Math.floor((Math.random() * 17));
-    console.log(randomNumb)
     Jokes.find({}, function (err, foundJokes) {
         if (foundJokes) {
             //            cron.schedule("* * * * *", function () {
@@ -294,8 +349,7 @@ app.get("/auth/google/grade-system",
 
 // Get request for grade system route.
 app.route("/grade-system")
-    // Work on this.
-    .get(authgradesystem, function (req, res) {
+    .get(function (req, res) {
         if (req.isAuthenticated()) {
             res.locals.title = "checkGPA - Grade-System"
             Overallstrt.findById(req.user.id, function (err, gradeperperson) {
@@ -309,7 +363,7 @@ app.route("/grade-system")
                         validid: gradeperperson.googleId,
                         googleyes: gradeperperson.googleyes,
                         message: req.flash("message"),
-                        message1: req.flash("message"),
+                        message1: req.flash("message1")
                     });
                 } else {
                     console.log("Nothing found");
@@ -321,7 +375,7 @@ app.route("/grade-system")
     })
 
     // Post request for grade system route.
-    .post(function (req, res) {
+    .post(authgradesystem, function (req, res) {
         const gradealpha = _.toUpper(req.body.grade1);
         const pointalpha = req.body.point;
         const gradesystem = new Gradesystemvalue({
@@ -349,26 +403,49 @@ app.route("/grade-system")
 
 // Middleware for grade system.
 function authgradesystem(req, res, next) {
-    next();
-    //    const filterGrade = _.upperCase(req.body.grade1);
-    //    Overallstrt.findById(req.user.id, function (err, foundUser) {
-    //        if (foundUser) {
-    //            const foundGrades = foundUser.gradesystemoverall;
-    //            foundGrades.forEach(function (foundGrade) {
-    //                if (foundGrade.length >= 2) {
-    //                    console.log(foundGrade);
-    //                    next();
-    //                    //s  console.log("Princess");
-    //                }
-    //            });
-    //        }
-    //    });
+    const grade1Length = req.body.grade1.length;
+    const pointLength = req.body.point.length;
+    if (req.body.point.match(/^-?\d*(\.\d+)?$/)) {
+        if (grade1Length == 0 && pointLength == 0) {
+            req.flash("message1", "Both Fields Empty! Check and Try Again.");
+            res.redirect("/grade-system");
+        } else if (grade1Length == 0 || pointLength == 0) {
+            if (grade1Length == 0) {
+                req.flash("message1", "Grade Letter Field Empty! Check and Try Again.");
+                res.redirect("/grade-system");
+            } else {
+                req.flash("message1", "Grade Point Field Empty! Check and Try Again.");
+                res.redirect("/grade-system");
+            }
+        } else if (grade1Length > 5 && pointLength > 5) {
+            req.flash("message1", "Maximum characters exceeded. (5) and (5) respectively");
+            res.redirect("/grade-system");
+        } else if (grade1Length > 5 || pointLength > 5) {
+            if (grade1Length > 5) {
+                req.flash("message1", "Grade Letter Maximum characters exceeded (5).");
+                res.redirect("/grade-system");
+            } else {
+                req.flash("message1", "Grade Points Maximum characters exceeded (5).");
+                res.redirect("/grade-system");
+            }
+        } else if (req.body.point.match(/^[!@#$£%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)) {
+            req.flash("message1", "Not a Grade Point! Check and try Again.");
+            res.redirect("/grade-system");
+        } else if (req.body.point.match(/^[A-Za-z]+$/)) {
+            req.flash("message1", "Not a Grade Point! Check and try Again.");
+            res.redirect("/grade-system");
+        } else {
+            next();
+        }
+    } else {
+        req.flash("message1", "Not a Grade Point! Check and try Again.");
+        res.redirect("/grade-system");
+    }
 }
-
 
 // Get request for calculate route.
 app.route("/calculate")
-    .get(function (req, res) {
+    .get(authcalculateget, function (req, res) {
         if (req.isAuthenticated()) {
             res.locals.title = "checkGPA - CalculateGPA"
             Overallstrt.findById(req.user.id, function (err, calculategpaperson) {
@@ -378,9 +455,12 @@ app.route("/calculate")
                         allcalculateitems: calculategpaperson.calculategpaoverall,
                         gradepictures: calculategpaperson.googleimage,
                         danielaccess: calculategpaperson.username,
+                        mysignupname: calculategpaperson.username1,
+                        googlesignupname: calculategpaperson.googlename,
+                        googleyes: calculategpaperson.googleyes,
                         validid: calculategpaperson.googleId,
                         message: req.flash("message"),
-                        message1: req.flash("message"),
+                        message1: req.flash("message1")
                     });
                 } else {
                     console.log("Nothing found");
@@ -391,112 +471,191 @@ app.route("/calculate")
         }
     })
 
-    // Post request for calculate route.
-    .post(function (req, res) {
+// Middleware for Calculate GET Request.
+function authcalculateget(req, res, next) {
+    if (req.isAuthenticated()) {
+        Overallstrt.findById(req.user.id, function (err, foundUser) {
+            const valueArr = foundUser.gradesystemoverall.map(function (item) {
+                return item.grade1
+            });
+            const isDuplicate = valueArr.some(function (item, idx) {
+                return valueArr.indexOf(item) != idx
+            });
+            if (isDuplicate === true) {
+                req.flash("message1", "Repeated Grade Letter Found! Check and Try Again.");
+                res.redirect("/grade-system");
+            } else {
+                next();
+            }
+        });
+    } else {
+        res.redirect("/signin");
+    }
+}
+
+// Post request for calculate route.
+app.route("/calculate")
+    .post(authcalculatepost, function (req, res) {
         const coursecodebeta = _.upperCase(req.body.coursecode);
         const gradebeta = _.toUpper(req.body.grade2);
         const unitpercoursebeta = req.body.unitpercourse;
-        Overallstrt.findById(req.user.id, function (err, foundUser) {
-            if (!foundUser) {
-                console.log(err);
-            } else {
-                const foundUsergrades = foundUser.gradesystemoverall;
-                foundUsergrades.forEach(function (foundUsergrade) {
-                    //Come back and put length that check how many and redirect them to another page.
-                    //         if (foundUsergrade.grade1.length > 1) {
-                    if (foundUsergrade.grade1 === gradebeta) {
+        if (req.isAuthenticated()) {
+            Overallstrt.findById(req.user.id, function (err, foundUser) {
+                if (!foundUser) {
+                    console.log(err);
+                } else {
+                    const foundUsergrades = foundUser.gradesystemoverall;
+                    foundUsergrades.forEach(function (foundUsergrade) {
+                        if (foundUsergrade.grade1 === gradebeta) {
 
-                        const multipyunits = foundUsergrade.points * unitpercoursebeta;
-                        const calculategpa = new Calculategpavalue({
-                            coursecode: coursecodebeta,
-                            grade2: gradebeta,
-                            unitpercourse: unitpercoursebeta,
-                            multiplyunit: multipyunits
-                        });
-                        calculategpa.save(function (err) {
-                            if (!err) {
-                                foundUser.calculategpaoverall.push(calculategpa);
-                                foundUser.save(function (err) {
-                                    if (!err) {
-                                        //The total Calculated units
-                                        const userId = mongoose.Types.ObjectId(req.user.id);
-                                        Overallstrt.aggregate([{
-                                                $match: {
-                                                    _id: userId
-                                                }
+                            const multipyunits = foundUsergrade.points * unitpercoursebeta;
+                            const calculategpa = new Calculategpavalue({
+                                coursecode: coursecodebeta,
+                                grade2: gradebeta,
+                                unitpercourse: unitpercoursebeta,
+                                multiplyunit: multipyunits
+                            });
+                            calculategpa.save(function (err) {
+                                if (!err) {
+                                    foundUser.calculategpaoverall.push(calculategpa);
+                                    foundUser.save(function (err) {
+                                        if (!err) {
+                                            //The total Calculated units
+                                            const userId = mongoose.Types.ObjectId(req.user.id);
+                                            Overallstrt.aggregate([{
+                                                    $match: {
+                                                        _id: userId
+                                                    }
                                             },
-                                            {
-                                                $group: {
-                                                    _id: null,
-                                                    "totalcalculateunits": {
-                                                        $sum: {
-                                                            $sum: "$calculategpaoverall.multiplyunit"
+                                                {
+                                                    $group: {
+                                                        _id: null,
+                                                        "totalcalculateunits": {
+                                                            $sum: {
+                                                                $sum: "$calculategpaoverall.multiplyunit"
+                                                            }
                                                         }
                                                     }
-                                                }
                                             }
                 ]).exec(function (err, sumcalcData) {
-                                            if (!err) {
-                                                sumcalcData.forEach(function (sumcalcDate) {
-                                                    const sum1 = sumcalcDate.totalcalculateunits;
-                                                    foundUser.totalcalcunits.pop();
-                                                    foundUser.totalcalcunits.push(sum1);
-                                                    foundUser.save(function (err) {
-                                                        if (!err) {
-                                                            //The total Calculated units
-                                                            const userId = mongoose.Types.ObjectId(req.user.id);
-                                                            Overallstrt.aggregate([{
-                                                                    $match: {
-                                                                        _id: userId
-                                                                    }
+                                                if (!err) {
+                                                    sumcalcData.forEach(function (sumcalcDate) {
+                                                        const sum1 = sumcalcDate.totalcalculateunits;
+                                                        foundUser.totalcalcunits.pop();
+                                                        foundUser.totalcalcunits.push(sum1);
+                                                        foundUser.save(function (err) {
+                                                            if (!err) {
+                                                                //The total Calculated units
+                                                                const userId = mongoose.Types.ObjectId(req.user.id);
+                                                                Overallstrt.aggregate([{
+                                                                        $match: {
+                                                                            _id: userId
+                                                                        }
                                             },
-                                                                {
-                                                                    $group: {
-                                                                        _id: null,
-                                                                        "totaleachunits": {
-                                                                            $sum: {
-                                                                                $sum: "$calculategpaoverall.unitpercourse"
+                                                                    {
+                                                                        $group: {
+                                                                            _id: null,
+                                                                            "totaleachunits": {
+                                                                                $sum: {
+                                                                                    $sum: "$calculategpaoverall.unitpercourse"
+                                                                                }
                                                                             }
                                                                         }
-                                                                    }
                                             }
                 ]).exec(function (err, sumData) {
-                                                                if (!err) {
-                                                                    sumData.forEach(function (sumDate) {
-                                                                        const sum2 = sumDate.totaleachunits;
-                                                                        foundUser.totalunit.pop();
-                                                                        foundUser.totalunit.push(sum2);
-                                                                        foundUser.save(function (err) {
-                                                                            if (!err) {
-                                                                                req.flash("message", "Saved Successfully.");
-                                                                                res.redirect("/calculate");
-                                                                            }
+                                                                    if (!err) {
+                                                                        sumData.forEach(function (sumDate) {
+                                                                            const sum2 = sumDate.totaleachunits;
+                                                                            foundUser.totalunit.pop();
+                                                                            foundUser.totalunit.push(sum2);
+                                                                            foundUser.save(function (err) {
+                                                                                if (!err) {
+                                                                                    req.flash("message", "Saved Successfully.");
+                                                                                    res.redirect("/calculate");
+                                                                                }
+                                                                            });
                                                                         });
-                                                                    });
-                                                                }
-                                                            });
-                                                        }
-                                                    })
-                                                });
-                                            } else {
-                                                res.redirect("/grade-system");
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        console.log("Not it");
-                    }
-                    //                    } else {
-                    //                        req.flash("message1", "Grade letter was not indicated in your grade system.");
-                    //                        res.redirect("/calculate");
-                    //                    }
-                })
-            }
-        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        })
+                                                    });
+                                                } else {
+                                                    res.redirect("/grade-system");
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            console.log("Not it");
+                        }
+                    })
+                }
+            });
+        } else {
+            res.redirect("/signin");
+        }
     });
+
+// Middleware for Calculate POST Request.
+function authcalculatepost(req, res, next) {
+    if (req.isAuthenticated()) {
+        const couseCodeLength = req.body.coursecode.length;
+        const grade2Length = req.body.grade2.length;
+        const unitperCourseLength = req.body.unitpercourse.length;
+        const gradeCheck = _.toUpper(req.body.grade2);
+        if (req.body.unitpercourse.match(/^-?\d*(\.\d+)?$/)) {
+            if (couseCodeLength == 0 && grade2Length == 0 && unitperCourseLength == 0) {
+                req.flash("message1", "All Fields Empty! Check and Try Again.");
+                res.redirect("/calculate");
+            } else if (couseCodeLength == 0 || grade2Length == 0 || unitperCourseLength == 0) {
+                req.flash("message1", "Field(s) Empty! Check and Try Again.");
+                res.redirect("/calculate");
+            } else if (couseCodeLength > 20 && grade2Length > 5 && unitperCourseLength > 5) {
+                req.flash("message1", "Maximum characters exceeded. (20) (5) and (5) respectively.");
+            } else if (couseCodeLength > 20 || grade2Length > 5 || unitperCourseLength > 5) {
+                if (couseCodeLength > 20) {
+                    req.flash("message1", "Course Code Maximum characters exceeded (20).");
+                    res.redirect("/calculate");
+                } else if (grade2Length > 5) {
+                    req.flash("message1", "Grade Letter Maximum characters exceeded (5).");
+                    res.redirect("/calculate");
+                } else if (unitperCourseLength > 5) {
+                    req.flash("message1", "Unit Maximum characters exceeded (5).");
+                    res.redirect("/calculate");
+                } else {
+                    req.flash("message1", "Fields Maximum characters exceeded. (20) (5) and (5) respectively.");
+                    res.redirect("/calculate");
+                }
+            } else if (req.body.unitpercourse.match(/^[!@#$£%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)) {
+                req.flash("message1", "Not a Unit! Check and try Again.");
+                res.redirect("/calculate");
+            } else {
+                Overallstrt.findById(req.user.id, function (err, foundUser) {
+                    const valueArr = foundUser.gradesystemoverall.map(function (item) {
+                        return item.grade1
+                    });
+                    const isExist = valueArr.some(function (item, idx) {
+                        return valueArr.indexOf(gradeCheck) != -1
+                    });
+                    if (isExist === true) {
+                        next();
+                    } else {
+                        req.flash("message1", "Grade Letter has not been Indicated in the Grade System.");
+                        res.redirect("/calculate");
+                    }
+                });
+            }
+        } else {
+            req.flash("message1", "Not a Unit! Check and try Again.");
+            res.redirect("/calculate");
+        }
+    } else {
+        res.redirect("/signin");
+    }
+}
 
 // Get request for history route.
 app.get("/history", function (req, res) {
@@ -523,12 +682,14 @@ app.get("/history", function (req, res) {
                             highestgrade: highGRADE,
                             gradepictures: foundUser.googleimage,
                             danielaccess: foundUser.username,
+                            mysignupname: foundUser.username1,
+                            googlesignupname: foundUser.googlename,
+                            googleyes: foundUser.googleyes,
                             validid: foundUser.googleId
                         });
                     }
                 })
             }
-
         });
     } else {
         res.redirect("/signin");
@@ -549,7 +710,7 @@ app.post("/deleteitem1", function (req, res) {
         }
     }, function (err, results) {
         if (!err) {
-            req.flash("message", "Successfully deleted grade.");
+            req.flash("message", "Successfully Deleted Grade.");
             res.redirect("/grade-system");
         } else {
             console.log("Couldn't delete");
@@ -625,7 +786,6 @@ app.post("/delete/:deleteall", function (req, res) {
                 calculategpaoverall: []
             }
         }, function (err, result) {
-            console.log("Successfully deleted all!");
             res.redirect("/calculate");
         });
     } else {
@@ -656,12 +816,11 @@ app.get("/review", function (req, res) {
                         const sumLength = CommentLength + ReplyLength;
                         res.render("review", {
                             allcomments: foundComments,
-                            totalcomment: sumLength
+                            totalcomment: sumLength,
                         });
                     })
                 }
             });
-
         }
     });
 });
@@ -669,46 +828,135 @@ app.get("/review", function (req, res) {
 // Post request for reply route.
 app.post("/reply", function (req, res) {
     const gottenreply = req.body.replycomment;
+    const gottenreplyLength = req.body.replycomment.length;
     const commentID = req.body.commentId;
     const getDatereply = moment().format("YYYY-MM-DD h:m:s.SS a");
-    const insertreply = new Replyinput({
-        commentid: commentID,
-        replyOne: gottenreply,
-        timereplycreated: getDatereply
-    });
-    insertreply.save(function (err) {
-        if (!err) {
-            Commentinput.findOne({
-                _id: commentID
-            }, function (err, founddata) {
-                if (founddata) {
-                    founddata.reply.push(insertreply);
-                    founddata.save(function (err) {
+    if (gottenreplyLength !== 0) {
+        if (req.isAuthenticated()) {
+            Overallstrt.findById(req.user.id, function (err, admiinme) {
+                if (admiinme.username == "oyerinde.daniel@yahoo.com" || admiinme.username == "checkgpa2020@gmail.com") {
+                    const insertreply = new Replyinput({
+                        commentid: commentID,
+                        replyOne: gottenreply,
+                        timereplycreated: getDatereply,
+                        user: "admin"
+                    });
+                    insertreply.save(function (err) {
                         if (!err) {
-                            Replyinput.find({
-                                commentid: commentID
-                            }, function (err, founddata1) {
-                                const dataLength = founddata1.length;
-                                founddata.replylength.pop();
-                                founddata.replylength.push(dataLength);
-                                founddata.save(function (err) {
-                                    if (!err) {
+                            Commentinput.findOne({
+                                _id: commentID
+                            }, function (err, founddata) {
+                                if (founddata) {
+                                    founddata.reply.push(insertreply);
+                                    founddata.save(function (err) {
+                                        if (!err) {
+                                            Replyinput.find({
+                                                commentid: commentID
+                                            }, function (err, founddata1) {
+                                                const dataLength = founddata1.length;
+                                                founddata.replylength.pop();
+                                                founddata.replylength.push(dataLength);
+                                                founddata.checkreply = "admin1";
+                                                founddata.save(function (err) {
+                                                    if (!err) {
+                                                        res.redirect("/review");
+                                                    }
+                                                })
+                                            });
 
-                                        res.redirect("/review");
-                                    }
-                                })
-                            });
-
+                                        } else {
+                                            console.log("Reply couldn't save");
+                                        }
+                                    })
+                                }
+                            })
                         } else {
                             console.log("Reply couldn't save");
                         }
-                    })
+                    });
+                } else {
+                    const insertreply = new Replyinput({
+                        commentid: commentID,
+                        replyOne: gottenreply,
+                        timereplycreated: getDatereply
+                    });
+                    insertreply.save(function (err) {
+                        if (!err) {
+                            Commentinput.findOne({
+                                _id: commentID
+                            }, function (err, founddata) {
+                                if (founddata) {
+                                    founddata.reply.push(insertreply);
+                                    founddata.save(function (err) {
+                                        if (!err) {
+                                            Replyinput.find({
+                                                commentid: commentID
+                                            }, function (err, founddata1) {
+                                                const dataLength = founddata1.length;
+                                                founddata.replylength.pop();
+                                                founddata.replylength.push(dataLength);
+                                                founddata.save(function (err) {
+                                                    if (!err) {
+
+                                                        res.redirect("/review");
+                                                    }
+                                                })
+                                            });
+
+                                        } else {
+                                            console.log("Reply couldn't save");
+                                        }
+                                    })
+                                }
+                            })
+                        } else {
+                            console.log("Reply couldn't save");
+                        }
+                    });
                 }
-            })
+            });
         } else {
-            console.log("Reply couldn't save");
+            const insertreply = new Replyinput({
+                commentid: commentID,
+                replyOne: gottenreply,
+                timereplycreated: getDatereply
+            });
+            insertreply.save(function (err) {
+                if (!err) {
+                    Commentinput.findOne({
+                        _id: commentID
+                    }, function (err, founddata) {
+                        if (founddata) {
+                            founddata.reply.push(insertreply);
+                            founddata.save(function (err) {
+                                if (!err) {
+                                    Replyinput.find({
+                                        commentid: commentID
+                                    }, function (err, founddata1) {
+                                        const dataLength = founddata1.length;
+                                        founddata.replylength.pop();
+                                        founddata.replylength.push(dataLength);
+                                        founddata.save(function (err) {
+                                            if (!err) {
+
+                                                res.redirect("/review");
+                                            }
+                                        })
+                                    });
+                                } else {
+                                    console.log("Reply couldn't save");
+                                }
+                            })
+                        }
+                    })
+                } else {
+                    console.log("Reply couldn't save");
+                }
+            });
         }
-    });
+    } else {
+        res.redirect("/review");
+    }
 });
 
 // Get request for comment route.
@@ -716,38 +964,43 @@ app.route("/comment")
     .post(function (req, res) {
         const getDate = moment().format("YYYY-MM-DD h:m:s.SS a");
         const commentPost = req.body.commentpost;
+        const commentPostLength = req.body.commentpost.length;
         const mainID = req.body.mainid;
-        const insertcomment = new Commentinput({
-            comment: commentPost,
-        });
-        insertcomment.save(function (err) {
-            if (!err) {
-                Commentinput.find(function (err, foundUser) {
-                    if (foundUser) {
-                        const userLength = foundUser.length;
-                        const calcLength = userLength - 1
-                        const userFound = foundUser[calcLength];
-                        userFound.timecreated.push(getDate);
-                        userFound.save(function (err) {
-                            if (!err) {
-                                res.redirect("/review");
-                            }
-                        })
-                    }
-                })
-            }
-        });
+        if (commentPostLength !== 0) {
+            const insertcomment = new Commentinput({
+                comment: commentPost,
+            });
+            insertcomment.save(function (err) {
+                if (!err) {
+                    Commentinput.find(function (err, foundUser) {
+                        if (foundUser) {
+                            const userLength = foundUser.length;
+                            const calcLength = userLength - 1
+                            const userFound = foundUser[calcLength];
+                            userFound.timecreated.push(getDate);
+                            userFound.save(function (err) {
+                                if (!err) {
+                                    res.redirect("/review");
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+        } else {
+            res.redirect("/review")
+        }
     });
 
 // Get request for siginup route.
-app.get("/signup", function (req, res) {
+app.get("/signup", authgetsignup, function (req, res) {
     res.render("signup", {
         message1: req.flash("message1")
     });
 });
 
 // Post request for siginup route.
-app.post("/signup", authsignup, function (req, res) {
+app.post("/signup", authpostsignup, function (req, res) {
     const regUsername = req.body.regusername;
     const regEmail = req.body.username;
     const regPassword = req.body.password;
@@ -768,8 +1021,17 @@ app.post("/signup", authsignup, function (req, res) {
     });
 });
 
-// Middleware for signup.
-function authsignup(req, res, next) {
+// Middleware for Get signup.
+function authgetsignup(req, res, next) {
+    if (req.isAuthenticated()) {
+        res.redirect("/grade-system");
+    } else {
+        next();
+    }
+}
+
+// Middleware for Post signup.
+function authpostsignup(req, res, next) {
     Overallstrt.findOne({
         username: req.body.username
     }, function (err, foundUser) {
@@ -794,12 +1056,34 @@ function authsignup(req, res, next) {
 }
 
 // Get request for siginin route.
-app.get("/signin", function (req, res) {
+app.get("/signin", authgetsignin, function (req, res) {
     res.render("signin", {
         message: req.flash("message"),
         message1: req.flash("message1")
     });
 });
+
+function authgetsignin(req, res, next) {
+    if (req.isAuthenticated()) {
+        res.redirect("/grade-system");
+    } else {
+        next();
+    }
+}
+
+//app.post("/signin", passport.authenticate('local', {
+//    failureRedirect: '/signin',
+//    failureFlash: true
+//}), function (req, res) {
+//    if (req.body.rememberme) {
+//        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+//        console.log("jjj");
+//    } else {
+//        req.session.cookie.expires = false; // Cookie expires at end of session
+//    }
+//    res.redirect('/grade-system');
+//
+//});
 
 // Post request for siginin route.
 app.post("/signin", function (req, res, next) {
@@ -816,7 +1100,7 @@ app.post("/signin", function (req, res, next) {
                     return next(err);
                 }
                 const usernameUP = _.toUpper(user.username1);
-                req.flash("message", usernameUP + ".");
+                req.flash("message", "Welcome " + usernameUP + ".");
                 return res.redirect("/grade-system");
             });
         }
@@ -1118,7 +1402,6 @@ app.get("/changeresetpassword/:uuiduser", function (req, res) {
             const hour = foundUser.resethournow;
             const ampm = foundUser.resetampmnow;
             if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
-                console.log()
                 if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
                     if (ampm === moment().format('a')) {
                         res.render("changeresetpassword", {
@@ -1253,8 +1536,6 @@ app.get("/logout", function (req, res) {
     req.logout();
     res.redirect("/");
 });
-
-
 
 // 404 error route.
 app.get("*", function (req, res, next) {

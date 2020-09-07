@@ -1,7 +1,7 @@
 <%- include('partials/header'); -%>
 <div class="alert alert alert-danger alert-dismissible fade show alert-css1" role="alert">
     <div class="text-beware">
-        <strong>BEWARE!</strong> Don't repeat grade letter.
+        <strong>BEWARE!</strong> Don't Repeat Grade Letter.
     </div>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -10,10 +10,14 @@
 
 <% if(message.length > 0){ %>
 <div id="yeah" class="alert-css alert alert-success">
-    Welcome <strong> <%= message %></strong>
+    <%= message %>
 </div>
 <% }%>
-
+<% if(message1.length > 0){ %>
+<div id="yeah" class="alert-css alert alert-danger">
+    <%= message1 %>
+</div>
+<% }%>
 <% if(locals.gradeexists){ %>
 <div class="alertcsssign alert alert-danger">
     <%= gradeexists %>
@@ -24,8 +28,8 @@
         <table class="table table-striped table-dark">
             <thead>
                 <tr>
-                    <th scope="col">GRADE</th>
-                    <th scope="col">POINT</th>
+                    <th scope="col">GRADE LETTER</th>
+                    <th scope="col">POINTS</th>
                     <form action="/delete/deleteallgradesystem" method="post">
                         <th><button type="submit" class="ion-but" onchange="this.form.submit()"><i class="icon-css fas fa-1x fa-trash-alt"></i></button></th>
                     </form>
@@ -51,10 +55,10 @@
         <h5 style="font-weight:bold;">Enter your Grade &amp; Points</h5>
         <form action="/grade-system" method="POST">
             <div class="form-group">
-                <input type="text" name="grade1" autocomplete="off" class="form-gradesystem form-control" placeholder="Enter Grade e.g. A">
+                <input type="text" name="grade1" autocomplete="off" class="form-gradesystem form-control" placeholder="Enter Grade Letter e.g. A">
             </div>
             <div class="form-group">
-                <input type="text" name="point" autocomplete="off" class="form-gradesystem form-control" placeholder="Enter Point e.g. 5">
+                <input type="text" name="point" autocomplete="off" class="form-gradesystem form-control" placeholder="Enter Grade Point e.g. 5">
             </div>
             <!--
         <div class="form-group">

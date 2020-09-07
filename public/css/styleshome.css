@@ -60,7 +60,7 @@ hr {
     padding-right: 1rem;
     padding-left: 1rem;
     position: absolute;
-    right: 2rem;
+    right: 2.5rem;
     top: 5rem;
     z-index: 2;
 }
@@ -95,6 +95,11 @@ img.your-image2:hover + .dropdown-name2 {
 .h4-yourname2 {
     color: rgba(255, 255, 255, 1);
     width: 10rem !important;
+}
+
+.h4-yourname3 {
+    color: rgba(255, 255, 255, 1);
+    width: 13rem !important;
 }
 
 .display-pics:hover {
@@ -324,17 +329,21 @@ table tbody tr.F td:first-of-type {
     margin: 1rem auto 0 auto;
 }
 
-/* Media queries at 900px */
-@media screen and (max-width: 900px) {
+/* Media queries at 1000px */
+@media screen and (max-width: 1000px) {
     .home-pics {
-        width: 4rem;
+        width: 4.1rem;
     }
-
 
     div.grid-box {
         text-align: center;
-        padding: 2rem 2rem;
+        padding: 2rem 0rem;
     }
+
+}
+
+/* Media queries at 900px */
+@media screen and (max-width: 900px) {
 
     .alert-css,
     .alert-css1 {
@@ -348,10 +357,12 @@ table tbody tr.F td:first-of-type {
         display: none;
     }
 
-    div.grid-box {
-        text-align: center;
-        padding: 2rem 1rem;
-    }
+    /*
+div.grid-box {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+*/
 
     .grid-box h4 {
         font-size: 1.2rem;

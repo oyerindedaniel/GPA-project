@@ -12,7 +12,7 @@ html {
 }
 
 body {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 1);
 }
 
 a {
@@ -38,7 +38,7 @@ ul {
 .btn-style {
     background-color: white;
     border: 0.1rem solid rgba(0, 0, 0);
-    border-radius: 1.5rem;
+    border-radius: 0.5rem !important;
     color: rgba(0, 0, 0) !important;
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
@@ -58,13 +58,18 @@ ul {
 }
 
 .drop-item {
-    color: black;
+    color: rgba(0, 0, 0, 1);
     font-size: 1.3rem !important;
+}
+
+.dropdown2 {
+    display: none;
 }
 
 .drop-item:hover {
     background-color: rgba(85, 172, 238, 0.2);
     border: 0.1rem solid rgba(85, 172, 238, 1);
+    color: rgba(0, 0, 0, 1) !important;
 }
 
 a.sign-up {
@@ -77,22 +82,17 @@ a.sign-up {
 }
 
 .container-two {
-    /*    margin-bottom: 7rem;*/
     padding-left: 15rem;
     padding-right: 7rem;
 }
 
 .container-three {
     margin-bottom: 15rem;
-    padding-left: 15rem;
-    padding-right: 15rem;
+    padding-left: 10rem;
+    padding-right: 10rem;
+    margin-left: auto;
+    margin-right: auto;
 }
-
-/*
-.margin-bottom {
-    margin-bottom: 10rem;
-}
-*/
 
 h1 {
     font-family: sans-serif;
@@ -133,11 +133,18 @@ table {
     border-collapse: collapse;
     font-family: arial, sans-serif;
     font-size: 1.5rem;
+}
+
+table.allcalculation3 {
     width: 60%;
 }
 
 table.allcalculation {
     width: 80% !important;
+}
+
+table.allcalculation2 {
+    width: 100%;
 }
 
 td,
@@ -211,7 +218,25 @@ p.card-text {
     background-color: rgba(58, 54, 104, 0.8);
 }
 
+.nav-button {
+    border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+}
+
+.card {
+    margin-bottom: 2rem;
+}
+
 /* Footer */
+
+.footer {
+    background-color: rgba(85, 172, 238, 0.2);
+    border: 0.1rem solid rgba(85, 172, 238, 1);
+    bottom: 0;
+    padding: 1.7rem 7rem;
+    position: absolute;
+    width: 100%;
+}
+
 .col-footer {
     margin: auto;
     text-align: center;
@@ -251,11 +276,174 @@ p.card-text {
     display: inline-block;
 }
 
-.footer {
-    background-color: rgba(85, 172, 238, 0.2);
-    border: 0.1rem solid rgba(85, 172, 238, 1);
-    bottom: 0;
-    padding: 1.7rem 7rem;
-    position: absolute;
-    width: 100%;
+
+/* Media queries at 1200px */
+@media(max-width: 1200px) {
+    .container-one {
+        padding-left: 10rem;
+    }
+
+    .container-two {
+        padding-left: 10rem;
+        padding-right: 7rem;
+    }
+
+    .container-three {
+        margin-bottom: 15rem;
+        padding-left: 9rem;
+        padding-right: 9rem;
+    }
+}
+
+/* Media queries at 1000px */
+@media(max-width: 1000px) {
+    .container-one {
+        padding-left: 10rem;
+    }
+
+    .container-two {
+        padding-left: 10rem;
+        padding-right: 10rem;
+    }
+
+    .container-three {
+        margin-bottom: 15rem;
+        padding-left: 8rem;
+        padding-right: 8rem;
+    }
+}
+
+/* Media queries at 991px */
+@media(max-width: 991px) {
+
+    .nav-link,
+    .btn-style {
+        margin: 0.8rem 0 !important;
+        background-color: rgba(85, 172, 238, 0) !important;
+        border: none !important;
+        padding: 0 !important;
+        border-radius: 0rem !important;
+        color: rgba(0, 0, 0, 1) !important;
+        font-family: sans-serif !important;
+        font-size: 1.5rem !important;
+        text-align: left;
+        width: 100% !important;
+    }
+
+    .nav-link:hover,
+    a.sign-up:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .btn-style:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+        cursor: context-menu !important;
+    }
+
+    a.sign-up {
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .dropdown-menu {
+        display: none !important;
+    }
+
+    .dropdown2 {
+        display: block;
+        color: rgba(0, 0, 0, 1) !important;
+        font-family: sans-serif !important;
+        font-size: 1.5rem !important;
+        font-weight: bold;
+        margin: 0.8rem auto;
+        width: 100% !important;
+    }
+
+    .dropdown2:hover {
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 0.8) !important;
+    }
+}
+
+
+/* Media queries at 700px */
+@media(max-width: 700px) {
+    .container-one {
+        padding-left: 5rem;
+    }
+
+    .container-two {
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+
+    .unorder-list {
+        padding-left: 2rem;
+    }
+}
+
+/* Media queries at 500px */
+@media(max-width: 500px) {
+    .container-one {
+        padding-left: 2rem;
+    }
+
+    .container-two {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .container-three {
+        margin-bottom: 20rem;
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    .unorder-list {
+        padding-left: 1rem;
+    }
+
+    table.allcalculation2 {
+        font-size: 1rem;
+        /*        width: 2rem !important;*/
+    }
+
+    .footer {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+/* Media queries at 400px */
+@media(max-width: 400px) {
+    .container-one {
+        padding-left: 1;
+        text-align: left;
+    }
+
+    .container-two {
+        text-align: left;
+        padding-left: 1;
+        padding-right: 1;
+    }
+
+    .container-three {
+        margin-bottom: 18rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .footer {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+@media(max-width: 370px) {
+
+    table.allcalculation2 {
+        font-size: 0.9rem;
+        width: 3rem !important;
+    }
 }
