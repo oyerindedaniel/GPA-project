@@ -71,7 +71,7 @@ h6 {
     color: rgba(0, 0, 0, 1) !important;
     font-weight: bold !important;
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 1rem !important;
+    font-size: 1.05rem !important;
     margin: 2rem 1.5rem 2rem 1.5rem !important;
     padding: 0.6rem 2rem 0.6rem 2rem !important;
 }
@@ -203,6 +203,7 @@ a.sign-up {
             color: rgba(0, 0, 0, 1) !important;
             font-family: sans-serif !important;
             font-size: 1.5rem !important;
+            font-weight: bold !important;
             text-align: left;
             width: 100% !important;
         }
@@ -221,7 +222,7 @@ a.sign-up {
 
         a.sign-up {
             background-color: rgba(85, 172, 238, 0) !important;
-            color: rgba(0, 0, 0, 0.8) !important;
+            color: rgba(0, 0, 0, 1) !important;
         }
 
         .dropdown-menu {
@@ -233,7 +234,7 @@ a.sign-up {
             color: rgba(0, 0, 0, 1) !important;
             font-family: sans-serif !important;
             font-size: 1.5rem !important;
-            font-weight: bold;
+            font-weight: bold !important;
             margin: 0.8rem auto;
             width: 100% !important;
         }
@@ -257,6 +258,9 @@ a.sign-up {
             margin-bottom: 15rem;
         }
 
+        .row2 {
+            padding: 1rem 15%;
+        }
     }
 
     /* Media queries at 800px */
@@ -271,11 +275,25 @@ a.sign-up {
             text-align: center;
             margin: auto;
         }
+    }
 
-        .row2 {
-            padding: 1rem 0 0 1.6rem;
+    /* Media queries at 650px */
+    @media(max-width: 650px) {
+        .main-carousel {
+            width: 40rem;
+            height: 40rem;
+            padding: 1rem;
+            text-align: center;
+            margin: auto;
         }
+    }
 
+    /* Media queries at 550px */
+    @media(max-width: 550px) {
+        .main-carousel {
+            width: 35rem;
+            height: 35rem;
+        }
     }
 
     /* Media queries at 500px */
@@ -288,10 +306,9 @@ a.sign-up {
         .main-carousel {
             width: 30rem;
             height: 30rem;
-            padding: 0.35rem;
+            padding: 1rem;
             text-align: center;
             margin: auto;
-
         }
 
         .row1 {
@@ -304,6 +321,19 @@ a.sign-up {
 
         .p-copyright {
             width: 100%;
+        }
+
+        .footer {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+    }
+
+    /* Media queries at 400px */
+    @media(max-width: 400px) {
+        .footer {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
         }
     }
 

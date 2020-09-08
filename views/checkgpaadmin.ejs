@@ -61,12 +61,23 @@
         </div>
     </div>
 </form>
-<form>
+<form action="/deleteanything" method="post">
+    <div class="divmain-admin">
+        <div class="div-admin">
+            <h3 class="h3-admin">VERIFY USER</h3>
+            <label class="sr-only" for="inlineFormInputGroup">username</label>
+            <input type="email" name="adduserverified" class="form-admin" placeholder="username">
+            <button type="submit" onchange="this.form.submit()" class="form-admin2">Add</button>
+            <input type="hidden" name="delete" value="addoneverfieduser">
+        </div>
+    </div>
+</form>
+<form action="/deleteallfalse" method="post">
     <div class="divmain-admin2">
         <div class="div-admin">
             <h3 class="h3-admin">DELETE UNVERIFIED TIMEOUT</h3>
             <label class="sr-only" for="inlineFormInputGroup"></label>
-            <button type="submit" class="form-admin3">Delete Users</button>
+            <button type="submit" onchange="this.form.submit()" class="form-admin3">Delete Users</button>
         </div>
     </div>
 </form>

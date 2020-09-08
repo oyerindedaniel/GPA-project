@@ -345,6 +345,7 @@ a.sign-up {
         color: rgba(0, 0, 0, 1) !important;
         font-family: sans-serif !important;
         font-size: 1.5rem !important;
+        font-weight: bold !important;
         text-align: left;
         width: 100% !important;
     }
@@ -362,7 +363,8 @@ a.sign-up {
     }
 
     a.sign-up {
-        color: rgba(0, 0, 0, 0.8) !important;
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 1) !important;
     }
 
     .dropdown-menu {

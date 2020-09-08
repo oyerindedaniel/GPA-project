@@ -131,7 +131,7 @@ p {
 
 table {
     border-collapse: collapse;
-    font-family: arial, sans-serif;
+    font-family: "arial", sans-serif;
     font-size: 1.5rem;
 }
 
@@ -145,6 +145,10 @@ table.allcalculation {
 
 table.allcalculation2 {
     width: 100%;
+}
+
+.table-hide {
+    display: none;
 }
 
 td,
@@ -313,6 +317,25 @@ p.card-text {
     }
 }
 
+/* Media queries at 800px */
+@media(max-width: 800px) {
+    table {
+        width: 100%;
+    }
+
+    .table-hide {
+        width: 100%;
+    }
+
+    table.allcalculation {
+        width: 100% !important;
+    }
+
+    table.allcalculation3 {
+        width: 100%;
+    }
+}
+
 /* Media queries at 991px */
 @media(max-width: 991px) {
 
@@ -326,6 +349,7 @@ p.card-text {
         color: rgba(0, 0, 0, 1) !important;
         font-family: sans-serif !important;
         font-size: 1.5rem !important;
+        font-weight: bold;
         text-align: left;
         width: 100% !important;
     }
@@ -343,7 +367,8 @@ p.card-text {
     }
 
     a.sign-up {
-        color: rgba(0, 0, 0, 0.8) !important;
+        background-color: rgba(85, 172, 238, 0) !important;
+        color: rgba(0, 0, 0, 1) !important;
     }
 
     .dropdown-menu {
@@ -355,7 +380,7 @@ p.card-text {
         color: rgba(0, 0, 0, 1) !important;
         font-family: sans-serif !important;
         font-size: 1.5rem !important;
-        font-weight: bold;
+        font-weight: bold !important;
         margin: 0.8rem auto;
         width: 100% !important;
     }
@@ -383,8 +408,16 @@ p.card-text {
     }
 }
 
-/* Media queries at 500px */
-@media(max-width: 500px) {
+/* Media queries at 520px */
+@media(max-width: 520px) {
+    .table-hide {
+        display: block;
+    }
+
+    table.allcalculation2 {
+        display: none;
+    }
+
     .container-one {
         padding-left: 2rem;
     }
@@ -402,11 +435,6 @@ p.card-text {
 
     .unorder-list {
         padding-left: 1rem;
-    }
-
-    table.allcalculation2 {
-        font-size: 1rem;
-        /*        width: 2rem !important;*/
     }
 
     .footer {
@@ -440,6 +468,7 @@ p.card-text {
     }
 }
 
+/*
 @media(max-width: 370px) {
 
     table.allcalculation2 {
@@ -447,3 +476,4 @@ p.card-text {
         width: 3rem !important;
     }
 }
+*/

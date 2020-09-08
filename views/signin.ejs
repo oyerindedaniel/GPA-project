@@ -51,6 +51,11 @@
             <img src="/pics/calculator.png" class="calculator-img d-inline-block align-top " alt="gpa.jpg">
         </a>
     </nav>
+    <% if(message3.length > 0){ %>
+    <div id="yeah" class="alertcsssign2 alert alert-success">
+        <%= message3 %>
+    </div>
+    <% }%>
     <% if(message1.length > 0){ %>
     <div class="alert alert alert-danger alert-dismissible fade show alert-css1" role="alert">
         <div class="text-beware">

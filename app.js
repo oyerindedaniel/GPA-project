@@ -265,14 +265,6 @@ app.route("/")
         res.render("gpalandingpage");
     });
 
-// Get request for Adminonly route.
-app.route(`/checkgpa/admin/${process.env.ADMINURL}`)
-    .get(function (req, res) {
-        res.locals.style = "styles1.css"
-        res.locals.title = "checkGPA-Admin"
-        res.render("checkgpamain");
-    });
-
 // Get request for AdminonlyHome route.
 app.route(`/checkgpa/admin/${process.env.ADMINURL}/home`)
     .get(authadminroute, function (req, res) {
@@ -281,38 +273,48 @@ app.route(`/checkgpa/admin/${process.env.ADMINURL}/home`)
         var counterlength = 0;
         var counter2length = 0;
         const allregisteredUsers = (`${ req.allregisteredUserslength}`);
-        Overallstrt.find({
-            emailverif: "True"
-        }, function (err, registerusers) {
-            const todayUsers = registerusers.map(function (todayUser) {
-                return todayUser.daynow
+        if (req.isAuthenticated()) {
+            Overallstrt.findById(req.user.id, function (err, foundDaniel) {
+                if (foundDaniel.username === process.env.DANIELYAHOOEMAIL) {
+                    Overallstrt.find({
+                        emailverif: "True"
+                    }, function (err, registerusers) {
+                        const todayUsers = registerusers.map(function (todayUser) {
+                            return todayUser.daynow
+                        });
+                        const includedatas = todayUsers.includes(parseInt(moment().format('D')));
+                        if (includedatas == true) {
+                            todayUsers.forEach(function (todayUser) {
+                                if (todayUser == moment().format('D')) {
+                                    counterlength++
+                                } else {
+                                    counter2length++
+                                }
+                            });
+                            res.render("checkgpaadmin", {
+                                usercounter: allregisteredUsers,
+                                todayusercounter: counterlength,
+                                adminURL: process.env.ADMINURL,
+                                message: req.flash("message"),
+                                message1: req.flash("message1")
+                            });
+                        } else {
+                            res.render("checkgpaadmin", {
+                                usercounter: allregisteredUsers,
+                                todayusercounter: 0,
+                                adminURL: process.env.ADMINURL,
+                                message: req.flash("message"),
+                                message1: req.flash("message1")
+                            });
+                        }
+                    });
+                } else {
+                    res.redirect("/signin");
+                }
             });
-            const includedatas = todayUsers.includes(parseInt(moment().format('D')));
-            if (includedatas == true) {
-                todayUsers.forEach(function (todayUser) {
-                    if (todayUser == moment().format('D')) {
-                        counterlength++
-                    } else {
-                        counter2length++
-                    }
-                });
-                res.render("checkgpaadmin", {
-                    usercounter: allregisteredUsers,
-                    todayusercounter: counterlength,
-                    adminURL: process.env.ADMINURL,
-                    message: req.flash("message"),
-                    message1: req.flash("message1")
-                });
-            } else {
-                res.render("checkgpaadmin", {
-                    usercounter: allregisteredUsers,
-                    todayusercounter: 0,
-                    adminURL: process.env.ADMINURL,
-                    message: req.flash("message"),
-                    message1: req.flash("message1")
-                });
-            }
-        });
+        } else {
+            res.redirect("/signin");
+        }
     });
 
 // Middleware for AdminonlyHome route..
@@ -341,95 +343,139 @@ function authadminroute(req, res, next) {
 // Get request for Adminonly route.
 app.route("/deleteanything")
     .post(function (req, res) {
-        const deletecontrol = req.body.delete;
-        const formdeleteComment = req.body.deleteonecomment;
-        const formdeletecommentReply = req.body.deleteonecommentreply;
-        const formdeleteReply = req.body.deleteonereply;
-        const formdeleteOne = req.body.deleteoneemail;
-        if (deletecontrol == "deleteoneuser") {
-            Overallstrt.findOneAndDelete({
-                username: formdeleteOne
-            }, function (err, foundUser) {
-                if (foundUser) {
-                    req.flash("message", "Successfully deleted User.")
-                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                } else {
-                    req.flash("message1", "Email address invalid.")
-                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                }
-            });
-        } else if (deletecontrol == "deleteonecomment") {
-            Commentinput.findOneAndDelete({
-                comment: formdeleteComment
-            }, function (err, foundComment) {
-                if (foundComment) {
-                    const allReplyid = foundComment._id;
-                    Replyinput.deleteMany({
-                        commentid: allReplyid
-                    }, function (err, foundreplys) {
-                        if (foundreplys) {
-                            req.flash("message", "Successfully deleted Comment and Reply.");
-                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                        } else {
-                            req.flash("message", "Successfully deleted Comment.");
-                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                        }
-                    });
-
-                } else {
-                    req.flash("message1", "Comment invalid.");
-                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                }
-            });
-        } else if (deletecontrol == "deleteonereply") {
-            Commentinput.findOneAndUpdate({
-                comment: formdeletecommentReply
-            }, {
-                $pull: {
-                    reply: {
-                        replyOne: formdeleteReply
+        if (req.isAuthenticated()) {
+            const deletecontrol = req.body.delete;
+            const formdeleteComment = req.body.deleteonecomment;
+            const formdeletecommentReply = req.body.deleteonecommentreply;
+            const formdeleteReply = req.body.deleteonereply;
+            const formdeleteOne = req.body.deleteoneemail;
+            const verifoneuser = req.body.adduserverified;
+            if (deletecontrol == "deleteoneuser") {
+                Overallstrt.findOneAndDelete({
+                    username: formdeleteOne
+                }, function (err, foundUser) {
+                    if (foundUser) {
+                        req.flash("message", "Successfully deleted User.")
+                        res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                    } else {
+                        req.flash("message1", "Email address invalid.")
+                        res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
                     }
-                }
-            }, function (err, deletereply) {
-                if (!err) {
-                    Replyinput.findOneAndDelete({
-                        replyOne: formdeleteReply
-                    }, function (err, foundReplyOne) {
-                        if (!err) {
-                            Commentinput.find({
-                                comment: formdeletecommentReply
-                            }, function (err, founddata1) {
-                                if (founddata1) {
-                                    const dataLength = founddata1[0].reply.length;
-                                    founddata1[0].replylength.pop();
-                                    founddata1[0].replylength.push(dataLength);
-                                    founddata1[0].save(function (err) {
-                                        console.log(formdeleteReply);
-                                        if (!err) {
-                                            req.flash("message", "Reply deleted Successfully.");
-                                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                                        } else {
-                                            req.flash("message1", "Reply could not be Deleted.");
-                                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                                        }
-                                    })
-                                } else {
-                                    req.flash("message1", "Reply could not be Deleted.");
-                                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                                }
-                            });
+                });
+            } else if (deletecontrol == "deleteonecomment") {
+                Commentinput.findOneAndDelete({
+                    comment: formdeleteComment
+                }, function (err, foundComment) {
+                    if (foundComment) {
+                        const allReplyid = foundComment._id;
+                        Replyinput.deleteMany({
+                            commentid: allReplyid
+                        }, function (err, foundreplys) {
+                            if (foundreplys) {
+                                req.flash("message", "Successfully deleted Comment and Reply.");
+                                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                            } else {
+                                req.flash("message", "Successfully deleted Comment.");
+                                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                            }
+                        });
 
-                        } else {
-                            req.flash("message1", "Reply could not be Deleted.");
-                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                    } else {
+                        req.flash("message1", "Comment invalid.");
+                        res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                    }
+                });
+            } else if (deletecontrol == "deleteonereply") {
+                Commentinput.findOneAndUpdate({
+                    comment: formdeletecommentReply
+                }, {
+                    $pull: {
+                        reply: {
+                            replyOne: formdeleteReply
                         }
-                    });
-                } else {
-                    req.flash("message1", "Reply could not be Deleted.");
-                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
-                }
-            });
+                    }
+                }, function (err, deletereply) {
+                    if (!err) {
+                        Replyinput.findOneAndDelete({
+                            replyOne: formdeleteReply
+                        }, function (err, foundReplyOne) {
+                            if (!err) {
+                                Commentinput.find({
+                                    comment: formdeletecommentReply
+                                }, function (err, founddata1) {
+                                    if (founddata1) {
+                                        const dataLength = founddata1[0].reply.length;
+                                        founddata1[0].replylength.pop();
+                                        founddata1[0].replylength.push(dataLength);
+                                        founddata1[0].save(function (err) {
+                                            console.log(formdeleteReply);
+                                            if (!err) {
+                                                req.flash("message", "Reply Deleted Successfully.");
+                                                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                                            } else {
+                                                req.flash("message1", "Reply could not be Deleted.");
+                                                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                                            }
+                                        })
+                                    } else {
+                                        req.flash("message1", "Reply could not be Deleted.");
+                                        res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                                    }
+                                });
+
+                            } else {
+                                req.flash("message1", "Reply could not be Deleted.");
+                                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                            }
+                        });
+                    } else {
+                        req.flash("message1", "Reply could not be Deleted.");
+                        res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                    }
+                });
+            } else if (deletecontrol == "addoneverfieduser") {
+                Overallstrt.findOne({
+                    username: verifoneuser
+                }, function (err, aboutregisterusers) {
+                    if (aboutregisterusers) {
+                        aboutregisterusers.emailverif = "True"
+                        aboutregisterusers.save(function (err) {
+                            if (!err) {
+                                req.flash("message", "Successfully verified user.");
+                                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                            } else {
+                                req.flash("message1", "Could not Verif User.");
+                                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                            }
+                        })
+                    } else {
+                        req.flash("message1", "Email address Invalid.");
+                        res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                    }
+                });
+
+            } else {
+                res.redirect("/logout");
+            }
+        } else {
+            res.redirect("/signin")
         }
+    });
+
+app.route("/deleteallfalse")
+    .post(function (req, res) {
+        Overallstrt.deleteMany({
+            emailverif: "False"
+        }, function (err, allnotregisterusers) {
+            if (allnotregisterusers) {
+                req.flash("message", "Congratulations successfully deleted all unverified users.");
+                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+            } else {
+                req.flash("message", "Congratulations all users verified");
+                res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                console.log("davies");
+            }
+        });
     });
 
 app.route("/jokes")
@@ -1164,6 +1210,7 @@ app.post("/signup", authpostsignup, function (req, res) {
         yearnow: moment().format('YYYY'),
         monthnow: moment().format('M'),
         daynow: moment().format('D'),
+        hournow: moment().format('H'),
         token: emailverifUUIDuser
     }, regPassword, function (err, user) {
         if (err) {
@@ -1171,7 +1218,7 @@ app.post("/signup", authpostsignup, function (req, res) {
             res.redirect("/signup");
         } else {
             passport.authenticate("local")(req, res, function () {
-                req.flash("message", "Check your email for a link to verif your email. If it doesn’t appear within a few minutes, check your spam folder.");
+                req.flash("message3", "Check your email for a link to verif your email. If it doesn’t appear within a few minutes, check your spam folder.");
                 res.redirect("/signin");
             });
         }
@@ -1239,7 +1286,6 @@ function authpostsignup(req, res, next) {
                             next();
                         }
                     });
-                    //                    next();
                 } else {
                     req.flash("message1", "Password didn't meet required format. Try again")
                     res.redirect("/signup");
@@ -1260,16 +1306,30 @@ app.get("/emailverification/:uuiduser", function (req, res) {
         token: uuidUSER
     }, function (err, foundUser) {
         if (foundUser) {
-            foundUser.token = process.env.ONEHOURRESET2 + newUUID + process.env.ONEHOURRESET
-            foundUser.emailverif = "True"
-            foundUser.save(function (err) {
-                if (!err) {
-                    req.flash("message", "Successfully Registered. Try signing in.")
-                    res.redirect("/signin");
+            const year = foundUser.yearnow;
+            const month = foundUser.monthnow;
+            const day = foundUser.daynow;
+            const hour = foundUser.hournow;
+            if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
+                if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
+                    foundUser.token = process.env.ONEHOURRESET2 + newUUID + process.env.ONEHOURRESET
+                    foundUser.emailverif = "True"
+                    foundUser.save(function (err) {
+                        if (!err) {
+                            req.flash("message", "Successfully Registered. Try signing in.")
+                            res.redirect("/signin");
+                        } else {
+                            console.log("err");
+                        }
+                    })
                 } else {
-                    console.log("err");
+                    req.flash("message1", "The link has expired. Try signing in you will be sent another verification link.")
+                    res.redirect("/signin");
                 }
-            })
+            } else {
+                req.flash("message1", "The link has expired. Try signing in you will be sent another verification link.")
+                res.redirect("/signin");
+            }
         } else {
             res.redirect("/*")
         }
@@ -1280,7 +1340,8 @@ app.get("/emailverification/:uuiduser", function (req, res) {
 app.get("/signin", authgetsignin, function (req, res) {
     res.render("signin", {
         message: req.flash("message"),
-        message1: req.flash("message1")
+        message1: req.flash("message1"),
+        message3: req.flash("message3")
     });
 });
 
@@ -1342,8 +1403,51 @@ function authpostsignin(req, res, next) {
             if (foundUser.emailverif == "True") {
                 next();
             } else {
-                req.flash("message1", "Email Verification before signing in.");
-                res.redirect("/signin");
+                const emailverifuuid = uuidv4();
+                foundUser.token = emailverifuuid;
+                foundUser.yearnow = moment().format('YYYY');
+                foundUser.monthnow = moment().format('M');
+                foundUser.daynow = moment().format('D');
+                foundUser.hournow = moment().format('H');
+                foundUser.save(function (err) {
+                    if (!err) {
+                        const checkGPAurl = "http://localhost:3000/emailverification/" + emailverifuuid;
+                        const output = `
+        <p>Thanks for joining checkGPA.</p>
+<a href="${checkGPAurl}">${checkGPAurl}</a>
+  <p>If you don’t use this link before 2 hours, it will expire.</p>
+  <p>Note: if you did not request this, please ignore this email. </p>
+      `;
+                        let transporter = nodemailer.createTransport({
+                            service: "gmail",
+                            auth: {
+                                user: 'checkgpa2020@gmail.com',
+                                pass: process.env.AUTHPASSWORD
+                            },
+                            tls: {
+                                rejectUnauthorized: false
+                            }
+                        });
+                        let mailOptions = {
+                            from: '"checkGPA" checkgpa2020@yahoo.com',
+                            to: req.body.username,
+                            subject: 'checkGPA email verification',
+                            text: 'checkGPA email verification',
+                            html: output
+                        };
+                        // send mail with defined transport object
+                        transporter.sendMail(mailOptions, (error, info) => {
+                            if (error) {
+                                return console.log(error);
+                            } else {
+                                req.flash("message3", "Another email for a link to verif has been sent to your email. Verif before signing. If it doesn’t appear within a few minutes, check your spam folder.");
+                                res.redirect("/signin");
+                            }
+                        });
+                    } else {
+                        console.log("Couldn't generate");
+                    }
+                })
             }
         } else {
             req.flash("message1", "Invalid email or password.");
@@ -1442,7 +1546,6 @@ app.get("/resetpassword/:uuiduser", function (req, res) {
             const day = foundUser.daynow;
             const hour = foundUser.hournow;
             if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
-                console.log()
                 if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
                     res.render("resetpassword", {
                         resetuuid: uuidUSER,
