@@ -53,7 +53,7 @@ nav {
 
 .badge-divinner {
     position: absolute;
-    right: 2.7rem
+    right: 2.7rem;
 }
 
 .btn {
@@ -107,6 +107,11 @@ a.sign-up {
     margin-top: 3.5rem;
 }
 
+.divmain-admin3 {
+    margin-bottom: 3rem;
+    margin-top: 8rem;
+}
+
 .div-admin {
     text-align: center;
     margin: auto;
@@ -125,24 +130,45 @@ a.sign-up {
 }
 
 .form-admin2 {
-    background: linear-gradient(90deg, #e1eec3 0%, #f05053 100%);
-    border: 0.1rem solid rgba(85, 172, 238, 1);
+    background-color: rgba(0, 0, 0, 1);
+    color: rgba(255, 255, 255, 1);
     border-radius: 0.5rem;
     padding: 0.7rem;
     font-size: 1.5rem;
     width: 10rem;
 }
 
+.form-admin3 {
+    background-color: rgba(0, 0, 0, 1);
+    color: rgba(255, 255, 255, 1);
+    border-radius: 0.5rem;
+    padding: 0.7rem;
+    font-size: 1.5rem;
+    width: 15rem;
+}
+
 .form-admin:focus {
     outline: none;
 }
 
-.form-admin2:hover {
-    background-color: rgba(85, 172, 238, 0.7);
+.form-admin2:hover,
+.form-admin3:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    color: rgba(255, 255, 255, 1);
 }
 
 .nav-button {
     border: 0.1rem solid rgba(0, 0, 0, 1) !important;
+}
+
+/* Alert */
+.alert-css {
+    border-radius: 0;
+    font-size: 1.5rem;
+    padding: 0.8rem 3rem;
+    width: 50%;
+    margin: 0.5rem auto;
+    text-align: center;
 }
 
 /* Footer */
@@ -245,5 +271,19 @@ a.sign-up {
     .dropdown2:hover {
         background-color: rgba(85, 172, 238, 0) !important;
         color: rgba(0, 0, 0, 0.8) !important;
+    }
+}
+
+/* Media queries at 900px */
+@media screen and (max-width: 900px) {
+    .alert-css {
+        width: 65%;
+    }
+}
+
+/* Media queries at 410px */
+@media screen and (max-width: 410px) {
+    .alert-css {
+        width: 90%;
     }
 }

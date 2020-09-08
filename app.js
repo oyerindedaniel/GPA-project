@@ -172,7 +172,6 @@ const overallstrtSchema = new mongoose.Schema({
     mytodaydate: Number,
     monthnow: Number,
     yearnow: Number,
-    ampmnow: String,
     emailverif: String,
     finalresult: [],
     googleId: String,
@@ -300,13 +299,17 @@ app.route(`/checkgpa/admin/${process.env.ADMINURL}/home`)
                 res.render("checkgpaadmin", {
                     usercounter: allregisteredUsers,
                     todayusercounter: counterlength,
-                    adminURL: process.env.ADMINURL
+                    adminURL: process.env.ADMINURL,
+                    message: req.flash("message"),
+                    message1: req.flash("message1")
                 });
             } else {
                 res.render("checkgpaadmin", {
                     usercounter: allregisteredUsers,
                     todayusercounter: 0,
-                    adminURL: process.env.ADMINURL
+                    adminURL: process.env.ADMINURL,
+                    message: req.flash("message"),
+                    message1: req.flash("message1")
                 });
             }
         });
@@ -327,11 +330,107 @@ function authadminroute(req, res, next) {
             res.render("checkgpaadmin", {
                 usercounter: 0,
                 todayusercounter: 0,
-                adminURL: process.env.ADMINURL
+                adminURL: process.env.ADMINURL,
+                message: req.flash("message"),
+                message1: req.flash("message1")
             });
         }
     })
 }
+
+// Get request for Adminonly route.
+app.route("/deleteanything")
+    .post(function (req, res) {
+        const deletecontrol = req.body.delete;
+        const formdeleteComment = req.body.deleteonecomment;
+        const formdeletecommentReply = req.body.deleteonecommentreply;
+        const formdeleteReply = req.body.deleteonereply;
+        const formdeleteOne = req.body.deleteoneemail;
+        if (deletecontrol == "deleteoneuser") {
+            Overallstrt.findOneAndDelete({
+                username: formdeleteOne
+            }, function (err, foundUser) {
+                if (foundUser) {
+                    req.flash("message", "Successfully deleted User.")
+                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                } else {
+                    req.flash("message1", "Email address invalid.")
+                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                }
+            });
+        } else if (deletecontrol == "deleteonecomment") {
+            Commentinput.findOneAndDelete({
+                comment: formdeleteComment
+            }, function (err, foundComment) {
+                if (foundComment) {
+                    const allReplyid = foundComment._id;
+                    Replyinput.deleteMany({
+                        commentid: allReplyid
+                    }, function (err, foundreplys) {
+                        if (foundreplys) {
+                            req.flash("message", "Successfully deleted Comment and Reply.");
+                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                        } else {
+                            req.flash("message", "Successfully deleted Comment.");
+                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                        }
+                    });
+
+                } else {
+                    req.flash("message1", "Comment invalid.");
+                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                }
+            });
+        } else if (deletecontrol == "deleteonereply") {
+            Commentinput.findOneAndUpdate({
+                comment: formdeletecommentReply
+            }, {
+                $pull: {
+                    reply: {
+                        replyOne: formdeleteReply
+                    }
+                }
+            }, function (err, deletereply) {
+                if (!err) {
+                    Replyinput.findOneAndDelete({
+                        replyOne: formdeleteReply
+                    }, function (err, foundReplyOne) {
+                        if (!err) {
+                            Commentinput.find({
+                                comment: formdeletecommentReply
+                            }, function (err, founddata1) {
+                                if (founddata1) {
+                                    const dataLength = founddata1[0].reply.length;
+                                    founddata1[0].replylength.pop();
+                                    founddata1[0].replylength.push(dataLength);
+                                    founddata1[0].save(function (err) {
+                                        console.log(formdeleteReply);
+                                        if (!err) {
+                                            req.flash("message", "Reply deleted Successfully.");
+                                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                                        } else {
+                                            req.flash("message1", "Reply could not be Deleted.");
+                                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                                        }
+                                    })
+                                } else {
+                                    req.flash("message1", "Reply could not be Deleted.");
+                                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                                }
+                            });
+
+                        } else {
+                            req.flash("message1", "Reply could not be Deleted.");
+                            res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                        }
+                    });
+                } else {
+                    req.flash("message1", "Reply could not be Deleted.");
+                    res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
+                }
+            });
+        }
+    });
 
 app.route("/jokes")
     .get(function (req, res) {
@@ -1314,7 +1413,6 @@ function authforgotpassword(req, res, next) {
             foundUser.monthnow = moment().format('M');
             foundUser.daynow = moment().format('D');
             foundUser.hournow = moment().format('H');
-            foundUser.ampmnow = moment().format('a');
             foundUser.save(function (err) {
                 if (!err) {
                     req.eMAIL = userFound;
@@ -1343,19 +1441,13 @@ app.get("/resetpassword/:uuiduser", function (req, res) {
             const month = foundUser.monthnow;
             const day = foundUser.daynow;
             const hour = foundUser.hournow;
-            const ampm = foundUser.ampmnow;
             if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
                 console.log()
                 if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
-                    if (ampm === moment().format('a')) {
-                        res.render("resetpassword", {
-                            resetuuid: uuidUSER,
-                            resetpass: foundUser.username
-                        });
-                    } else {
-                        req.flash("message1", "The link has expired. Try again.")
-                        res.redirect("/forgotpassword");
-                    }
+                    res.render("resetpassword", {
+                        resetuuid: uuidUSER,
+                        resetpass: foundUser.username
+                    });
                 } else {
                     req.flash("message1", "The link has expired. Try again.")
                     res.redirect("/forgotpassword");
@@ -1517,7 +1609,6 @@ function authchangepassword(req, res, next) {
             foundUser.monthnow = moment().format('M');
             foundUser.daynow = moment().format('D');
             foundUser.hournow = moment().format('H');
-            foundUser.ampmnow = moment().format('a');
             foundUser.save(function (err) {
                 if (!err) {
                     req.eMAIL = userFound;
@@ -1546,18 +1637,12 @@ app.get("/changeresetpassword/:uuiduser", function (req, res) {
             const month = foundUser.monthnow;
             const day = foundUser.daynow;
             const hour = foundUser.hournow;
-            const ampm = foundUser.ampmnow;
             if (year == moment().format('YYYY') && month == moment().format('M') && day == moment().format('D')) {
                 if (hour == moment().format('H') || hour + 1 == moment().format('H')) {
-                    if (ampm === moment().format('a')) {
-                        res.render("changeresetpassword", {
-                            resetuuid: uuidUSER,
-                            resetpass: foundUser.username
-                        });
-                    } else {
-                        req.flash("message1", "The link has expired. Try again.")
-                        res.redirect("/changepassword");
-                    }
+                    res.render("changeresetpassword", {
+                        resetuuid: uuidUSER,
+                        resetpass: foundUser.username
+                    });
                 } else {
                     req.flash("message1", "The link has expired. Try again.")
                     res.redirect("/changepassword");

@@ -1,4 +1,14 @@
 <%- include('partials/mainheader'); -%>
+<% if(message.length > 0){ %>
+<div id="yeah" class="alert-css alert alert-success">
+    <%= message %>
+</div>
+<% }%>
+<% if(message1.length > 0){ %>
+<div id="yeah" class="alert-css alert alert-danger">
+    <%= message1 %>
+</div>
+<% }%>
 <div class="badge-div">
     <div class="badge-divinner">
         <form class="forms" action="/checkgpa/admin/<%= adminURL %>/home" method="get">
@@ -16,33 +26,38 @@
         </form>
     </div>
 </div>
-<form>
-    <div class="divmain-admin">
+<form action="/deleteanything" method="post">
+    <div class="divmain-admin3">
         <div class="div-admin">
             <h3 class="h3-admin">DELETE USER</h3>
-            <label class="sr-only" for="inlineFormInputGroup">Username</label>
-            <input type="username" class="form-admin" placeholder="Username">
-            <button type="submit" class="form-admin2">Delete</button>
+            <label class="sr-only" for="inlineFormInputGroup">Email address</label>
+            <input type="email" name="deleteoneemail" class="form-admin" placeholder="Email address">
+            <button type="submit" onchange="this.form.submit()" class="form-admin2">Delete</button>
+            <input type="hidden" name="delete" value="deleteoneuser">
         </div>
     </div>
 </form>
-<form>
+<form action="/deleteanything" method="post">
     <div class="divmain-admin">
         <div class="div-admin">
             <h3 class="h3-admin">DELETE COMMENT</h3>
             <label class="sr-only" for="inlineFormInputGroup">Comment</label>
-            <input type="username" class="form-admin" placeholder="Comment">
-            <button type="submit" class="form-admin2">Delete</button>
+            <input type="text" name="deleteonecomment" class="form-admin" placeholder="Comment">
+            <button type="submit" onchange="this.form.submit()" class="form-admin2">Delete</button>
+            <input type="hidden" name="delete" value="deleteonecomment">
         </div>
     </div>
 </form>
-<form>
+<form action="/deleteanything" method="post">
     <div class="divmain-admin">
         <div class="div-admin">
             <h3 class="h3-admin">DELETE REPLY</h3>
+            <label class="sr-only" for="inlineFormInputGroup">CommentReply</label>
+            <input type="text" name="deleteonecommentreply" class="form-admin" placeholder="Comment">
             <label class="sr-only" for="inlineFormInputGroup">Reply</label>
-            <input type="username" class="form-admin" placeholder="Reply">
-            <button type="submit" class="form-admin2">Delete</button>
+            <input type="text" name="deleteonereply" class="form-admin" placeholder="Reply">
+            <button type="submit" onchange="this.form.submit()" class="form-admin2">Delete</button>
+            <input type="hidden" name="delete" value="deleteonereply">
         </div>
     </div>
 </form>
@@ -51,7 +66,7 @@
         <div class="div-admin">
             <h3 class="h3-admin">DELETE UNVERIFIED TIMEOUT</h3>
             <label class="sr-only" for="inlineFormInputGroup"></label>
-            <button type="submit" class="form-admin2">Delete Users</button>
+            <button type="submit" class="form-admin3">Delete Users</button>
         </div>
     </div>
 </form>
