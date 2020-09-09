@@ -1843,6 +1843,9 @@ app.get("/*", function (req, res, next) {
 //});
 
 // Listen at port.
-app.listen(53513 || process.env.PORTS, function () {
-    console.log(`server started on port ${process.env.PORT}`);
+//app.listen(53513 || process.env.PORTS, function () {
+//    console.log(`server started on port ${process.env.PORT}`);
+//});
+app.listen(process.env.PORT || 3000, function () {
+    console.log("server started on port 3000");
 });
