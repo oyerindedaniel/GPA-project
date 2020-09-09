@@ -1875,7 +1875,7 @@ app.get("/*", function (req, res, next) {
     res.render("404error")
 })
 
-// Listen at port 3000.
-app.listen(process.env.PORT, function () {
+// Listen at port.
+app.listen(process.env.PORT || process.env.PORTS, function () {
     console.log(`server started on port ${process.env.PORT}`);
 });
