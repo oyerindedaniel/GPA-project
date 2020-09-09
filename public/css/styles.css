@@ -32,6 +32,13 @@ h1 {
     width: 100% !important;
 }
 
+h3 {
+    text-align: left;
+    margin: auto;
+    font-family: 'Ranchers', sans-serif !important;
+    width: 100%;
+}
+
 h6 {
     font-weight: bold;
 }
@@ -193,6 +200,11 @@ a.sign-up {
             margin: auto;
         }
 
+        h3 {
+            text-align: center;
+            margin: auto;
+        }
+
         .nav-link,
         .btn-style {
             margin: 0.8rem 0 !important;
@@ -251,7 +263,7 @@ a.sign-up {
         h1 {
             text-align: center;
             margin: auto;
-            font-size: 5.5rem;
+            font-size: 6rem;
         }
 
         .main-container {
@@ -290,6 +302,16 @@ a.sign-up {
 
     /* Media queries at 550px */
     @media(max-width: 550px) {
+
+        h1 {
+            font-size: 5.5rem;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+
+        }
+
         .main-carousel {
             width: 35rem;
             height: 35rem;
@@ -298,7 +320,6 @@ a.sign-up {
 
     /* Media queries at 500px */
     @media(max-width: 500px) {
-
         h1 {
             font-size: 5rem;
         }
@@ -335,12 +356,16 @@ a.sign-up {
             padding-left: 1.5rem;
             padding-right: 1.5rem;
         }
+
+        .row2 {
+            padding: 1rem 8%;
+        }
     }
 
     @media(max-width: 350px) {
         .main-carousel {
-            width: 22rem;
-            height: 22rem;
+            width: 24rem;
+            height: 24rem;
             padding: 0.2rem;
             text-align: center;
             margin: auto;
@@ -351,4 +376,23 @@ a.sign-up {
             height: 197px !important;
         }
 
+    }
+
+    @media(max-width: 300px) {
+        .main-carousel {
+            width: 21rem;
+            height: 21rem;
+            padding: 0.2rem;
+            text-align: center;
+            margin: auto;
+
+        }
+
+        .row2 {
+            padding: 1rem 3%;
+        }
+
+        .main-container {
+            margin-bottom: 17rem;
+        }
     }

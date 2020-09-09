@@ -74,7 +74,7 @@ app.use(passport.session());
 //app.use(passport.authenticate('remember-me'));
 
 // Mongoose connection.
-mongoose.connect("mongodb://localhost:27017/gpaDB", {
+mongoose.connect(`mongodb+srv://admin-checkGPA:${process.env.MONGODBPASSWORD}@cluster0.alkuv.mongodb.net/gpaDB`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, () => {
@@ -408,7 +408,6 @@ app.route("/deleteanything")
                                         founddata1[0].replylength.pop();
                                         founddata1[0].replylength.push(dataLength);
                                         founddata1[0].save(function (err) {
-                                            console.log(formdeleteReply);
                                             if (!err) {
                                                 req.flash("message", "Reply Deleted Successfully.");
                                                 res.redirect(`/checkgpa/admin/${process.env.ADMINURL}/home`);
