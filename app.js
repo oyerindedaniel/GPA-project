@@ -195,44 +195,6 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
-// Remember Me cookie strategy
-//   This strategy consumes a remember me token, supplying the user the
-//   token was originally issued to.  The token is single-use, so a new
-//   token is then issued to replace it.
-//passport.use(new RememberMeStrategy(
-//    function (token, done) {
-//        consumeRememberMeToken(token, function (err, uid) {
-//            if (err) {
-//                return done(err);
-//            }
-//            if (!uid) {
-//                return done(null, false);
-//            }
-//
-//            findById(uid, function (err, user) {
-//                if (err) {
-//                    return done(err);
-//                }
-//                if (!user) {
-//                    return done(null, false);
-//                }
-//                return done(null, user);
-//            });
-//        });
-//    },
-//    issueToken
-//));
-//
-//function issueToken(user, done) {
-//    var token = utils.randomString(64);
-//    saveRememberMeToken(token, user.id, function (err) {
-//        if (err) {
-//            return done(err);
-//        }
-//        return done(null, token);
-//    });
-//}
-
 passport.use(new GoogleStrategy({
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
@@ -1872,6 +1834,15 @@ app.get("/*", function (req, res, next) {
 })
 
 // Listen at port.
-app.listen(process.env.PORT || process.env.PORTS, function () {
-    console.log(`server started on port ${process.env.PORT}`);
+let port = process.env.PORT;
+if (PORT == null || port == "") {
+    port = 3000;
+}
+app.listen(port, function () {
+    console.log("Server has started successfully");
 });
+
+// Listen at port.
+//app.listen(process.env.PORT || process.env.PORTS, function () {
+//    console.log(`server started on port ${process.env.PORT}`);
+//});
