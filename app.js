@@ -24,13 +24,9 @@ const nodemailer = require("nodemailer");
 const {
     v4: uuidv4
 } = require('uuid');
-// Cron.
-const cron = require("node-cron");
 // Moment js.
 const moment = require("moment");
 moment().format();
-// Morgan.
-const morgan = require('morgan')
 // Module require date.
 const date = require(__dirname + "/appmodule.js");
 const app = express();
