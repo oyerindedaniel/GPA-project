@@ -28,8 +28,8 @@ a:hover {
 
 p {
     font-size: 1.8rem;
-    font-weight: 50;
     line-height: 2;
+    text-align: justify;
 }
 
 h2 {
