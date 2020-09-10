@@ -15,7 +15,6 @@ body {
 }
 
 a {
-    font-family: sans-serif;
     font-size: 1.8rem;
     text-decoration: none;
     color: blue;
@@ -28,7 +27,6 @@ a:hover {
 
 
 p {
-    font-family: sans-serif;
     font-size: 1.8rem;
     font-weight: 50;
     line-height: 2;
