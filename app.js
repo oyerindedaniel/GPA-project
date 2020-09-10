@@ -465,19 +465,20 @@ app.route("/jokes")
 app.get("/how-to-raise-gpa", function (req, res) {
     res.locals.style = "checkGPAguide.css"
     res.locals.title = "checkGPA - How to raise your GPA"
-    const randomNumb = Math.floor((Math.random() * 17));
-    Jokes.find({}, function (err, foundJokes) {
-        if (foundJokes) {
-            //            cron.schedule("* * * * *", function () {
-            const filterJoke = foundJokes[randomNumb].jokesgpa;
-            res.render("raisegpa", {
-                jokeone: filterJoke
-            });
-            //            });
-        } else {
-            console.log(err);
-        }
-    })
+    //    const randomNumb = Math.floor((Math.random() * 17));
+    //    Jokes.find({}, function (err, foundJokes) {
+    //        if (foundJokes) {
+    //            //            cron.schedule("* * * * *", function () {
+    //            const filterJoke = foundJokes[randomNumb].jokesgpa;
+    //            res.render("raisegpa", {
+    //                jokeone: filterJoke
+    //            });
+    //            //            });
+    //        } else {
+    //            console.log(err);
+    //        }
+    //    })
+    res.render("raisegpa");
 });
 
 // Get request for raiseGPA route.
